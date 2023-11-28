@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Friend, Post, User, WebSession } from "./app";
+import { Emailer, Friend, Post, User, WebSession } from "./app";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
@@ -135,6 +135,30 @@ class Routes {
     const user = WebSession.getUser(session);
     const fromId = (await User.getUserByUsername(from))._id;
     return await Friend.rejectRequest(fromId, user);
+  }
+
+  @Router.get("/email/testRegister")
+  async sendTestEmail() {
+    await Emailer.sendRegisterEmail({
+      toAddress: "nmorale5@mit.edu",
+      businessName: "McDonald's",
+      token: "SOMETOKEN",
+    });
+  }
+
+  @Router.get("/email/testThreshold")
+  async sendEmail() {
+    await Emailer.sendThresholdEmail({
+      toAddress: "nmorale5@mit.edu",
+      businessName: "McDonald's",
+      token: "SOMETOKEN",
+      signers: 100,
+      petition: {
+        title: "Gluten Free Buns At McDonald's",
+        problem: "Not enough gluten-free options for McDonald's",
+        solution: "Make gluten-free buns",
+      },
+    });
   }
 }
 

@@ -20,6 +20,7 @@
     "@types/express": "^4.17.17",
     "@types/express-session": "^1.17.7",
     "@types/morgan": "^1.9.4",
+    "@types/nodemailer": "^6.4.14",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-vue": "^4.3.4",
@@ -43,6 +44,7 @@
     "vue-tsc": "^1.8.11"
   },
   "dependencies": {
+    "@emailjs/browser": "^3.11.0",
     "connect-mongo": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -51,6 +53,7 @@
     "moment": "^2.29.4",
     "mongodb": "^5.7.0",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.9.7",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",
     "purecss": "^3.0.0",
@@ -62,5 +65,18 @@
     "trailingComma": "all",
     "printWidth": 200,
     "endOfLine": "auto"
-  }
+  },
+  "description": "If you are using [VSCode](https://code.visualstudio.com/)/VSCodium, install the ESLint and Prettier extensions.\r The project is already configured to use ESLint and Prettier,\r but feel free to add your own rules if you want.\r Right now, the code is formatted on save; you can change this in `.vscode/settings.json`\r by disabling `editor.formatOnSave`.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nmorale5/email-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nmorale5/email-test/issues"
+  },
+  "homepage": "https://github.com/nmorale5/email-test#readme"
 }
