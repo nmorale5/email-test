@@ -2,7 +2,8 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Emailer, Friend, Post, User, WebSession } from "./app";
+import { Business, Emailer, Friend, Post, User, WebSession } from "./app";
+import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
@@ -159,6 +160,48 @@ class Routes {
         solution: "Make gluten-free buns",
       },
     });
+  }
+
+  @Router.put("/business")
+  async addBusiness(name: string, email: string) {
+    const verificationToken = await Business.addBusiness(name, email);
+    await Emailer.sendRegisterEmail({
+      toAddress: email,
+      businessName: name,
+      token: verificationToken,
+    });
+  }
+
+  @Router.put("/business/users")
+  async addUserToBusiness(businessId: ObjectId, userId: ObjectId, token: string) {
+    return await Business.addUser(businessId, userId, token);
+  }
+
+  // todo: for kevin and mohamed
+  @Router.put("/petition/:petitionId/:signerId")
+  async signPetition(session: WebSessionDoc, petitionId: ObjectId, signerId: ObjectId) {
+    if (!WebSession.getUser(session).equals(signerId)) {
+      throw new UnauthenticatedError("signerId is different from session user id");
+    }
+    // todo: Petition.addSigner(petitionId, signerId);
+    // todo: const p = Petition.getPetition(petitionId);
+    // todo: const b = Business.getBusiness(p.business);
+    const signers = 100; // todo: p.signers.length
+    const threshold = 100; // todo: p.threshold
+    if (signers === threshold) {
+      // todo: get all email data fields from petition concept
+      await Emailer.sendThresholdEmail({
+        toAddress: "61040-team-mank@mit.edu", // todo: b.email
+        businessName: "McDonald's", // todo: b.name
+        token: "SOMETOKEN", // todo: b.token
+        signers: 100, // todo: p.signers.length
+        petition: {
+          title: "Gluten Free Buns At McDonald's", // todo: p.title
+          problem: "Not enough gluten-free options for McDonald's", // todo: p.problem
+          solution: "Make gluten-free buns", // todoo: p.solution
+        },
+      });
+    }
   }
 }
 

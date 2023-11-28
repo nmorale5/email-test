@@ -1,3 +1,4 @@
+import BusinessConcept from "./concepts/business";
 import EmailerTool from "./concepts/emailer";
 import FriendConcept from "./concepts/friend";
 import PostConcept from "./concepts/post";
@@ -9,4 +10,5 @@ export const WebSession = new WebSessionConcept();
 export const User = new UserConcept();
 export const Post = new PostConcept();
 export const Friend = new FriendConcept();
+export const Business = new BusinessConcept();
 export const Emailer = new EmailerTool();

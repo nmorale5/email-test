@@ -44,7 +44,7 @@ export default class EmailerTool {
   public async sendRegisterEmail(template: RegisterEmailTemplate) {
     const html = `<p>Hello ${template.businessName},</p>
       
-    <p>Someone has started a petition about your restaurant on Restaurant Reform. To view the petition and all its signers, please register a user account and link it to your business using the following verification token:</p>
+    <p>You have been added as a restaurant on Restaurant Reform. This means someone has started a petition about you. To view the petition and all its signers, please register a user account and link it to your business using the following verification token:</p>
     
     <p>${template.token}</p>
     
