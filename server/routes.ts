@@ -140,7 +140,7 @@ class Routes {
   @Router.get("/email/testRegister")
   async sendTestEmail() {
     await Emailer.sendRegisterEmail({
-      toAddress: "nmorale5@mit.edu",
+      toAddress: "61040-team-mank@mit.edu",
       businessName: "McDonald's",
       token: "SOMETOKEN",
     });
@@ -149,7 +149,7 @@ class Routes {
   @Router.get("/email/testThreshold")
   async sendEmail() {
     await Emailer.sendThresholdEmail({
-      toAddress: "nmorale5@mit.edu",
+      toAddress: "61040-team-mank@mit.edu",
       businessName: "McDonald's",
       token: "SOMETOKEN",
       signers: 100,
