@@ -10,6 +10,7 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 const loaded = ref(false);
 const myRestaurants = ref([]);
 const searchRestaurants = ref([]);
+const token = ref("");
 
 const getMyRestaurants = async() => {
   try {
@@ -23,8 +24,7 @@ const getMyRestaurants = async() => {
 
 const getRestaurants = async(filter?: string) => {
   try {
-    searchRestaurants.value = await fetchy(`/api/business/r`, "GET");
-    // searchRestaurants.value = await fetchy(`/api/business/${filter}`, "GET");
+    searchRestaurants.value = await fetchy(`/api/business/${filter}`, "GET");
     return;
   } catch {
     return;
@@ -34,6 +34,17 @@ const getRestaurants = async(filter?: string) => {
 const deleteRestaurant = async() => {
   try {
     await fetchy("/api/business", "DELETE");
+    return;
+  } catch {
+    return;
+  }
+}
+
+const addUserToRestaurant = async() => {
+  try {
+    const user = await fetchy(`/api/users/${currentUsername.value}`, "GET");
+    await fetchy("/api/business/users", "PUT", {body: {userId: user._id, token: token.value}});
+    await getMyRestaurants();
     return;
   } catch {
     return;
@@ -59,11 +70,15 @@ onBeforeMount(async () => {
     <article v-for="restaurant in myRestaurants">
       <SelectableRestaurant :restaurant="restaurant"/>
     </article>
-    <p v-if="myRestaurants.size === 0">You manage no restaurants.</p>
+    <p v-if="myRestaurants.length === 0">You manage no restaurants.</p>
     <p v-else>Number of restaurants you own: {{ myRestaurants.length }}</p>
     <h2>Add Yourself To Restaurant</h2>
-    <p>Make submission form for token to business using route</p>
-    <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
+    <input id="token" v-model="token" placeholder="Token from inbox" required/>
+    <button type="submit" class="pure-button-primary pure-button" 
+      v-on:click="addUserToRestaurant">Join Restaurant</button>
+    <article>
+      <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
+    </article>
   </div>
   <div v-else>
     <p>Log in if you wish to view your restaurants or be added as an owner of a restaurant.</p>

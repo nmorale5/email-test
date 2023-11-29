@@ -7,6 +7,7 @@ import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
+import { containsObjectId } from "./framework/utils";
 import Responses from "./responses";
 
 import { PetitionDoc } from "./concepts/petition";
@@ -169,22 +170,20 @@ class Routes {
     await Business.deleteBusiness();
   }
 
+  @Router.get("/business")
+  async getAllBusinesses() {
+    return await Business.getAllBusinesses();
+  }
+
   @Router.get("/business/:filter")
-  async getBusinesses(filterKeyword?: string) {
-    return await Business.getAllBusinesses(filterKeyword);
+  async getBusinesses(filter?: string) {
+    return await Business.getAllBusinesses(filter);
   }
 
   @Router.get("/business/user/:userId")
   async getUserBusinesses(userId: ObjectId) {
     const businesses = await Business.getAllBusinesses("");
-    const yourBusinesses = businesses.filter((business) => {
-      for (const user of business.users) {
-        if (user.equals(userId)) {
-          return true;
-        }
-      }
-      return false;
-    });
+    const yourBusinesses = businesses.filter((business) => containsObjectId(business.users, userId));
     return yourBusinesses;
   }
 
@@ -199,13 +198,13 @@ class Routes {
   }
 
   @Router.put("/business/users")
-  async addUserToBusiness(businessId: ObjectId, userId: ObjectId, token: string) {
-    return await Business.addUser(businessId, userId, token);
+  async addUserToBusiness(userId: ObjectId, token: string) {
+    return await Business.addUser(userId, token);
   }
 
   @Router.delete("/business/users")
-  async removeUserFromBusiness(businessId: ObjectId, userId: ObjectId, token: string) {
-    return await Business.removeUser(businessId, userId, token).catch();
+  async removeUserFromBusiness(userId: ObjectId, token: string) {
+    return await Business.removeUser(userId, token).catch();
   }
 
   @Router.get("/business/:businessId/petitions/")
