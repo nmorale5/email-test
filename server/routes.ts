@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Business, Emailer, Friend, Petition, Post, User, WebSession } from "./app";
+import { Business, Emailer, Friend, Petition, Post, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -214,7 +214,8 @@ class Routes {
     const allPetitions = await Petition.getAllPetitions(businessId);
 
     for (const petition of allPetitions) {
-      if (petition.signers.size >= petition.upvoteThreshold) {
+      const numSigners = await Upvote.getTotalUpvotes(petition._id);
+      if (numSigners >= petition.upvoteThreshold) {
         approved.push(petition);
       }
     }
@@ -227,10 +228,10 @@ class Routes {
       throw new UnauthenticatedError("signerId is different from session user id");
     }
 
-    Petition.addSigner(new ObjectId(petitionId), new ObjectId(signerId));
+    Upvote.addUpvote(signerId, petitionId);
 
     const petition = await Petition.getPetition(petitionId);
-    const signers = petition.signers.size;
+    const signers = await Upvote.getTotalUpvotes(petitionId);
     const business = await Business.getBusiness(petition.target);
 
     // send email to target once threshold is met
