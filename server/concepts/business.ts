@@ -49,6 +49,18 @@ export default class BusinessConcept {
     }
     return this.businesses.updateOne({ _id: businessId }, { users: business.users.add(userId) });
   }
+
+  public async removeUser(businessId: ObjectId, userId: ObjectId, token: string) {
+    const business = await this.getBusiness(businessId);
+    if (business.token !== token) {
+      throw new UnauthenticatedError("validation token is incorrect");
+    }
+    const users = business.users;
+    if (users.delete(userId)) {
+      return this.businesses.updateOne({ _id: businessId }, { users });
+    }
+    throw new Error("user did not have access to begin with");
+  }
 }
 
 function generateToken(): string {

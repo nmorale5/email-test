@@ -162,7 +162,26 @@ class Routes {
     });
   }
 
-  @Router.put("/business")
+  @Router.get("/business")
+  async getAllBusinesses() {
+    return await Business.getAllBusinesses();
+  }
+
+  @Router.get("/business/:filter")
+  async getBusinesses(filterKeyword?: string) {
+    return await Business.getAllBusinesses(filterKeyword);
+  }
+
+  @Router.get("/business/user/:userId")
+  async getUserBusinesses(userId: ObjectId) {
+    const businesses = await Business.getAllBusinesses("");
+    const yourBusinesses = businesses.filter((business) => {
+      return business.users.has(userId);
+    });
+    return yourBusinesses;
+  }
+
+  @Router.post("/business")
   async addBusiness(name: string, email: string) {
     const verificationToken = await Business.addBusiness(name, email);
     await Emailer.sendRegisterEmail({
@@ -175,6 +194,11 @@ class Routes {
   @Router.put("/business/users")
   async addUserToBusiness(businessId: ObjectId, userId: ObjectId, token: string) {
     return await Business.addUser(businessId, userId, token);
+  }
+
+  @Router.delete("/business/users")
+  async removeUserFromBusiness(businessId: ObjectId, userId: ObjectId, token: string) {
+    return await Business.removeUser(businessId, userId, token);
   }
 
   // todo: for kevin and mohamed
