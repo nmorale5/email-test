@@ -2,12 +2,14 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Business, Emailer, Friend, Post, User, WebSession } from "./app";
+import { Business, Emailer, Friend, Petition, Post, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import Responses from "./responses";
+
+import { PetitionDoc } from "./concepts/petition";
 
 class Routes {
   @Router.get("/session")
@@ -201,28 +203,47 @@ class Routes {
     return await Business.removeUser(businessId, userId, token);
   }
 
-  // todo: for kevin and mohamed
+  @Router.get("/business/:businessId/petitions/")
+  async getBusinessPetitions(businessId: ObjectId) {
+    return await Petition.getAllPetitions(businessId);
+  }
+
+  @Router.get("/business/:businessId/petitions/approved")
+  async getApprovedBusinessPetitions(businessId: ObjectId) {
+    const approved: PetitionDoc[] = [];
+    const allPetitions = await Petition.getAllPetitions(businessId);
+
+    for (const petition of allPetitions) {
+      if (petition.signers.size >= petition.upvoteThreshold) {
+        approved.push(petition);
+      }
+    }
+    return approved;
+  }
+
   @Router.put("/petition/:petitionId/:signerId")
   async signPetition(session: WebSessionDoc, petitionId: ObjectId, signerId: ObjectId) {
     if (!WebSession.getUser(session).equals(signerId)) {
       throw new UnauthenticatedError("signerId is different from session user id");
     }
-    // todo: Petition.addSigner(petitionId, signerId);
-    // todo: const p = Petition.getPetition(petitionId);
-    // todo: const b = Business.getBusiness(p.business);
-    const signers = 100; // todo: p.signers.length
-    const threshold = 100; // todo: p.threshold
-    if (signers === threshold) {
-      // todo: get all email data fields from petition concept
+
+    Petition.addSigner(new ObjectId(petitionId), new ObjectId(signerId));
+
+    const petition = await Petition.getPetition(petitionId);
+    const signers = petition.signers.size;
+    const business = await Business.getBusiness(petition.target);
+
+    // send email to target once threshold is met
+    if (signers === petition.upvoteThreshold) {
       await Emailer.sendThresholdEmail({
-        toAddress: "61040-team-mank@mit.edu", // todo: b.email
-        businessName: "McDonald's", // todo: b.name
-        token: "SOMETOKEN", // todo: b.token
-        signers: 100, // todo: p.signers.length
+        toAddress: business.email,
+        businessName: business.name,
+        token: business.token,
+        signers: signers,
         petition: {
-          title: "Gluten Free Buns At McDonald's", // todo: p.title
-          problem: "Not enough gluten-free options for McDonald's", // todo: p.problem
-          solution: "Make gluten-free buns", // todoo: p.solution
+          title: petition.title,
+          problem: petition.problem,
+          solution: petition.solution,
         },
       });
     }
