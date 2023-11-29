@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
+import { ObjectId } from "mongodb";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
@@ -8,11 +9,22 @@ import SelectableRestaurant from "./SelectableRestaurant.vue";
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 const loaded = ref(false);
-const myRestaurants = ref([]);
-const searchRestaurants = ref([]);
+
+// make sure this always matches backend BusinessDoc
+export interface RestaurantData {
+  _id: ObjectId;
+  dateCreated: Date;
+  dateUpdated: Date;
+  name: string;
+  email: string;
+  token: string;
+  users: Array<ObjectId>;
+}
+const myRestaurants = ref(new Array<RestaurantData>());
+const searchRestaurants = ref(new Array<RestaurantData>());
 const token = ref("");
 
-const getMyRestaurants = async() => {
+const getMyRestaurants = async () => {
   try {
     const user = await fetchy(`/api/users/${currentUsername.value}`, "GET");
     myRestaurants.value = await fetchy(`/api/business/user/${user._id}`, "GET");
@@ -20,38 +32,39 @@ const getMyRestaurants = async() => {
   } catch {
     return;
   }
-}
+};
 
-const getRestaurants = async(filter?: string) => {
+const getRestaurants = async (filter?: string) => {
   try {
     searchRestaurants.value = await fetchy(`/api/business/${filter}`, "GET");
     return;
   } catch {
     return;
   }
-}
+};
 
-const deleteRestaurant = async() => {
+const deleteRestaurant = async () => {
   try {
     await fetchy("/api/business", "DELETE");
     return;
   } catch {
     return;
   }
-}
+};
 
-const addUserToRestaurant = async() => {
+const addUserToRestaurant = async () => {
   try {
     const user = await fetchy(`/api/users/${currentUsername.value}`, "GET");
-    await fetchy("/api/business/users", "PUT", {body: {userId: user._id, token: token.value}});
+    await fetchy("/api/business/users", "PUT", { body: { userId: user._id, token: token.value } });
     await getMyRestaurants();
     return;
   } catch {
     return;
   }
-}
+};
 
 onBeforeMount(async () => {
+  await getRestaurants("");
   if (isLoggedIn.value) {
     await getMyRestaurants();
   }
@@ -62,20 +75,19 @@ onBeforeMount(async () => {
   <h1 v-if="!loaded">Loading...</h1>
   <SearchRestaurantForm @getRestaurantsByName="getRestaurants" />
   <p>Number of restaurants found: {{ searchRestaurants.length }}</p>
-  <article v-for="restaurant in searchRestaurants">
-    <SelectableRestaurant :restaurant="restaurant"/>
+  <article v-for="restaurant in searchRestaurants" :key="restaurant._id.toString()">
+    <SelectableRestaurant :restaurant="restaurant" />
   </article>
   <div v-if="isLoggedIn">
-    <h2>My Restaurants: </h2>
-    <article v-for="restaurant in myRestaurants">
-      <SelectableRestaurant :restaurant="restaurant"/>
+    <h2>My Restaurants:</h2>
+    <article v-for="restaurant in myRestaurants" :key="restaurant._id.toString()">
+      <SelectableRestaurant :restaurant="restaurant" />
     </article>
     <p v-if="myRestaurants.length === 0">You manage no restaurants.</p>
     <p v-else>Number of restaurants you own: {{ myRestaurants.length }}</p>
     <h2>Add Yourself To Restaurant</h2>
-    <input id="token" v-model="token" placeholder="Token from inbox" required/>
-    <button type="submit" class="pure-button-primary pure-button" 
-      v-on:click="addUserToRestaurant">Join Restaurant</button>
+    <input id="token" v-model="token" placeholder="Token from inbox" required />
+    <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Join Restaurant</button>
     <article>
       <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
     </article>
