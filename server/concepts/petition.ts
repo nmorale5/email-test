@@ -10,6 +10,7 @@ export interface PetitionDoc extends BaseDoc {
   target: ObjectId;
   creator: ObjectId;
   upvoteThreshold: number;
+	signers: Set<ObjectId>;
 }
 
 export default class PetitionConcept {
@@ -32,8 +33,9 @@ export default class PetitionConcept {
 
 	}
 
-	public async getAllPetitions() {
-
+	// Get all petitions, optionally get petitions pertaining to a creator/target
+	public async getAllPetitions(target?: ObjectId, creator?: ObjectId) {
+		
 	}
 
 	public async filterPetitions() {

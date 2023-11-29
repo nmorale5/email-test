@@ -2,12 +2,14 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Business, Emailer, Friend, Post, User, WebSession } from "./app";
+import { Business, Emailer, Friend, Petition, Post, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import Responses from "./responses";
+
+import { PetitionDoc } from "./concepts/petition";
 
 class Routes {
   @Router.get("/session")
@@ -177,6 +179,25 @@ class Routes {
     return await Business.addUser(businessId, userId, token);
   }
 
+  @Router.get("/business/:businessId/petitions/")
+  async getBusinessPetitions(businessId: ObjectId) {
+    return await Petition.getAllPetitions(businessId);
+  }
+
+  @Router.get("/business/:businessId/petitions/approved")
+  async getApprovedBusinessPetitions(businessId: ObjectId) {
+    const approved: PetitionDoc[] = [];
+    const allPetitions = await Petition.getAllPetitions(businessId);
+
+    for (const petition of allPetitions) {
+      if (petition.signers.size >= petition.upvoteThreshold) {
+        approved.push(petition);
+      }
+    }
+
+    return approved
+  }
+
   // todo: for kevin and mohamed
   @Router.put("/petition/:petitionId/:signerId")
   async signPetition(session: WebSessionDoc, petitionId: ObjectId, signerId: ObjectId) {
@@ -203,6 +224,9 @@ class Routes {
       });
     }
   }
+
+  
+
 }
 
 export default getExpressRouter(new Routes());
