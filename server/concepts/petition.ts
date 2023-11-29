@@ -27,6 +27,10 @@ export default class PetitionConcept {
 
 	}
 
+	public async getPetition(petitionId: ObjectId): Promise<PetitionDoc> {
+
+	}
+
 	public async deletePetition(
 		petitionId: ObjectId
 	) {
@@ -34,11 +38,15 @@ export default class PetitionConcept {
 	}
 
 	// Get all petitions, optionally get petitions pertaining to a creator/target
-	public async getAllPetitions(target?: ObjectId, creator?: ObjectId) {
+	public async getAllPetitions(target?: ObjectId, creator?: ObjectId): Promise<Array<PetitionDoc>> {
 		
 	}
 
 	public async filterPetitions() {
+
+	}
+
+	public async addSigner(petitionId: ObjectId, signerId: ObjectId ) {
 
 	}
 }
