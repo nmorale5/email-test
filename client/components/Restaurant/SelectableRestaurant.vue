@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import router from "@/router";
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["restaurant"]);
@@ -17,11 +17,13 @@ async function navigateToRestaurant() {
 
 async function getRestaurantBadges() {
   try {
-    await fetchy("/api/badges", "GET");
+    badges.value = await fetchy("/api/badges", "GET");
   } catch {
     return;
   }
 }
+
+onBeforeMount(getRestaurantBadges);
 </script>
 <template>
   <button v-on:click="navigateToRestaurant">
