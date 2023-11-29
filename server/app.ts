@@ -2,6 +2,7 @@ import BusinessConcept from "./concepts/business";
 import EmailerTool from "./concepts/emailer";
 import FriendConcept from "./concepts/friend";
 import PostConcept from "./concepts/post";
+import UpvoteConcept from "./concepts/upvote";
 import UserConcept from "./concepts/user";
 import WebSessionConcept from "./concepts/websession";
 
@@ -12,3 +13,4 @@ export const Post = new PostConcept();
 export const Friend = new FriendConcept();
 export const Business = new BusinessConcept();
 export const Emailer = new EmailerTool();
+export const Upvote = new UpvoteConcept();

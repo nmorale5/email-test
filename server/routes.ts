@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Business, Emailer, Friend, Post, User, WebSession } from "./app";
+import { Business, Emailer, Friend, Post, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -202,6 +202,32 @@ class Routes {
         },
       });
     }
+  }
+
+  @Router.put("/upvote/:postId/:userId")
+  async upvotePost(session: WebSessionDoc, postId: ObjectId, userId: ObjectId) {
+    if (!WebSession.getUser(session).equals(userId)) {
+      throw new UnauthenticatedError("userId is different from session user id");
+    }
+    await Upvote.addUpvote(postId, userId);
+  }
+
+  @Router.delete("/upvote/:postId/:userId")
+  async removeUpvotePost(session: WebSessionDoc, postId: ObjectId, userId: ObjectId) {
+    if (!WebSession.getUser(session).equals(userId)) {
+      throw new UnauthenticatedError("userId is different from session user id");
+    }
+    await Upvote.removeUpvote(postId, userId);
+  }
+
+  @Router.get("/upvote/:postId/:userId")
+  async isUpvoting(postId: ObjectId, userId: ObjectId) {
+    return await Upvote.isUpvoting(postId, userId);
+  }
+
+  @Router.get("/upvote/:postId")
+  async getUpvotes(postId: ObjectId) {
+    return await Upvote.getUpvotes(postId);
   }
 }
 

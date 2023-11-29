@@ -2,11 +2,14 @@
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
-const { currentUsername } = storeToRefs(useUserStore());
+const { currentUsername, currentUserId } = storeToRefs(useUserStore());
+const signed = ref(false);
+const signers = ref(0);
 
 const deletePost = async () => {
   try {
@@ -16,11 +19,51 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+const updateSigned = async () => {
+  let newSigned: boolean;
+  let newSigners: number;
+  try {
+    newSigned = currentUserId.value !== "" ? await fetchy(`/api/upvote/${props.post._id}/${currentUserId.value}`, "GET") : false;
+    newSigners = (await fetchy(`/api/upvote/${props.post._id}`, "GET")).length;
+  } catch {
+    return;
+  }
+  signed.value = newSigned;
+  signers.value = newSigners;
+};
+
+const trySign = async () => {
+  try {
+    await fetchy(`/api/upvote/${props.post._id}/${currentUserId.value}`, "PUT");
+  } catch {
+    return;
+  } finally {
+    await updateSigned();
+  }
+};
+
+const tryUnsign = async () => {
+  try {
+    await fetchy(`/api/upvote/${props.post._id}/${currentUserId.value}`, "DELETE");
+  } catch {
+    return;
+  } finally {
+    await updateSigned();
+  }
+};
+
+onBeforeMount(updateSigned);
 </script>
 
 <template>
   <p class="author">{{ props.post.author }}</p>
   <p>{{ props.post.content }}</p>
+  <p>Signers: {{ signers }}</p>
+  <div v-if="currentUserId">
+    <button v-if="!signed" @click="trySign">Sign</button>
+    <button v-else @click="tryUnsign"><em>Signed!</em></button>
+  </div>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
       <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
