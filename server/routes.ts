@@ -254,6 +254,39 @@ class Routes {
       });
     }
   }
+
+  @Router.post("/petition")
+  async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, restaurant: ObjectId) {
+    const user = WebSession.getUser(session);
+    const threshold = 200;
+    return await Petition.createPetition(title, problem, solution, restaurant, user, threshold);
+  }
+
+  @Router.get("/petition/:id")
+  async getPetition(id: ObjectId) {
+    return await Petition.getPetition(id);
+  }
+
+  @Router.delete("/petition/:id")
+  async deletePetition(id: ObjectId) {
+    return await Petition.deletePetition(id);
+  }
+
+  @Router.get("/petitions/business/:business")
+  async getPetitionsByTarget(business: ObjectId) {
+    return await Petition.getAllPetitions(undefined, business);
+  }
+
+  @Router.get("/petitions/user/:user")
+  async getPetitionsByCreator(user: ObjectId) {
+    return await Petition.getAllPetitions(user, undefined);
+  }
+
+  @Router.get("/petitions/filter/:search")
+  async filterPetitionsBySearch(search: string) {
+    const inputWords = search.split(" ");
+    return await Petition.filterPetitions(inputWords);
+  }
 }
 
 export default getExpressRouter(new Routes());
