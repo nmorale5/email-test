@@ -35,7 +35,10 @@ export default class BusinessConcept {
   }
 
   public async addBusiness(name: string, email: string) {
-    // TODO: make sure name isn't already in db
+    const business = await this.businesses.readOne({ name });
+    if (business !== null) {
+      throw new BadValuesError(`business already exists with name ${name}.`);
+    }
     // TODO: make sure email follows regex pattern: *@*.*
     const token = generateToken();
     await this.businesses.createOne({ name, email, token, users: [] });
@@ -47,26 +50,26 @@ export default class BusinessConcept {
     return { msg: "Post deleted successfully!" };
   }
 
-  public async addUser(businessId: ObjectId, userId: ObjectId, token: string) {
-    const business = await this.getBusiness(businessId);
-    if (business.token !== token) {
+  public async addUser(userId: ObjectId, token: string) {
+    const business = await this.businesses.readOne({ token });
+    if (business === null) {
       throw new UnauthenticatedError("validation token is incorrect");
     }
     const userArray = business.users;
     userArray.push(userId);
-    return this.businesses.updateOne({ _id: businessId }, { users: userArray });
+    return this.businesses.updateOne({ _id: business._id }, { users: userArray });
   }
 
-  public async removeUser(businessId: ObjectId, userId: ObjectId, token: string) {
-    const business = await this.getBusiness(businessId);
-    if (business.token !== token) {
+  public async removeUser(userId: ObjectId, token: string) {
+    const business = await this.businesses.readOne({ token });
+    if (business === null) {
       throw new UnauthenticatedError("validation token is incorrect");
     }
     const userArray = business.users;
     const index = userArray.indexOf(userId);
     if (index > -1) {
       userArray.splice(index, 1);
-      return this.businesses.updateOne({ _id: businessId }, { users: userArray });
+      return this.businesses.updateOne({ _id: business._id }, { users: userArray });
     }
     throw new Error("user did not have access to begin with");
   }

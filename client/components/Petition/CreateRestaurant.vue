@@ -5,7 +5,7 @@ import { fetchy } from "../../utils/fetchy";
 const name = ref("");
 const email = ref("");
 
-const createRestaurant = async (name: string, ) => {
+const createRestaurant = async (name: string, email: string) => {
   try {
     await fetchy("/api/business", "POST", {
       body: { name, email },
@@ -23,7 +23,7 @@ const emptyForm = () => {
 </script>
 
 <template>
-  <form @submit.prevent="createRestaurant(name)">
+  <form @submit.prevent="createRestaurant(name, email)">
     <label for="name">Restaurant name:</label>
     <input id="name" v-model="name" placeholder="Restaurant Name" required/>
     <input id="email" v-model="email" placeholder="Owner Email" required/>
