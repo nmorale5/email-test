@@ -2,12 +2,14 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Business, Emailer, Friend, Post, Upvote, User, WebSession } from "./app";
+import { Business, Emailer, Friend, Petition, Post, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import Responses from "./responses";
+
+import { PetitionDoc } from "./concepts/petition";
 
 class Routes {
   @Router.get("/session")
@@ -162,7 +164,31 @@ class Routes {
     });
   }
 
-  @Router.put("/business")
+  @Router.delete("/business")
+  async deleteBusiness() {
+    await Business.deleteBusiness();
+  }
+
+  @Router.get("/business/:filter")
+  async getBusinesses(filterKeyword?: string) {
+    return await Business.getAllBusinesses(filterKeyword);
+  }
+
+  @Router.get("/business/user/:userId")
+  async getUserBusinesses(userId: ObjectId) {
+    const businesses = await Business.getAllBusinesses("");
+    const yourBusinesses = businesses.filter((business) => {
+      for (const user of business.users) {
+        if (user.equals(userId)) {
+          return true;
+        }
+      }
+      return false;
+    });
+    return yourBusinesses;
+  }
+
+  @Router.post("/business")
   async addBusiness(name: string, email: string) {
     const verificationToken = await Business.addBusiness(name, email);
     await Emailer.sendRegisterEmail({
@@ -177,28 +203,53 @@ class Routes {
     return await Business.addUser(businessId, userId, token);
   }
 
-  // todo: for kevin and mohamed
+  @Router.delete("/business/users")
+  async removeUserFromBusiness(businessId: ObjectId, userId: ObjectId, token: string) {
+    return await Business.removeUser(businessId, userId, token).catch();
+  }
+
+  @Router.get("/business/:businessId/petitions/")
+  async getBusinessPetitions(businessId: ObjectId) {
+    return await Petition.getAllPetitions(businessId);
+  }
+
+  @Router.get("/business/:businessId/petitions/approved")
+  async getApprovedBusinessPetitions(businessId: ObjectId) {
+    const approved: PetitionDoc[] = [];
+    const allPetitions = await Petition.getAllPetitions(businessId);
+
+    for (const petition of allPetitions) {
+      const numSigners = (await Upvote.getUpvotes(petition._id)).length;
+      if (numSigners >= petition.upvoteThreshold) {
+        approved.push(petition);
+      }
+    }
+    return approved;
+  }
+
   @Router.put("/petition/:petitionId/:signerId")
   async signPetition(session: WebSessionDoc, petitionId: ObjectId, signerId: ObjectId) {
     if (!WebSession.getUser(session).equals(signerId)) {
       throw new UnauthenticatedError("signerId is different from session user id");
     }
-    // todo: Petition.addSigner(petitionId, signerId);
-    // todo: const p = Petition.getPetition(petitionId);
-    // todo: const b = Business.getBusiness(p.business);
-    const signers = 100; // todo: p.signers.length
-    const threshold = 100; // todo: p.threshold
-    if (signers === threshold) {
-      // todo: get all email data fields from petition concept
+
+    await Upvote.addUpvote(signerId, petitionId);
+
+    const petition = await Petition.getPetition(petitionId);
+    const signers = (await Upvote.getUpvotes(petitionId)).length;
+    const business = await Business.getBusiness(petition.target);
+
+    // send email to target once threshold is met
+    if (signers === petition.upvoteThreshold) {
       await Emailer.sendThresholdEmail({
-        toAddress: "61040-team-mank@mit.edu", // todo: b.email
-        businessName: "McDonald's", // todo: b.name
-        token: "SOMETOKEN", // todo: b.token
-        signers: 100, // todo: p.signers.length
+        toAddress: business.email,
+        businessName: business.name,
+        token: business.token,
+        signers: signers,
         petition: {
-          title: "Gluten Free Buns At McDonald's", // todo: p.title
-          problem: "Not enough gluten-free options for McDonald's", // todo: p.problem
-          solution: "Make gluten-free buns", // todoo: p.solution
+          title: petition.title,
+          problem: petition.problem,
+          solution: petition.solution,
         },
       });
     }
@@ -228,6 +279,39 @@ class Routes {
   @Router.get("/upvote/:postId")
   async getUpvotes(postId: ObjectId) {
     return await Upvote.getUpvotes(postId);
+  }
+
+  @Router.post("/petition")
+  async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, restaurant: ObjectId) {
+    const user = WebSession.getUser(session);
+    const threshold = 200;
+    return await Petition.createPetition(title, problem, solution, restaurant, user, threshold);
+  }
+
+  @Router.get("/petition/:id")
+  async getPetition(id: ObjectId) {
+    return await Petition.getPetition(id);
+  }
+
+  @Router.delete("/petition/:id")
+  async deletePetition(id: ObjectId) {
+    return await Petition.deletePetition(id);
+  }
+
+  @Router.get("/petitions/business/:business")
+  async getPetitionsByTarget(business: ObjectId) {
+    return await Petition.getAllPetitions(undefined, business);
+  }
+
+  @Router.get("/petitions/user/:user")
+  async getPetitionsByCreator(user: ObjectId) {
+    return await Petition.getAllPetitions(user, undefined);
+  }
+
+  @Router.get("/petitions/filter/:search")
+  async filterPetitionsBySearch(search: string) {
+    const inputWords = search.split(" ");
+    return await Petition.filterPetitions(inputWords);
   }
 }
 

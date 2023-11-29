@@ -5,6 +5,8 @@ import { useUserStore } from "@/stores/user";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import PetitionView from "../views/PetitionView.vue";
+import RestaurantHomeView from "../views/RestaurantHomeView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -14,6 +16,16 @@ const router = createRouter({
       path: "/",
       name: "Home",
       component: HomeView,
+    },
+    {
+      path: "/restaurant",
+      name: "Restaurant",
+      component: RestaurantHomeView,
+    },
+    {
+      path: "/petition",
+      name: "Petition",
+      component: PetitionView,
     },
     {
       path: "/setting",
