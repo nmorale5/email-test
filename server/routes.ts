@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Business, Emailer, Friend, Petition, Post, Upvote, User, WebSession } from "./app";
+import { Badge, Business, Emailer, Friend, Petition, Post, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -312,6 +312,21 @@ class Routes {
   async filterPetitionsBySearch(search: string) {
     const inputWords = search.split(" ");
     return await Petition.filterPetitions(inputWords);
+  }
+
+  @Router.get("/badges/:owner")
+  async getBadges(owner: ObjectId) {
+    return await Badge.getBadges(owner);
+  }
+
+  @Router.post("/badges/:owner/:badgeName")
+  async addBadge(owner: ObjectId, badgeName: string) {
+    return await Badge.add(owner, badgeName);
+  }
+
+  @Router.delete("/badges/:owner/:badgeName")
+  async removeBadge(owner: ObjectId, badgeName: string) {
+    return await Badge.remove(owner, badgeName);
   }
 }
 

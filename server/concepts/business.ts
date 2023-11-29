@@ -79,10 +79,10 @@ function generateToken(): string {
     const randomCharCode = Math.floor(Math.random() * 62) + 48;
     if (randomCharCode <= 57) {
       result += String.fromCharCode(randomCharCode); // Numbers 0-9
-    } else if (randomCharCode <= 90) {
-      result += String.fromCharCode(randomCharCode); // Uppercase letters A-Z
+    } else if (randomCharCode <= 84) {
+      result += String.fromCharCode(randomCharCode + 7); // Uppercase letters A-Z
     } else {
-      result += String.fromCharCode(randomCharCode + 6); // Lowercase letters a-z
+      result += String.fromCharCode(randomCharCode + 13); // Lowercase letters a-z
     }
   }
   return result;
