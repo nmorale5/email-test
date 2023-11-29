@@ -23,11 +23,17 @@ const getMyRestaurants = async() => {
 
 const getRestaurants = async(filter?: string) => {
   try {
-    if (filter){
-      searchRestaurants.value = await fetchy(`/api/business/${filter}`, "GET");
-    } else {
-      searchRestaurants.value = await fetchy(`/api/business`, "GET");
-    }
+    searchRestaurants.value = await fetchy(`/api/business/r`, "GET");
+    // searchRestaurants.value = await fetchy(`/api/business/${filter}`, "GET");
+    return;
+  } catch {
+    return;
+  }
+}
+
+const deleteRestaurant = async() => {
+  try {
+    await fetchy("/api/business", "DELETE");
     return;
   } catch {
     return;
@@ -57,6 +63,7 @@ onBeforeMount(async () => {
     <p v-else>Number of restaurants you own: {{ myRestaurants.length }}</p>
     <h2>Add Yourself To Restaurant</h2>
     <p>Make submission form for token to business using route</p>
+    <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
   </div>
   <div v-else>
     <p>Log in if you wish to view your restaurants or be added as an owner of a restaurant.</p>
