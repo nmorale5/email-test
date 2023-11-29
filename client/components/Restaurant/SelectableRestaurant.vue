@@ -17,7 +17,7 @@ async function navigateToRestaurant() {
 
 async function getRestaurantBadges() {
   try {
-    badges.value = await fetchy("/api/badges", "GET");
+    badges.value = await fetchy(`/api/badges/${props.restaurant._id}`, "GET");
   } catch {
     return;
   }
