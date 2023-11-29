@@ -9,34 +9,46 @@ export interface PetitionDoc extends BaseDoc {
   target: ObjectId;
   creator: ObjectId;
   upvoteThreshold: number;
-  signers: Set<ObjectId>;
 }
 
 export default class PetitionConcept {
   public readonly petitions = new DocCollection<PetitionDoc>("petitions");
 
   public async createPetition(title: string, problem: string, solution: string, target: ObjectId, creator: ObjectId, upvoteThreshold: number) {
-    throw new Error("Not Implemented Yet!");
+    const _id = await this.petitions.createOne({ title, problem, solution, target, creator, upvoteThreshold });
+    return { msg: "Petition successfully created!", post: await this.petitions.readOne({ _id }) };
   }
 
-  public async getPetition(petitionId: ObjectId): Promise<PetitionDoc> {
-    throw new Error("Not Implemented Yet!");
+  public async getPetition(_id: ObjectId): Promise<PetitionDoc> {
+    const petition = await this.petitions.readOne({ _id });
+    if (!petition) throw new Error("This petition cannot be found");
+    return petition;
   }
 
-  public async deletePetition(petitionId: ObjectId) {
-    throw new Error("Not Implemented Yet!");
+  public async deletePetition(_id: ObjectId) {
+    await this.petitions.deleteOne({ _id });
+    return { msg: "Petition deleted successfully!" };
   }
 
   // Get all petitions, optionally get petitions pertaining to a creator/target
   public async getAllPetitions(target?: ObjectId, creator?: ObjectId): Promise<Array<PetitionDoc>> {
-    throw new Error("Not Implemented Yet!");
+    return (await this.petitions.readMany({ target, creator })) ?? [];
   }
 
-  public async filterPetitions() {
-    throw new Error("Not Implemented Yet!");
-  }
-
-  public async addSigner(petitionId: ObjectId, signerId: ObjectId) {
-    throw new Error("Not Implemented Yet!");
+  public async filterPetitions(words: Array<string>) {
+    const filteredPetitions: Array<PetitionDoc> = [];
+    for (const word of words) {
+      (
+        await this.petitions.readMany(
+          { title: { $regex: new RegExp(`${word}`, "i") } },
+          {
+            sort: { dateUpdated: -1 },
+          },
+        )
+      ).map((petition) => {
+        if (!filteredPetitions.map((p) => p._id.toString()).includes(petition._id.toString())) filteredPetitions.push(petition);
+      });
+    }
+    return filteredPetitions;
   }
 }
