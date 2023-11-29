@@ -164,9 +164,9 @@ class Routes {
     });
   }
 
-  @Router.get("/business")
-  async getAllBusinesses() {
-    return await Business.getAllBusinesses();
+  @Router.delete("/business")
+  async deleteBusiness() {
+    await Business.deleteBusiness();
   }
 
   @Router.get("/business/:filter")
@@ -178,7 +178,12 @@ class Routes {
   async getUserBusinesses(userId: ObjectId) {
     const businesses = await Business.getAllBusinesses("");
     const yourBusinesses = businesses.filter((business) => {
-      return business.users.has(userId);
+      for (const user of business.users) {
+        if (user.equals(userId)) {
+          return true;
+        }
+      }
+      return false;
     });
     return yourBusinesses;
   }
@@ -200,7 +205,7 @@ class Routes {
 
   @Router.delete("/business/users")
   async removeUserFromBusiness(businessId: ObjectId, userId: ObjectId, token: string) {
-    return await Business.removeUser(businessId, userId, token);
+    return await Business.removeUser(businessId, userId, token).catch();
   }
 
   @Router.get("/business/:businessId/petitions/")

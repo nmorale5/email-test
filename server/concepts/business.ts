@@ -8,7 +8,7 @@ export interface BusinessDoc extends BaseDoc {
   name: string;
   email: string;
   token: string;
-  users: Set<ObjectId>;
+  users: Array<ObjectId>;
 }
 
 export default class BusinessConcept {
@@ -38,8 +38,13 @@ export default class BusinessConcept {
     // TODO: make sure name isn't already in db
     // TODO: make sure email follows regex pattern: *@*.*
     const token = generateToken();
-    await this.businesses.createOne({ name, email, token, users: new Set() });
+    await this.businesses.createOne({ name, email, token, users: [] });
     return token;
+  }
+
+  public async deleteBusiness() {
+    await this.businesses.deleteOne({});
+    return { msg: "Post deleted successfully!" };
   }
 
   public async addUser(businessId: ObjectId, userId: ObjectId, token: string) {
@@ -47,7 +52,9 @@ export default class BusinessConcept {
     if (business.token !== token) {
       throw new UnauthenticatedError("validation token is incorrect");
     }
-    return this.businesses.updateOne({ _id: businessId }, { users: business.users.add(userId) });
+    const userArray = business.users;
+    userArray.push(userId);
+    return this.businesses.updateOne({ _id: businessId }, { users: userArray });
   }
 
   public async removeUser(businessId: ObjectId, userId: ObjectId, token: string) {
@@ -55,9 +62,11 @@ export default class BusinessConcept {
     if (business.token !== token) {
       throw new UnauthenticatedError("validation token is incorrect");
     }
-    const users = business.users;
-    if (users.delete(userId)) {
-      return this.businesses.updateOne({ _id: businessId }, { users });
+    const userArray = business.users;
+    const index = userArray.indexOf(userId);
+    if (index > -1) {
+      userArray.splice(index, 1);
+      return this.businesses.updateOne({ _id: businessId }, { users: userArray });
     }
     throw new Error("user did not have access to begin with");
   }
