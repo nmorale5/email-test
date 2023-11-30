@@ -7,6 +7,7 @@ import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import PetitionView from "../views/PetitionView.vue";
 import RestaurantHomeView from "../views/RestaurantHomeView.vue";
+import RestaurantView from "../views/RestaurantView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -18,8 +19,13 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/restaurant",
+      path: "/restaurant/:id",
       name: "Restaurant",
+      component: RestaurantView,
+    },
+    {
+      path: "/home/restaurant",
+      name: "RestaurantHome",
       component: RestaurantHomeView,
     },
     {

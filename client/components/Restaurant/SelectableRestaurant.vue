@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BadgeList from "@/components/Badges/BadgeList.vue";
 import router from "@/router";
 import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
@@ -12,7 +13,7 @@ const badges = ref(
 );
 
 async function navigateToRestaurant() {
-  void router.push({ name: "Home" });
+  void router.push({ name: "Restaurant", params: { id: props.restaurant._id } });
 }
 
 async function getRestaurantBadges() {
@@ -25,14 +26,11 @@ async function getRestaurantBadges() {
 
 onBeforeMount(getRestaurantBadges);
 </script>
+
 <template>
   <button v-on:click="navigateToRestaurant">
     <strong>{{ props.restaurant.name }}</strong>
-    <ul>
-      Badges:
-      <p v-if="badges.length === 0"><em>None</em></p>
-      <li v-else v-for="badge in badges" :key="badge.name">{{ badge.name }} x{{ badge.count }}</li>
-    </ul>
+    <BadgeList :badges="badges" />
   </button>
 </template>
 
