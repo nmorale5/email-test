@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import CreateRestaurant from "@/components/Petition/CreateRestaurant.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import CreatePetitionForm from "../components/Petition/CreatePetitionForm.vue";
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
@@ -9,7 +9,7 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 </script>
 
 <template>
-  <CreateRestaurant />
+  <CreatePetitionForm />
 </template>
 
 <style scoped>
