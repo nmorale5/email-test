@@ -13,17 +13,24 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
 let editing = ref("");
-let searchAuthor = ref("");
+let searchTitle = ref("");
 
-async function getPosts(author?: string) {
-  let query: Record<string, string> = author !== undefined ? { author } : {};
+async function getPosts(search?: string) {
+  //let query: Record<string, string> = author !== undefined ? { author } : {};
+
   let postResults;
   try {
-    postResults = await fetchy("/api/posts", "GET", { query });
+    if (search !== undefined) {
+      postResults = await fetchy(`/api/petitions/filter/${search}`, "GET");
+    } else {
+      postResults = await fetchy("/api/petitions/all", "GET");
+    }
+      
+      
   } catch (_) {
     return;
   }
-  searchAuthor.value = author ? author : "";
+  searchTitle.value = search ? search : "";
   posts.value = postResults;
 }
 
@@ -43,9 +50,9 @@ onBeforeMount(async () => {
     <CreatePostForm @refreshPosts="getPosts" />
   </section>
   <div class="row">
-    <h2 v-if="!searchAuthor">Posts:</h2>
-    <h2 v-else>Posts by {{ searchAuthor }}:</h2>
-    <SearchPostForm @getPostsByAuthor="getPosts" />
+    <h2 v-if="!searchTitle">All Petitions:</h2>
+    <h2 v-else>Petitions matching: "{{ searchTitle }}":</h2>
+    <SearchPostForm @getPostsByTitle="getPosts" />
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
@@ -53,7 +60,7 @@ onBeforeMount(async () => {
       <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
     </article>
   </section>
-  <p v-else-if="loaded">No posts found</p>
+  <p v-else-if="loaded">No petitions found</p>
   <p v-else>Loading...</p>
 </template>
 
