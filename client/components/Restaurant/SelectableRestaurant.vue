@@ -12,7 +12,7 @@ const badges = ref(
 );
 
 async function navigateToRestaurant() {
-  void router.push({ name: "Home" });
+  void router.push({ name: 'Restaurant', params: { param: props.restaurant._id } });
 }
 
 async function getRestaurantBadges() {
