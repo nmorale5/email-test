@@ -167,12 +167,18 @@ class Routes {
 
   @Router.delete("/business")
   async deleteBusiness() {
+    // WARNING: FOR TESTING ONLY! This deletes a random business
     await Business.deleteBusiness();
   }
 
   @Router.get("/business")
   async getAllBusinesses() {
     return await Business.getAllBusinesses();
+  }
+
+  @Router.get("/business/id/:id")
+  async getBusiness(id: ObjectId) {
+    return await Business.getBusiness(id);
   }
 
   @Router.get("/business/:filter")
@@ -299,12 +305,12 @@ class Routes {
 
   @Router.get("/petitions/business/:business")
   async getPetitionsByTarget(business: ObjectId) {
-    return await Petition.getAllPetitions(undefined, business);
+    return await Petition.getAllPetitions(business);
   }
 
   @Router.get("/petitions/user/:user")
   async getPetitionsByCreator(user: ObjectId) {
-    return await Petition.getAllPetitions(user, undefined);
+    return await Petition.getAllPetitions(undefined, user);
   }
 
   @Router.get("/petitions/filter/:search")
@@ -315,7 +321,7 @@ class Routes {
 
   @Router.get("/badges/:owner")
   async getBadges(owner: ObjectId) {
-    return await Badge.getBadges(owner);
+    return await Badge.getBadges(new ObjectId(owner));
   }
 
   @Router.post("/badges/:owner/:badgeName")
@@ -326,6 +332,13 @@ class Routes {
   @Router.delete("/badges/:owner/:badgeName")
   async removeBadge(owner: ObjectId, badgeName: string) {
     return await Badge.remove(owner, badgeName);
+  }
+
+  @Router.get("/badges/test/addRandomBadge")
+  async addRandomBadge() {
+    const allB = await Business.getAllBusinesses();
+    const business = allB.at(Math.floor(Math.random() * allB.length));
+    return await Badge.add(business!._id, "nuts");
   }
 }
 
