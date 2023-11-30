@@ -297,6 +297,11 @@ class Routes {
     return await Petition.deletePetition(id);
   }
 
+  @Router.get("/petitions/all")
+  async getAllPetitions() {
+    return await Petition.getAllPetitions();
+  }
+
   @Router.get("/petitions/business/:business")
   async getPetitionsByTarget(business: ObjectId) {
     return await Petition.getAllPetitions(undefined, business);

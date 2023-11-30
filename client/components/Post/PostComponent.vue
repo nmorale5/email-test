@@ -13,7 +13,7 @@ const signers = ref(0);
 
 const deletePost = async () => {
   try {
-    await fetchy(`/api/posts/${props.post._id}`, "DELETE");
+    await fetchy(`/api/petition/${props.post._id}`, "DELETE");
   } catch {
     return;
   }
@@ -57,9 +57,14 @@ onBeforeMount(updateSigned);
 </script>
 
 <template>
-  <p class="author">{{ props.post.author }}</p>
-  <p>{{ props.post.content }}</p>
+  <p>{{ props.post.title }}</p>
+  <p>{{ props.post.target }}</p>
+  <p class="author">{{ props.post.creator }}</p>
+  <p>{{ props.post.problem }}</p>
+  <p>{{ props.post.solution }}</p>
+
   <p>Signers: {{ signers }}</p>
+  <p>Threshold: {{ props.post.upvoteThreshold }}</p>
   <div v-if="currentUserId">
     <button v-if="!signed" @click="trySign">Sign</button>
     <button v-else @click="tryUnsign"><em>Signed!</em></button>
