@@ -71,7 +71,7 @@ onBeforeMount(async () => {
     <ul id="autocomplete-list">
       <li v-for="restaurant in listOfRestaurants.filter((restaurant: any) => restaurant.name.toLowerCase().includes(restaurantSearch.toLocaleLowerCase())).slice(0, 5)" @click="selectRestaurant(restaurant)">{{ restaurant.name }}</li>
     </ul>
-    <div v-if="listOfRestaurants.filter((restaurant: any) => restaurant.name.toLowerCase().includes(restaurantSearch)).length === 0">
+    <div v-if="listOfRestaurants.filter((restaurant: any) => restaurant.name.toLowerCase().includes(restaurantSearch.toLowerCase())).length === 0">
       <i>Restaurant not found. You can add it to our list by additionally providing a company email.</i>
       <CreateRestaurant />
     </div>
