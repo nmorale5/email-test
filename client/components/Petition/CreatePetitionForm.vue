@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, ref } from "vue";
+import router from "../../router";
 import { useRestrictionStore } from "../../stores/restrictions";
 import { fetchy } from "../../utils/fetchy";
 
@@ -29,6 +30,8 @@ const createPetition = async () => {
   } catch (_) {
     return;
   }
+  // todo: navigate to users own profile page so they can see published petition
+  await router.push({ name: "Home" });
 };
 
 const createRestaurant = async (name: string, email: string) => {
