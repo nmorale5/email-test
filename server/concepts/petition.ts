@@ -33,7 +33,10 @@ export default class PetitionConcept {
 
   // Get all petitions, optionally get petitions pertaining to a creator/target
   public async getAllPetitions(target?: ObjectId, creator?: string): Promise<Array<PetitionDoc>> {
-    return (await this.petitions.readMany({ target, creator })) ?? [];
+    if (target && creator) return (await this.petitions.readMany({ target, creator })) ?? [];
+    if (creator) return (await this.petitions.readMany({ creator })) ?? [];
+    if (target) return (await this.petitions.readMany({ target })) ?? [];
+    return (await this.petitions.readMany({})) ?? [];
   }
 
   public async filterPetitions(words: Array<string>) {

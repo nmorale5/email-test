@@ -294,6 +294,11 @@ class Routes {
     return await Petition.createPetition(title, problem, solution, topic, new ObjectId(restaurant), user.username, threshold);
   }
 
+  @Router.get("/petitions/all")
+  async getAllPetitions() {
+    return await Petition.getAllPetitions();
+  }
+
   @Router.get("/petition/:id")
   async getPetition(id: ObjectId) {
     return await Petition.getPetition(id);
@@ -302,11 +307,6 @@ class Routes {
   @Router.delete("/petition/:id")
   async deletePetition(id: ObjectId) {
     return await Petition.deletePetition(id);
-  }
-
-  @Router.get("/petitions/all")
-  async getAllPetitions() {
-    return await Petition.getAllPetitions();
   }
 
   @Router.get("/petitions/business/:business")
