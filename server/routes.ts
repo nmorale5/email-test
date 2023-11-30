@@ -196,7 +196,7 @@ class Routes {
   @Router.post("/business")
   async addBusiness(name: string, email: string) {
     const verificationToken = await Business.addBusiness(name, email);
-    await Emailer.sendRegisterEmail({
+    return await Emailer.sendRegisterEmail({
       toAddress: email,
       businessName: name,
       token: verificationToken,
@@ -290,6 +290,7 @@ class Routes {
   async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, topic: string, restaurant: ObjectId) {
     const user = WebSession.getUser(session);
     const threshold = 200;
+    console.log(title, problem, solution, restaurant, topic);
     return await Petition.createPetition(title, problem, solution, topic, restaurant, user, threshold);
   }
 

@@ -56,7 +56,7 @@ export default class EmailerTool {
       subject: `Register For Restaurant Reform`,
       html: html,
     };
-    await this.send(data);
+    return await this.send(data);
   }
 
   // for when a petition has reached its threshold
