@@ -26,6 +26,7 @@ class Routes {
 
   @Router.get("/users/:username")
   async getUser(username: string) {
+    console.log("In here");
     return await User.getUserByUsername(username);
   }
 
@@ -288,9 +289,9 @@ class Routes {
 
   @Router.post("/petition")
   async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, topic: string, restaurant: ObjectId) {
-    const user = WebSession.getUser(session);
+    const user = await User.getUserById(WebSession.getUser(session));
     const threshold = 200;
-    return await Petition.createPetition(title, problem, solution, topic, restaurant, user, threshold);
+    return await Petition.createPetition(title, problem, solution, topic, new ObjectId(restaurant), user.username, threshold);
   }
 
   @Router.get("/petition/:id")
@@ -313,9 +314,9 @@ class Routes {
     return await Petition.getAllPetitions(business);
   }
 
-  @Router.get("/petitions/user/:user")
-  async getPetitionsByCreator(user: ObjectId) {
-    return await Petition.getAllPetitions(undefined, user);
+  @Router.get("/petitions/user/:username")
+  async getPetitionsByCreator(username: string) {
+    return await Petition.getAllPetitions(undefined, username);
   }
 
   @Router.get("/petitions/filter/:search")

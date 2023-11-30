@@ -8,14 +8,14 @@ export interface PetitionDoc extends BaseDoc {
   solution: string;
   topic: string;
   target: ObjectId;
-  creator: ObjectId;
+  creator: string;
   upvoteThreshold: number;
 }
 
 export default class PetitionConcept {
   public readonly petitions = new DocCollection<PetitionDoc>("petitions");
 
-  public async createPetition(title: string, problem: string, solution: string, topic: string, target: ObjectId, creator: ObjectId, upvoteThreshold: number) {
+  public async createPetition(title: string, problem: string, solution: string, topic: string, target: ObjectId, creator: string, upvoteThreshold: number) {
     const _id = await this.petitions.createOne({ title, problem, solution, target, creator, upvoteThreshold, topic });
     return { msg: "Petition successfully created!", post: await this.petitions.readOne({ _id }) };
   }
@@ -32,7 +32,7 @@ export default class PetitionConcept {
   }
 
   // Get all petitions, optionally get petitions pertaining to a creator/target
-  public async getAllPetitions(target?: ObjectId, creator?: ObjectId): Promise<Array<PetitionDoc>> {
+  public async getAllPetitions(target?: ObjectId, creator?: string): Promise<Array<PetitionDoc>> {
     return (await this.petitions.readMany({ target, creator })) ?? [];
   }
 
