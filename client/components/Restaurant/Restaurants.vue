@@ -98,10 +98,10 @@ onBeforeMount(async () => {
     <h2>Add Yourself To Restaurant</h2>
     <input id="token" v-model="token" placeholder="Token from inbox" required />
     <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Join Restaurant</button>
-    <article>
+    <!-- <article>
       <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
       <button @click="addRandomBadge">Add Random Badge (debug) (refresh page after)</button>
-    </article>
+    </article> -->
   </div>
   <div v-else>
     <p>Log in if you wish to view your restaurants or be added as an owner of a restaurant.</p>
