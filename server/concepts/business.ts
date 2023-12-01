@@ -17,7 +17,9 @@ export default class BusinessConcept {
   public async getBusiness(businessId: ObjectId) {
     const business = await this.businesses.readOne({ _id: businessId });
     if (business === null) {
+      console.log(businessId);
       throw new BadValuesError("businessId is invalid");
+      
     }
     return business;
   }

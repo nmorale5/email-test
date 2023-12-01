@@ -10,6 +10,7 @@ const emit = defineEmits(["editPetition", "refreshPetitions"]);
 const { currentUsername, currentUserId } = storeToRefs(useUserStore());
 const signed = ref(false);
 const signers = ref(0);
+const restaurantNameLoading = ref(true);
 
 const deletePetition = async () => {
   try {
@@ -57,11 +58,12 @@ const convertIDtoNames = async () => {
     let restaurant;
     try {
         restaurant = await fetchy(`/api/business/id/${props.petition.target}`, "GET");
+
     } catch (e) {
-        console.log(props.petition.target)
         return;
     }
     props.petition.target = restaurant.name;
+    restaurantNameLoading.value = false;
 }
 
 onBeforeMount(async ()=> {
@@ -76,7 +78,8 @@ onBeforeMount(async ()=> {
         <p>{{ props.petition.creator }}</p>
     </div>
     <div class="selectables">
-        <p>Restaurant: <div class="tag">{{ props.petition.target }}</div></p>
+        <p v-if="restaurantNameLoading">Loading...</p>
+        <p v-else="restaurantNameLoading">Restaurant: <div class="tag">{{ props.petition.target }}</div></p>
         <p>Topic: <div class="tag">{{ props.petition.topic }}</div></p>
     </div>
     <div class="information">
