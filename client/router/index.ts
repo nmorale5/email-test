@@ -32,6 +32,7 @@ const router = createRouter({
       path: "/petition",
       name: "Petition",
       component: PetitionView,
+      meta: { requiresAuth: true },
     },
     {
       path: "/setting",
