@@ -56,8 +56,11 @@ export default class BusinessConcept {
       throw new UnauthenticatedError("validation token is incorrect");
     }
     const userArray = business.users;
-    userArray.push(userId);
-    return this.businesses.updateOne({ _id: business._id }, { users: userArray });
+    if (!userArray.includes(userId)) {
+      userArray.push(userId);
+      return this.businesses.updateOne({ _id: business._id }, { users: userArray });
+    }
+    throw new Error("You've already been added to this restaurant!");
   }
 
   public async removeUser(userId: ObjectId, token: string) {
