@@ -25,8 +25,8 @@ const emptyForm = () => {
 <template>
   <form @submit.prevent="createRestaurant(name, email)">
     <label for="name">Restaurant name:</label>
-    <input id="name" v-model="name" placeholder="Restaurant Name" required/>
-    <input id="email" v-model="email" placeholder="Owner Email" required/>
+    <input id="name" v-model="name" placeholder="Restaurant Name" required />
+    <input id="email" v-model="email" placeholder="Owner Email" required />
     <button type="submit" class="pure-button-primary pure-button">Create Restaurant</button>
     <p>Warning: An email will be sent to the address provided.</p>
   </form>

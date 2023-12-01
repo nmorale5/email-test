@@ -20,7 +20,7 @@ async function getPosts(search?: string) {
 
   let postResults;
   try {
-    if (search !== undefined) {
+    if (search !== undefined && search !== "") {
       postResults = await fetchy(`/api/petitions/filter/${search}`, "GET");
     } else {
       postResults = await fetchy("/api/petitions/all", "GET");
