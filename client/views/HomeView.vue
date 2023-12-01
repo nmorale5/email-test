@@ -28,8 +28,8 @@ const sendThresholdEmail = async () => {
   <main>
     <h1>Home Page</h1>
     <section>
-      <button @click="sendRegisterEmail">Send Register Email</button>
-      <button @click="sendThresholdEmail">Send Threshold Email</button>
+      <!-- <button @click="sendRegisterEmail">Send Register Email</button> -->
+      <!-- <button @click="sendThresholdEmail">Send Threshold Email</button> -->
       <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
       <h1 v-else>Please login!</h1>
     </section>
