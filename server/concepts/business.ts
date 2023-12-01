@@ -41,8 +41,8 @@ export default class BusinessConcept {
     }
     // TODO: make sure email follows regex pattern: *@*.*
     const token = generateToken();
-    await this.businesses.createOne({ name, email, token, users: [] });
-    return token;
+    const newBusiness = await this.businesses.createOne({ name, email, token, users: [] });
+    return { token: token, id: newBusiness };
   }
 
   public async deleteBusiness() {

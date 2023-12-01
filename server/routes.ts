@@ -196,12 +196,13 @@ class Routes {
 
   @Router.post("/business")
   async addBusiness(name: string, email: string) {
-    const verificationToken = await Business.addBusiness(name, email);
-    return await Emailer.sendRegisterEmail({
+    const businessValues = await Business.addBusiness(name, email);
+    await Emailer.sendRegisterEmail({
       toAddress: email,
       businessName: name,
-      token: verificationToken,
+      token: businessValues.token,
     });
+    return businessValues.id;
   }
 
   @Router.put("/business/users")

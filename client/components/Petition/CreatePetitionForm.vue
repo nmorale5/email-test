@@ -10,6 +10,7 @@ const problem = ref("");
 const solution = ref("");
 const topic = ref("");
 const restaurantSearch = ref("");
+const selectedRestaurant: any = ref({})
 const email = ref("");
 const displaySearch = ref(false);
 const allRestaurants: any = ref([]);
@@ -21,11 +22,13 @@ const { restrictions } = storeToRefs(useRestrictionStore());
 const createPetition = async () => {
   if (isNewRestaurant.value) {
     // todo: make sure email is plausible (i.e., has @ and .)
-    await createRestaurant(restaurantSearch.value, email.value);
+    const businessID = await createRestaurant(restaurantSearch.value, email.value);
+    selectedRestaurant.value = await fetchy(`/api/business/id/${businessID}`, "GET");
   }
+  if(selectedRestaurant.value.name !== restaurantSearch.value) throw new Error("A restaurant has not been selected")
   try {
     await fetchy("/api/petition", "POST", {
-      body: { title: title.value, problem: problem.value, solution: solution.value, topic: topic.value, restaurant: restaurantSearch.value },
+      body: { title: title.value, problem: problem.value, solution: solution.value, topic: topic.value, restaurant: selectedRestaurant.value._id },
     });
   } catch (_) {
     return;
@@ -36,7 +39,7 @@ const createPetition = async () => {
 
 const createRestaurant = async (name: string, email: string) => {
   try {
-    await fetchy("/api/business", "POST", {
+    return await fetchy("/api/business", "POST", {
       body: { name, email },
     });
   } catch (_) {
@@ -46,6 +49,7 @@ const createRestaurant = async (name: string, email: string) => {
 
 const selectRestaurant = (selection: any) => {
   displaySearch.value = false;
+  selectedRestaurant.value = selection;
   restaurantSearch.value = selection.name;
 };
 
