@@ -17,7 +17,7 @@ async function getPetitions(search?: string) {
 
   let petitionResults;
   try {
-    if (search !== undefined) {
+    if (search !== undefined && search !== "") {
         console.log("search")
       petitionResults = await fetchy(`/api/petitions/filter/${search}`, "GET");
     } else {
