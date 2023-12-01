@@ -291,7 +291,7 @@ class Routes {
   async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, topic: string, restaurant: ObjectId) {
     const user = await User.getUserById(WebSession.getUser(session));
     const threshold = 200;
-    return await Petition.createPetition(title, problem, solution, topic, new ObjectId(restaurant), user.username, threshold);
+    return await Petition.createPetition(title, problem, solution, topic, restaurant, user.username, threshold);
   }
 
   @Router.get("/petitions/all")
