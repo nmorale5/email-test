@@ -18,6 +18,7 @@ const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions"
     :key="petition._id"
     :petition="{ _id: petition._id, creator: petition.creator, title: petition.title, 
       problem: petition.problem, solution: petition.solution, upvoteThreshold: petition.upvoteThreshold,
+      topic: petition.topic, target: restaurant.name,
       dateUpdated: petition.dateUpdated, dateCreated: petition.dateCreated }"
   />
 </template>
