@@ -9,7 +9,6 @@ const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions"
     <h2>{{ restaurant.name }}</h2>
     <BadgeList :badges="badges" />
   </header>
-  <!-- TODO: replace PostComponent with PetitionComponent once made -->
   <h3>Petitions:</h3>
   <p v-if="petitions.length === 0"><em>None</em></p>
   <PetitionComponent
@@ -18,7 +17,7 @@ const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions"
     :key="petition._id"
     :petition="{ _id: petition._id, creator: petition.creator, title: petition.title, 
       problem: petition.problem, solution: petition.solution, upvoteThreshold: petition.upvoteThreshold,
-      topic: petition.topic, target: restaurant.name,
+      topic: petition.topic, target: restaurant._id,
       dateUpdated: petition.dateUpdated, dateCreated: petition.dateCreated }"
   />
 </template>
