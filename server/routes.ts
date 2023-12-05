@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Badge, Business, Emailer, Friend, Petition, Post, Upvote, User, WebSession } from "./app";
+import { Badge, Business, Emailer, Friend, Petition, Post, Reputation, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -346,6 +346,21 @@ class Routes {
     const allB = await Business.getAllBusinesses();
     const business = allB.at(Math.floor(Math.random() * allB.length));
     return await Badge.add(business!._id, "nuts");
+  }
+
+  @Router.post("/reputation/increase/:business")
+  async increaseReputation(business: ObjectId) {
+    return await Reputation.addReputation(business, 1);
+  }
+
+  @Router.post("/reputation/decrease/:business")
+  async decreaseReputation(business: ObjectId) {
+    return await Reputation.addReputation(business, -1);
+  }
+
+  @Router.get("/reputation/:business")
+  async getReputation(business: ObjectId) {
+    return await Reputation.getEntityRepuation(business);
   }
 }
 
