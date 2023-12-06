@@ -6,6 +6,7 @@ import { NotFoundError } from "./errors";
 export interface SolutionStateDoc extends BaseDoc {
   response: ObjectId;
   trending: boolean;
+  success: boolean;
 }
 
 export interface FeedbackDoc extends BaseDoc {
@@ -29,8 +30,14 @@ export default class FeedbackConcept {
   }
 
   async enterTrendingFeedbackState(response: ObjectId) {
-    const _id = await this.states.createOne({response, trending: true})
+    const _id = await this.states.createOne({response, trending: true, success: false})
     return { msg: "Successfully entered trending solution state!"}
+  }
+
+  async updateFeedbackSuccessState(response: ObjectId, success: boolean) {
+    await this.getFeedbackState(response)
+    await this.states.updateOne({response}, {success})
+    return { msg: "Feedback success state succesfully updated!"}
   }
 
   async exitTrendingFeedbackState(response: ObjectId) {
@@ -50,7 +57,8 @@ export default class FeedbackConcept {
     return { msg: "Feedback successfully created!" }
   }
 
-  async getUserFeedbackOnResponse(user: ObjectId, response: ObjectId) {
+  async getOneUserFeedback(user: ObjectId, response: ObjectId) {
+    await this.getFeedbackState(response)
     const doc = await this.feedback.readOne({ user, response })
 
     if (doc === null) {
@@ -69,14 +77,14 @@ export default class FeedbackConcept {
     await this.feedback.deleteOne({ user, response })
   }
 
-  async getResponseFeedback(response: ObjectId) {
+  async getAllFeedback(response: ObjectId) {
     await this.getFeedbackState(response)
     const responses = this.feedback.readMany({ response })
     return responses
   }
 
   async getYesRatio(response: ObjectId) {
-    const responses = await this.getResponseFeedback(response);
+    const responses = await this.getAllFeedback(response);
 
     if (responses.length === 0) {
       return 0
