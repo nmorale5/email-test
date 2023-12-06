@@ -2,15 +2,16 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Badge, Business, Emailer, Friend, Petition, Post, Upvote, User, WebSession } from "./app";
+import { Badge, Business, Emailer, Friend, Petition, Post, Response, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import { containsObjectId } from "./framework/utils";
-import Responses from "./responses";
 
 import { PetitionDoc } from "./concepts/petition";
+import { RESPONSE_TYPE, ResponseDoc } from "./concepts/response";
+import Responses from "./responses";
 
 class Routes {
   @Router.get("/session")
@@ -324,6 +325,40 @@ class Routes {
   async filterPetitionsBySearch(search: string) {
     const inputWords = search.split(" ");
     return await Petition.filterPetitions(inputWords);
+  }
+
+  @Router.post("/response")
+  async createResponse(concern: ObjectId, response: string, type: RESPONSE_TYPE, explanation?: string) {
+    if (explanation) return await Response.createResponse(concern, response, type, explanation);
+    return await Response.createResponse(concern, response, type);
+  }
+
+  @Router.get("/response/:id")
+  async getResponse(id: ObjectId) {
+    return await Response.getResponse(id);
+  }
+
+  @Router.get("/response/concern/:concern")
+  async getResponseByConcern(concern: ObjectId) {
+    return await Response.getResponseByConcern(concern);
+  }
+
+  @Router.delete("/response/:id")
+  async deleteResponse(id: ObjectId) {
+    return await Response.deleteResponse(id);
+  }
+
+  // sync to get all responses associated with a business
+  @Router.get("/response/business/:business")
+  async getResponseByBusiness(business: ObjectId) {
+    const businessPetitions = await Petition.getAllPetitions(business);
+    const respondedPetitions = businessPetitions.filter(async (petition) => {
+      return await Response.hasResponse(petition._id);
+    });
+    const responses: Array<Promise<ResponseDoc>> = respondedPetitions.map((petition) => {
+      return Response.getResponseByConcern(petition._id);
+    });
+    return await Promise.all(responses);
   }
 
   @Router.get("/badges/:owner")
