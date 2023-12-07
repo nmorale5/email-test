@@ -6,6 +6,7 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import PetitionView from "../views/PetitionView.vue";
+import ResponseFeedbackView from "../views/ResponseFeedbackView.vue";
 import RestaurantHomeView from "../views/RestaurantHomeView.vue";
 import RestaurantView from "../views/RestaurantView.vue";
 import SettingView from "../views/SettingView.vue";
@@ -38,6 +39,12 @@ const router = createRouter({
       path: "/setting",
       name: "Settings",
       component: SettingView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/feedback/:petitionid",
+      name: "Feedback",
+      component: ResponseFeedbackView,
       meta: { requiresAuth: true },
     },
     {
