@@ -24,6 +24,11 @@ class Routes {
     return await User.getUsers();
   }
 
+  @Router.get("/users/id/:id")
+  async getUserById(id: ObjectId) {
+    return await User.getUserById(id);
+  }
+
   @Router.get("/users/:username")
   async getUser(username: string) {
     console.log("In here");
