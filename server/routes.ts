@@ -225,7 +225,7 @@ class Routes {
     const approved: PetitionDoc[] = [];
     const allPetitions = await Petition.getAllPetitions(businessId);
     for (const petition of allPetitions) {
-      const numSigners = (await Upvote.getUpvotes(petition._id.toString())).length;
+      const numSigners = (await Upvote.getUpvotes(petition._id)).length;
       if (numSigners >= petition.upvoteThreshold) {
         approved.push(petition);
       }
@@ -274,7 +274,7 @@ class Routes {
     if (!WebSession.getUser(session).equals(userId)) {
       throw new UnauthenticatedError("userId is different from session user id");
     }
-    await Upvote.addUpvote(postId, userId);
+    await Upvote.addUpvote(new ObjectId(postId), userId);
   }
 
   @Router.delete("/upvote/:postId/:userId")
@@ -282,17 +282,17 @@ class Routes {
     if (!WebSession.getUser(session).equals(userId)) {
       throw new UnauthenticatedError("userId is different from session user id");
     }
-    await Upvote.removeUpvote(postId, userId);
+    await Upvote.removeUpvote(new ObjectId(postId), userId);
   }
 
   @Router.get("/upvote/:postId/:userId")
   async isUpvoting(postId: ObjectId, userId: ObjectId) {
-    return await Upvote.isUpvoting(postId, userId);
+    return await Upvote.isUpvoting(new ObjectId(postId), userId);
   }
 
   @Router.get("/upvote/:postId")
   async getUpvotes(postId: ObjectId) {
-    return await Upvote.getUpvotes(postId);
+    return await Upvote.getUpvotes(new ObjectId(postId));
   }
 
   @Router.post("/petition")
