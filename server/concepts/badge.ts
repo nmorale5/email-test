@@ -38,12 +38,7 @@ export default class BadgeConcept {
   }
 
   public async getBadges(owner: ObjectId) {
-    console.log(typeof owner);
-    console.log(owner);
     const badgesByThisOwner = await this.badges.readOne({ owner });
-    const firstThing = await this.badges.readOne({});
-    console.log("yo", badgesByThisOwner);
-    console.log(firstThing);
     return badgesByThisOwner?.badges ?? [];
   }
 

@@ -27,7 +27,6 @@ class Routes {
 
   @Router.get("/users/:username")
   async getUser(username: string) {
-    console.log("In here");
     return await User.getUserByUsername(username);
   }
 
@@ -223,21 +222,14 @@ class Routes {
 
   @Router.get("/business/:businessId/petitions/approved")
   async getApprovedBusinessPetitions(businessId: ObjectId) {
-    console.log("hello");
     const approved: PetitionDoc[] = [];
     const allPetitions = await Petition.getAllPetitions(businessId);
-    console.log(allPetitions);
-
     for (const petition of allPetitions) {
-      const numSigners = (await Upvote.getUpvotes(petition._id)).length;
-      console.log("signers:", numSigners, "UVThreshold:", petition.upvoteThreshold);
-      if (true) {
-        // numSigners >= petition.upvoteThreshold
-        console.log("boop");
+      const numSigners = (await Upvote.getUpvotes(petition._id.toString())).length;
+      if (numSigners >= petition.upvoteThreshold) {
         approved.push(petition);
       }
     }
-    console.log("approved", approved);
     return approved;
   }
 
@@ -306,7 +298,7 @@ class Routes {
   @Router.post("/petition")
   async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, topic: string, restaurant: ObjectId) {
     const user = await User.getUserById(WebSession.getUser(session));
-    const threshold = 1;
+    const threshold = 3;
     return await Petition.createPetition(title, problem, solution, topic, restaurant, user.username, threshold);
   }
 
