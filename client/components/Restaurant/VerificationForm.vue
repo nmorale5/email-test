@@ -1,0 +1,27 @@
+<script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { defineEmits, ref } from "vue";
+import router from "../../router";
+import { useUserStore } from "../../stores/user";
+import { fetchy } from "../../utils/fetchy";
+
+const emit = defineEmits(["verified"]);
+const token = ref("");
+const { currentUserId } = storeToRefs(useUserStore());
+
+const addUserToRestaurant = async () => {
+  try {
+    const businessId = await fetchy("/api/business/users", "PUT", { body: { userId: currentUserId.value, token: token.value } });
+    emit("verified");
+    await router.push({ name: "Restaurant", params: { id: businessId } });
+  } catch {
+    return;
+  }
+};
+</script>
+
+<template>
+  <h2>Add Yourself To Restaurant</h2>
+  <input id="token" v-model="token" placeholder="Token from inbox" required />
+  <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Join Restaurant</button>
+</template>
