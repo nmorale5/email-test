@@ -28,7 +28,7 @@ onBeforeMount(getRestaurantBadges);
 </script>
 
 <template>
-  <button v-on:click="navigateToRestaurant">
+  <button v-on:click="navigateToRestaurant" class="restaurant-button">
     <strong>{{ props.restaurant.name }}</strong>
     <BadgeList :badges="badges" />
   </button>
@@ -37,5 +37,13 @@ onBeforeMount(getRestaurantBadges);
 <style scoped>
 p {
   margin: 0em;
+}
+
+.restaurant-button {
+  background-color: var(--white);
+  color: var(--black);
+  border-radius: 5px;
+  border-color: var(--black);
+  border-width: 2px;
 }
 </style>

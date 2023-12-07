@@ -80,7 +80,7 @@ onBeforeMount(async () => {
   <h1 v-if="!loaded">Loading...</h1>
   <SearchRestaurantForm @getRestaurantsByName="getRestaurants" />
   <p>Number of restaurants found: {{ filteredRestaurants.length }}</p>
-  <div flex-wrap="wrap" flex-direction="row">
+  <div class="button-list">
     <div v-for="restaurant in filteredRestaurants" :key="restaurant._id.toString()">
       <SelectableRestaurant :restaurant="restaurant" />
     </div>
@@ -88,7 +88,7 @@ onBeforeMount(async () => {
   <div v-if="isLoggedIn">
     <h2>My Restaurants:</h2>
     <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()">
-      <SelectableRestaurant :restaurant="restaurant" />
+      <SelectableRestaurant :restaurant="restaurant"/>
     </div>
     <p v-if="myRestaurants.length === 0">You manage no restaurants.</p>
     <p v-else>Number of restaurants you own: {{ myRestaurants.length }}</p>
