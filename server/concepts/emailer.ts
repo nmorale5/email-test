@@ -44,7 +44,7 @@ export default class EmailerTool {
   public async sendRegisterEmail(template: RegisterEmailTemplate) {
     const html = `<p>Hello ${template.businessName},</p>
       
-    <p>You have been added as a restaurant on Restaurant Reform. This means someone has started a petition about you. To view the petition and all its signers, please <a href="https://restaurant-reform.vercel.app/">register</a> a user account and link it to your business using the following verification token:</p>
+    <p>You have been added as a restaurant on Restaurant Reform. This means someone has started a petition about you. To view the petition and all its signers, please <a href="https://restaurant-reform.vercel.app/login">register</a> a user account and link it to your business using the following verification token:</p>
     
     <p>${template.token}</p>
     
@@ -71,7 +71,7 @@ export default class EmailerTool {
 
     <p><strong>Proposed Solution</strong>: ${template.petition.solution}<p>
     
-    <p>If you haven't already, please <a href="https://restaurant-reform.vercel.app/">register</a> a user account and link it to your business using the following verification token:
+    <p>If you haven't already, please <a href="https://restaurant-reform.vercel.app/login">register</a> a user account and link it to your business using the following verification token:
     
     <p>${template.token}</p> 
     
