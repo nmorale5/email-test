@@ -2,7 +2,7 @@
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, onUpdated, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["petition"]);
@@ -58,13 +58,17 @@ const convertIDtoNames = async () => {
     let restaurant;
     try {
         restaurant = await fetchy(`/api/business/id/${props.petition.target}`, "GET");
-
     } catch (e) {
         return;
     }
-    props.petition.target = restaurant.name;
+    //props.petition.target = restaurant.name;
+    props.petition.restaurant_name = restaurant.name
     restaurantNameLoading.value = false;
 }
+
+onUpdated(async () => {
+  await convertIDtoNames();
+})
 
 onBeforeMount(async ()=> {
     updateSigned();
@@ -79,7 +83,7 @@ onBeforeMount(async ()=> {
     </div>
     <div class="selectables">
         <p v-if="restaurantNameLoading">Loading...</p>
-        <p v-else="restaurantNameLoading">Restaurant: <div class="tag">{{ props.petition.target }}</div></p>
+        <p v-else="restaurantNameLoading">Restaurant: <div class="tag">{{ props.petition.restaurant_name }}</div></p>
         <p>Topic: <div class="tag">{{ props.petition.topic }}</div></p>
     </div>
     <div class="information">

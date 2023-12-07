@@ -13,19 +13,13 @@ let petitions = ref<Array<Record<string, string>>>([]);
 let searchTitle = ref("");
 
 async function getPetitions(search?: string) {
-  //let query: Record<string, string> = author !== undefined ? { author } : {};
-
   let petitionResults;
   try {
     if (search !== undefined && search !== "") {
-        console.log("search")
       petitionResults = await fetchy(`/api/petitions/filter/${search}`, "GET");
     } else {
-        console.log("no search")
       petitionResults = await fetchy("/api/petitions/all", "GET");
     }
-      
-      
   } catch (_) {
     return;
   }
@@ -47,7 +41,7 @@ onBeforeMount(async () => {
   </div>
   <section class="petitions" v-if="loaded && petitions.length !== 0">
     <article v-for="petition in petitions" :key="petition._id">
-      <PetitionComponent :petition="petition" @refreshPetitions="getPetitions" />
+      <PetitionComponent :petition="petition" @refreshPetitions="getPetitions()" />
     </article>
   </section>
   <p v-else-if="loaded">No petitions found</p>
