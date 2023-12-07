@@ -37,7 +37,7 @@ export default class UpvoteConcept {
   }
 
   public async getUpvotes(postId: ObjectId) {
-    const upvotesOnThisPost = await this.upvotes.readOne({ postId: new ObjectId(postId) });
+    const upvotesOnThisPost = await this.upvotes.readOne({ postId });
     console.log("upvotes", upvotesOnThisPost);
     return upvotesOnThisPost ? upvotesOnThisPost.userIds : new Array<ObjectId>();
   }
