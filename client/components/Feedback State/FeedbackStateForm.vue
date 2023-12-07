@@ -31,7 +31,7 @@ const getEffectiveness = async () => {
     } catch (_) {
         return;
     }
-    effectiveness.value = (feedbackList.length > 0)? feedbackList.map((feedback: any) => feedback.rating).reduce((prevRating: any, currRating: any)=> prevRating+currRating, 0)/feedbackList.length : 0;
+    effectiveness.value = (feedbackList.length > 0)? feedbackList.map((feedback: any) => feedback.rating).reduce((prevRating: any, currRating: any)=> prevRating+currRating, 0)/feedbackList.length : -1;
 }
 
 const getPersonalFeedback = async () => {
@@ -75,7 +75,7 @@ onBeforeMount(async () => {
     <form @submit.prevent="createFeedback">
         <div class="feedback-info">
             <div>
-                <i>Effectiveness: {{ (effectiveness)? (effectiveness.toFixed(1)) : "-" }}</i>
+                <i>Effectiveness: {{ (effectiveness >= 0)? effectiveness.toFixed(1): "-" }}</i>
             </div>
             <div class="rating">
                 <div>Your Rating: </div>
