@@ -69,9 +69,6 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <div>
-        <p>Response: {{ props.response.explanation}}</p>
-    </div>
     <form @submit.prevent="createFeedback">
         <div class="feedback-info">
             <div>
