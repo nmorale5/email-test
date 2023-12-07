@@ -1,6 +1,7 @@
 import BadgeConcept from "./concepts/badge";
 import BusinessConcept from "./concepts/business";
 import EmailerTool from "./concepts/emailer";
+import FeedbackConcept from "./concepts/feedback";
 import FriendConcept from "./concepts/friend";
 import PetitionConcept from "./concepts/petition";
 import PostConcept from "./concepts/post";
@@ -20,3 +21,7 @@ export const Petition = new PetitionConcept();
 export const Upvote = new UpvoteConcept();
 export const Badge = new BadgeConcept();
 export const Reputation = new ReputationConcept();
+export const Feedback = new FeedbackConcept();
+
+// Constants
+export const MINIMUM_RATIO = .6
