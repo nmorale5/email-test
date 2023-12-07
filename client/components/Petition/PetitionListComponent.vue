@@ -18,14 +18,10 @@ async function getPetitions(search?: string) {
   let petitionResults;
   try {
     if (search !== undefined && search !== "") {
-        console.log("search")
       petitionResults = await fetchy(`/api/petitions/filter/${search}`, "GET");
     } else {
-        console.log("no search")
       petitionResults = await fetchy("/api/petitions/all", "GET");
     }
-      
-      
   } catch (_) {
     return;
   }

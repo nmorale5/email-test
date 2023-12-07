@@ -19,7 +19,6 @@ export default class BusinessConcept {
     if (business === null) {
       console.log(businessId);
       throw new BadValuesError("businessId is invalid");
-      
     }
     return business;
   }
