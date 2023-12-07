@@ -350,12 +350,12 @@ class Routes {
 
   @Router.post("/reputation/increase/:business")
   async increaseReputation(business: ObjectId) {
-    return await Reputation.addReputation(business, 1);
+    return await Reputation.updateReputation(business, 1);
   }
 
   @Router.post("/reputation/decrease/:business")
   async decreaseReputation(business: ObjectId) {
-    return await Reputation.addReputation(business, -1);
+    return await Reputation.updateReputation(business, -1);
   }
 
   @Router.get("/reputation/:business")
