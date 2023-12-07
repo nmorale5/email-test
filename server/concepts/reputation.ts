@@ -14,7 +14,7 @@ export default class ReputationConcept {
     return { msg: "Reputation successfully added!", post: await this.reputations.readOne({ _id }) };
   }
 
-  public async getEntityRepuation(entity: ObjectId) {
+  public async getEntityReputation(entity: ObjectId) {
     const entityReputations = await this.reputations.readMany({ entity });
     return entityReputations.map((reputation) => reputation.value).reduce((sumVal, newVal) => sumVal + newVal, 0);
   }
