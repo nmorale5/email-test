@@ -19,7 +19,7 @@ export default class ReputationConcept {
     return { msg: "Reputation successfully added!", post: await this.reputations.readOne({ _id }) };
   }
 
-  public async getEntityRepuation(entity: ObjectId) {
+  public async getEntityReputation(entity: ObjectId) {
     return (await this.reputations.readOne({ entity }))?.value ?? 0;
   }
 }
