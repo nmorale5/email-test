@@ -76,22 +76,23 @@ onBeforeMount(async () => {
 });
 </script>
 <template>
-  <VerificationForm @verified="getMyRestaurants" />
   <h1 v-if="!loaded">Loading...</h1>
-  <SearchRestaurantForm @getRestaurantsByName="getRestaurants" />
-  <p>Number of restaurants found: {{ filteredRestaurants.length }}</p>
+  <div class="stack-sideways">
+    <VerificationForm @verified="getMyRestaurants" />
+    <SearchRestaurantForm @getRestaurantsByName="getRestaurants" />
+  </div>
+  <p class="align-center">Number of restaurants found: {{ filteredRestaurants.length }}</p>
   <div class="button-list">
-    <div v-for="restaurant in filteredRestaurants" :key="restaurant._id.toString()">
+    <div v-for="restaurant in filteredRestaurants" :key="restaurant._id.toString()" class="light-padding">
       <SelectableRestaurant :restaurant="restaurant" />
     </div>
   </div>
-  <div v-if="isLoggedIn">
-    <h2>My Restaurants:</h2>
+  <h2>My Restaurants:</h2>
+  <div v-if="isLoggedIn" class="button-list">
     <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()">
       <SelectableRestaurant :restaurant="restaurant"/>
     </div>
     <p v-if="myRestaurants.length === 0">You manage no restaurants.</p>
-    <p v-else>Number of restaurants you own: {{ myRestaurants.length }}</p>
     <!-- <article>
       <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
       <button @click="addRandomBadge">Add Random Badge (debug) (refresh page after)</button>
@@ -130,11 +131,31 @@ menu {
 
 .base {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
 }
 
 .base article:only-child {
   margin-left: auto;
+}
+
+h2 {
+  text-align: center;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.stack-sideways {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.light-padding {
+  padding: 3px;
 }
 </style>
