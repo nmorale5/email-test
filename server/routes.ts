@@ -298,7 +298,7 @@ class Routes {
   @Router.post("/petition")
   async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, topic: string, restaurant: ObjectId) {
     const user = await User.getUserById(WebSession.getUser(session));
-    const threshold = 1;
+    const threshold = 3;
     return await Petition.createPetition(title, problem, solution, topic, restaurant, user.username, threshold);
   }
 
