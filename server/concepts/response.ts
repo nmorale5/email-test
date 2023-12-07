@@ -4,14 +4,12 @@ import DocCollection, { BaseDoc } from "../framework/doc";
 
 export enum RESPONSE_TYPE {
   REJECTED,
-  PROPOSED,
-  SOLVED,
+  ACCEPTED,
 }
 
 export interface ResponseDoc extends BaseDoc {
   concern: ObjectId;
   response: string;
-  explanation: string | null;
   date: number;
   type: RESPONSE_TYPE;
 }
@@ -19,9 +17,9 @@ export interface ResponseDoc extends BaseDoc {
 export default class ResponseConcept {
   public readonly responses = new DocCollection<ResponseDoc>("responses");
 
-  public async createResponse(concern: ObjectId, response: string, type: RESPONSE_TYPE, explanation?: string) {
+  public async createResponse(concern: ObjectId, response: string, type: RESPONSE_TYPE) {
     const date = Date.now();
-    const _id = await this.responses.createOne({ concern, response, explanation, date, type });
+    const _id = await this.responses.createOne({ concern, response, date, type });
     return { msg: "Response successfully created!", post: await this.responses.readOne({ _id }) };
   }
 

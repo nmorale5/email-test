@@ -328,8 +328,7 @@ class Routes {
   }
 
   @Router.post("/response")
-  async createResponse(concern: ObjectId, response: string, type: RESPONSE_TYPE, explanation?: string) {
-    if (explanation) return await Response.createResponse(concern, response, type, explanation);
+  async createResponse(concern: ObjectId, response: string, type: RESPONSE_TYPE) {
     return await Response.createResponse(concern, response, type);
   }
 
