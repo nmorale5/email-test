@@ -7,7 +7,7 @@ export const useRestrictionStore = defineStore(
     const restrictions = ref([
       "Vegetarian",
       "Vegan",
-      "Pescetarian",
+      "Pescatarian",
       "Gluten-Free",
       "Lactose-Free",
       "Nut-Free",

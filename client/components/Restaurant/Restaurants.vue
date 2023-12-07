@@ -2,11 +2,17 @@
 import { useUserStore } from "@/stores/user";
 import { ObjectId } from "mongodb";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 import SearchRestaurantForm from "./SearchRestaurantForm.vue";
 import SelectableRestaurant from "./SelectableRestaurant.vue";
 import VerificationForm from "./VerificationForm.vue";
+
+const restaurantSearch = ref("");
+const allRestaurants: any = ref([]);
+const allRestaurantsSorted = computed(() => allRestaurants.value.slice().sort((a: any, b: any) => a.name.localeCompare(b.name, "en", { numeric: true })));
+const filteredRestaurants = computed(() => allRestaurantsSorted.value.filter((restaurant: any) => restaurant.name.toLowerCase().includes(restaurantSearch.value.toLowerCase())));
+const isNewRestaurant = computed(() => filteredRestaurants.value.length === 0);
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 const loaded = ref(false);
@@ -22,7 +28,6 @@ export interface RestaurantData {
   users: Array<ObjectId>;
 }
 const myRestaurants = ref(new Array<RestaurantData>());
-const searchRestaurants = ref(new Array<RestaurantData>());
 const token = ref("");
 
 const getMyRestaurants = async () => {
@@ -37,7 +42,8 @@ const getMyRestaurants = async () => {
 
 const getRestaurants = async (filter?: string) => {
   try {
-    searchRestaurants.value = await fetchy(`/api/business/${filter}`, "GET");
+    restaurantSearch.value = filter??"";
+    allRestaurants.value = await fetchy(`/api/business/`, "GET");
     return;
   } catch {
     return;
@@ -62,7 +68,7 @@ const addRandomBadge = async () => {
 };
 
 onBeforeMount(async () => {
-  await getRestaurants("");
+  await getRestaurants();
   if (isLoggedIn.value) {
     await getMyRestaurants();
   }
@@ -73,16 +79,16 @@ onBeforeMount(async () => {
   <VerificationForm @verified="getMyRestaurants" />
   <h1 v-if="!loaded">Loading...</h1>
   <SearchRestaurantForm @getRestaurantsByName="getRestaurants" />
-  <p>Number of restaurants found: {{ searchRestaurants.length }}</p>
-  <div flex-wrap="wrap" flex-direction="row">
-    <div v-for="restaurant in searchRestaurants" :key="restaurant._id.toString()">
+  <p>Number of restaurants found: {{ filteredRestaurants.length }}</p>
+  <div class="button-list">
+    <div v-for="restaurant in filteredRestaurants" :key="restaurant._id.toString()">
       <SelectableRestaurant :restaurant="restaurant" />
     </div>
   </div>
   <div v-if="isLoggedIn">
     <h2>My Restaurants:</h2>
     <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()">
-      <SelectableRestaurant :restaurant="restaurant" />
+      <SelectableRestaurant :restaurant="restaurant"/>
     </div>
     <p v-if="myRestaurants.length === 0">You manage no restaurants.</p>
     <p v-else>Number of restaurants you own: {{ myRestaurants.length }}</p>

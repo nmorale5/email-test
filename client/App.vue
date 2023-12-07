@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
+import "./assets/main.css";
 
 const currentRoute = useRoute();
 const currentRouteName = computed(() => currentRoute.name);
@@ -52,15 +53,20 @@ onBeforeMount(async () => {
       <p>{{ toast.message }}</p>
     </article>
   </header>
-  <RouterView />
+  <RouterView/>
 </template>
+
+<style>
+@import "./assets/main.css";
+</style>
 
 <style scoped>
 @import "./assets/toast.css";
 
+
 nav {
   padding: 1em 2em;
-  background-color: lightgray;
+  background-color: var(--green);
   display: flex;
   align-items: center;
 }

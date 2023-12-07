@@ -56,8 +56,10 @@ onBeforeMount(async () => {
   </div>
   <section class="posts" v-if="loaded && posts.length !== 0">
     <article v-for="post in posts" :key="post._id">
-      <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
-      <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+      <div class="post">
+        <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+        <EditPostForm v-else :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />
+      </div>
     </article>
   </section>
   <p v-else-if="loaded">No petitions found</p>
@@ -89,7 +91,15 @@ article {
 
 .posts {
   padding: 1em;
+  border-width: 2px;
+  border-color: var(--black);
 }
+
+.post {
+  border-width: 2px;
+  border-color: black;
+}
+
 
 .row {
   display: flex;

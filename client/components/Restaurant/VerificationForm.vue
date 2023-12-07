@@ -7,7 +7,7 @@ import { fetchy } from "../../utils/fetchy";
 
 const emit = defineEmits(["verified"]);
 const token = ref("");
-const { currentUserId } = storeToRefs(useUserStore());
+const { currentUserId , isLoggedIn } = storeToRefs(useUserStore());
 
 const addUserToRestaurant = async () => {
   try {
@@ -21,7 +21,9 @@ const addUserToRestaurant = async () => {
 </script>
 
 <template>
-  <h2>Add Yourself To Restaurant</h2>
-  <input id="token" v-model="token" placeholder="Token from inbox" required />
-  <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Join Restaurant</button>
+  <div v-if="isLoggedIn">
+    <h2>Add Yourself To Restaurant</h2>
+    <input id="token" v-model="token" placeholder="Token from inbox" required />
+    <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Join Restaurant</button>
+  </div>
 </template>
