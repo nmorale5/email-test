@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Badge, Business, Emailer, Friend, Petition, Post, Upvote, User, WebSession } from "./app";
+import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -347,6 +347,57 @@ class Routes {
     const business = allB.at(Math.floor(Math.random() * allB.length));
     return await Badge.add(business!._id, "nuts");
   }
+
+  @Router.get("/feedback/state/:response")
+  async getFeedBackState(response: ObjectId) {
+    return await Feedback.getFeedbackState(response)
+  }
+
+  @Router.get("/feedback/ratio/:response")
+  async getYesRatio(response: ObjectId) {
+    return await Feedback.getYesRatio(response);
+  }
+
+  @Router.get("/feedback/evaluate/:response")
+  async evaluateResponse(response: ObjectId) {
+    const state = await Feedback.getFeedbackState(response);
+    const ratio = await Feedback.getYesRatio(response);
+
+    if (ratio >= MINIMUM_RATIO) {
+      // TODO: Remove attempt badge?
+      // TODO: Add badge, increase karma 
+      await Feedback.updateFeedbackState(response, true, false)
+    } else {
+      // TODO: Decrease karma
+      await Feedback.updateFeedbackState(response, false, false)
+    }
+    
+    return { msg: "Response successfully evaluated!" }
+  }
+
+  @Router.get("/feedback/userFeedback/:user")
+  async getUserFeedback(user: ObjectId, response: ObjectId) {
+    return await Feedback.getOneUserFeedback(user, response);
+  }
+
+  @Router.get("/feedback/all/userFeedback/")
+  async getAllUserFeedback(response: ObjectId) {
+    return await Feedback.getAllFeedback(response)
+  }
+
+  @Router.post("/feedback/responses/:response") 
+  async createFeedback(session: WebSessionDoc, response: ObjectId, feedback: string, rating: number, decision: boolean) {
+    const user = WebSession.getUser(session)
+    return await Feedback.createFeedback(user, response, feedback, rating, decision)
+  }
+
+  @Router.delete("/feedback/responses/:response") 
+  async deleteFeedback(session: WebSessionDoc, response: ObjectId) {
+    const user = WebSession.getUser(session)
+    return await Feedback.deleteUserFeedback(user, response)
+  }
+
+  
 }
 
 export default getExpressRouter(new Routes());
