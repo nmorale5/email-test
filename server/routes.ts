@@ -360,7 +360,7 @@ class Routes {
 
   @Router.get("/reputation/:business")
   async getReputation(business: ObjectId) {
-    return await Reputation.getEntityRepuation(business);
+    return await Reputation.getEntityReputation(business);
   }
 }
 
