@@ -365,9 +365,11 @@ class Routes {
 
     if (ratio >= MINIMUM_RATIO) {
       // TODO: Remove attempt badge?
-      // TODO: Add badge, change karma 
-      await Feedback.updateFeedbackSuccessState(response, true)
-      await Feedback.exitTrendingFeedbackState(response)
+      // TODO: Add badge, increase karma 
+      await Feedback.updateFeedbackState(response, true, false)
+    } else {
+      // TODO: Decrease karma
+      await Feedback.updateFeedbackState(response, false, false)
     }
     
     return { msg: "Response successfully evaluated!" }
@@ -378,7 +380,7 @@ class Routes {
     return await Feedback.getOneUserFeedback(user, response);
   }
 
-  @Router.get("/feedback/userFeedback/all")
+  @Router.get("/feedback/all/userFeedback/")
   async getAllUserFeedback(response: ObjectId) {
     return await Feedback.getAllFeedback(response)
   }

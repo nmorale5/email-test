@@ -29,26 +29,27 @@ export default class FeedbackConcept {
     return doc
   }
 
-  async enterTrendingFeedbackState(response: ObjectId) {
+  async enterFeedbackState(response: ObjectId) {
+    if (await this.states.readOne({response}) !== null) {
+      throw new Error("Response already entered FeedbackState!")
+    }
+    
     const _id = await this.states.createOne({response, trending: true, success: false})
     return { msg: "Successfully entered trending solution state!"}
   }
 
-  async updateFeedbackSuccessState(response: ObjectId, success: boolean) {
+  async updateFeedbackState(response: ObjectId, success?: boolean, trending?: boolean) {
     await this.getFeedbackState(response)
-    await this.states.updateOne({response}, {success})
-    return { msg: "Feedback success state succesfully updated!"}
-  }
 
-  async exitTrendingFeedbackState(response: ObjectId) {
-    const doc = await this.states.readOne({ response })
-
-    if (doc === null) {
-      throw new NotFoundError("Response not found!")
+    if (success !== undefined) {
+      await this.states.updateOne({response}, { success })
     }
 
-    await this.states.updateOne({response}, { trending: false });
-    return { msg: "Successfully exited new solution state!"}
+    if (trending !== undefined) {
+      await this.states.updateOne({response}, { trending })
+    }
+
+    return { msg: "Feedback success state succesfully updated!"}
   }
 
   async createFeedback(user: ObjectId, response: ObjectId, feedback: string, rating: number, decision: boolean) {
