@@ -22,8 +22,27 @@ const addUserToRestaurant = async () => {
 
 <template>
   <div v-if="isLoggedIn">
-    <h2>Add Yourself To Restaurant</h2>
-    <input id="token" v-model="token" placeholder="Token from inbox" required />
-    <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Join Restaurant</button>
+    <form class="pure-form">
+      <fieldset>
+        <h2>Add Yourself To Restaurant</h2>
+        <input id="token" v-model="token" placeholder="Token from inbox" required />
+        <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Join Restaurant</button>
+      </fieldset>
+    </form>
   </div>
 </template>
+
+
+<style scoped>
+h2 {
+  text-align: center;
+  font-size: xx-large;
+}
+form {
+  display: flex;
+  gap: 0.5em;
+  padding: 1em;
+  align-items: center;
+  border-radius: 10px;
+}
+</style>
