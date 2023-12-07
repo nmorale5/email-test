@@ -20,7 +20,6 @@ export default class ReputationConcept {
   }
 
   public async getEntityRepuation(entity: ObjectId) {
-    const entityReputations = await this.reputations.readMany({ entity });
-    return entityReputations.map((reputation) => reputation.value).reduce((sumVal, newVal) => sumVal + newVal, 0);
+    return (await this.reputations.readOne({ entity }))?.value ?? 0;
   }
 }
