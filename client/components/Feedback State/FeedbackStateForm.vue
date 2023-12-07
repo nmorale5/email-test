@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
+import { fetchy } from "../../utils/fetchy";
 
 const rating = ref(0);
 const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5])
 const hover = ref(0)
-const props = defineProps(['response'])
+const props: any = defineProps(['response'])
+const decision = ref(true);
+const feedback = ref("")
 
 
 const updateRating = async (star: number) => {
-    // check if there already exists a rating
-    // If not, create a new rating
-    // If so, update the rating
     rating.value = star;
 }
 
@@ -24,27 +24,82 @@ const resetHover = async () => {
 }
 
 const getEffectiveness = async () => {
-    //route for getting rating
-    // get average rating
+    let feedbackList;
+    let query: Record<string, string> = props.response !== undefined ? {response: props.response._id} : {};
+    try {
+        feedbackList = await fetchy(`/api/feedback/all/userFeedback/`, "GET", query)
+    } catch (_) {
+        return;
+    }
+    effectiveness.value = (feedbackList.length > 0)? feedbackList.map((feedback: any) => feedback.rating).reduce((prevRating: any, currRating: any)=> prevRating+currRating, 0)/feedbackList.length : 0;
 }
+
+const getPersonalFeedback = async () => {
+    let userFeedback;
+    let query: Record<string, string> = props.response !== undefined ? {response: props.response._id} : {};
+    try {
+        userFeedback = await fetchy(`/api/feedback/userFeedback/${props.response._id}`, "GET", query)
+    } catch (_) {
+        return;
+    }
+    rating.value = userFeedback.rating;
+    decision.value = userFeedback.decision;
+    feedback.value = userFeedback.feedback;
+
+}
+
+const createFeedback = async () => {
+    try {
+        await fetchy(`/api/feedback/responses/${props.response._id}`, "POST", {
+            body: {
+                response: props.response._id,
+                feedback: feedback.value,
+                rating: rating.value,
+                decision: decision.value,
+            }})
+        await getEffectiveness();
+    } catch (_) {
+        return;
+    }
+}
+onBeforeMount(async () => {
+    await getEffectiveness();
+    await getPersonalFeedback();
+})
 </script>
 
 <template>
     <div>
         <p>Response: {{ props.response.explanation}}</p>
     </div>
-    <div class="feedback-info">
-        <div>
-            <i>Effectiveness: {{ (effectiveness)? (effectiveness.toFixed(1)) : "-" }}</i>
+    <form @submit.prevent="createFeedback">
+        <div class="feedback-info">
+            <div>
+                <i>Effectiveness: {{ (effectiveness)? (effectiveness.toFixed(1)) : "-" }}</i>
+            </div>
+            <div class="rating">
+                <div>Your Rating: </div>
+                <span v-for="star in stars" :key="star" @click="updateRating(star)"
+                    @mouseover="hoverRating(star)"
+                    @mouseleave="resetHover"
+                    :class="{ 'active': star <= rating || star <= hover }"></span>
+            </div>
+            <div class="decision">
+                <div>Your Decision: </div>
+                <select id="private" v-model="decision">
+                    <option value="true">Effective</option>
+                    <option value="false">Ineffective</option>
+                </select>
+            </div>
         </div>
-        <div class="rating">
-            <div>Your Rating: </div>
-            <span v-for="star in stars" :key="star" @click="updateRating(star)"
-                @mouseover="hoverRating(star)"
-                @mouseleave="resetHover"
-                :class="{ 'active': star <= rating || star <= hover }"></span>
+        <div class="feedback">
+                <div>Feedback: </div>
+                <input id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" />
+            </div>
+        <div class="submit-button">
+            <button type="submit" class="pure-button-primary pure-button">Submit Feedback</button>
         </div>
-    </div>
+    </form>
 </template>
 
 <style scoped>
@@ -54,7 +109,7 @@ const getEffectiveness = async () => {
     align-items: center;
 }
 
-.rating {
+.rating, .decision, .feedback {
     display: flex;
     flex-direction: row;
     align-items: center;

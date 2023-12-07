@@ -350,7 +350,7 @@ class Routes {
 
   @Router.get("/feedback/state/:response")
   async getFeedBackState(response: ObjectId) {
-    return await Feedback.getFeedbackState(response)
+    return await Feedback.getFeedbackState(response);
   }
 
   @Router.get("/feedback/ratio/:response")
@@ -365,39 +365,38 @@ class Routes {
 
     if (ratio >= MINIMUM_RATIO) {
       // TODO: Remove attempt badge?
-      // TODO: Add badge, increase karma 
-      await Feedback.updateFeedbackState(response, true, false)
+      // TODO: Add badge, increase karma
+      await Feedback.updateFeedbackState(response, true, false);
     } else {
       // TODO: Decrease karma
-      await Feedback.updateFeedbackState(response, false, false)
+      await Feedback.updateFeedbackState(response, false, false);
     }
-    
-    return { msg: "Response successfully evaluated!" }
+
+    return { msg: "Response successfully evaluated!" };
   }
 
-  @Router.get("/feedback/userFeedback/:user")
-  async getUserFeedback(user: ObjectId, response: ObjectId) {
+  @Router.get("/feedback/userFeedback/:response")
+  async getUserFeedback(session: WebSessionDoc, response: ObjectId) {
+    const user = WebSession.getUser(session);
     return await Feedback.getOneUserFeedback(user, response);
   }
 
   @Router.get("/feedback/all/userFeedback/")
   async getAllUserFeedback(response: ObjectId) {
-    return await Feedback.getAllFeedback(response)
+    return await Feedback.getAllFeedback(response);
   }
 
-  @Router.post("/feedback/responses/:response") 
+  @Router.post("/feedback/responses/:response")
   async createFeedback(session: WebSessionDoc, response: ObjectId, feedback: string, rating: number, decision: boolean) {
-    const user = WebSession.getUser(session)
-    return await Feedback.createFeedback(user, response, feedback, rating, decision)
+    const user = WebSession.getUser(session);
+    return await Feedback.createFeedback(user, response, feedback, rating, decision);
   }
 
-  @Router.delete("/feedback/responses/:response") 
+  @Router.delete("/feedback/responses/:response")
   async deleteFeedback(session: WebSessionDoc, response: ObjectId) {
-    const user = WebSession.getUser(session)
-    return await Feedback.deleteUserFeedback(user, response)
+    const user = WebSession.getUser(session);
+    return await Feedback.deleteUserFeedback(user, response);
   }
-
-  
 }
 
 export default getExpressRouter(new Routes());
