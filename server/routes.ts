@@ -27,7 +27,6 @@ class Routes {
 
   @Router.get("/users/:username")
   async getUser(username: string) {
-    console.log("In here");
     return await User.getUserByUsername(username);
   }
 
@@ -223,21 +222,14 @@ class Routes {
 
   @Router.get("/business/:businessId/petitions/approved")
   async getApprovedBusinessPetitions(businessId: ObjectId) {
-    console.log("hello");
     const approved: PetitionDoc[] = [];
     const allPetitions = await Petition.getAllPetitions(businessId);
-    console.log(allPetitions);
-
     for (const petition of allPetitions) {
-      const numSigners = (await Upvote.getUpvotes(petition._id)).length;
-      console.log("signers:", numSigners, "UVThreshold:", petition.upvoteThreshold);
-      if (true) {
-        // numSigners >= petition.upvoteThreshold
-        console.log("boop");
+      const numSigners = (await Upvote.getUpvotes(petition._id.toString())).length;
+      if (numSigners >= petition.upvoteThreshold) {
         approved.push(petition);
       }
     }
-    console.log("approved", approved);
     return approved;
   }
 
