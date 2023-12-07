@@ -19,7 +19,6 @@ export default class BusinessConcept {
     if (business === null) {
       console.log(businessId);
       throw new BadValuesError("businessId is invalid");
-      
     }
     return business;
   }
@@ -60,7 +59,8 @@ export default class BusinessConcept {
     const userArray = business.users;
     if (!userArray.includes(userId)) {
       userArray.push(userId);
-      return this.businesses.updateOne({ _id: business._id }, { users: userArray });
+      await this.businesses.updateOne({ _id: business._id }, { users: userArray });
+      return business._id;
     }
     throw new Error("You've already been added to this restaurant!");
   }
