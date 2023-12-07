@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 
 import { fetchy } from "../../utils/fetchy";
 
-const props = defineProps["petition"]
+const props = defineProps(["petition"])
 
 const types = ["Accept", "Reject"]
 const type = ref("Accept")
