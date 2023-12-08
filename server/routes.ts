@@ -430,19 +430,20 @@ class Routes {
 
   @Router.get("/feedback/userFeedback/:response")
   async getUserFeedback(session: WebSessionDoc, response: ObjectId) {
+    const responseId = new ObjectId(response);
     const user = WebSession.getUser(session);
-    return await Feedback.getOneUserFeedback(user, response);
+    return await Feedback.getOneUserFeedback(user, responseId);
   }
 
-  @Router.get("/feedback/all/userFeedback/")
+  @Router.get("/feedback/all/userFeedback/:response")
   async getAllUserFeedback(response: ObjectId) {
-    return await Feedback.getAllFeedback(response);
+    return await Feedback.getAllFeedback(new ObjectId(response));
   }
 
   @Router.post("/feedback/responses/:response")
   async createFeedback(session: WebSessionDoc, response: ObjectId, feedback: string, rating: number, decision: boolean) {
     const user = WebSession.getUser(session);
-    return await Feedback.createFeedback(user, response, feedback, rating, decision);
+    return await Feedback.createFeedback(user, new ObjectId(response), feedback, rating, decision);
   }
 
   @Router.delete("/feedback/responses/:response")

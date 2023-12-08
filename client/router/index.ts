@@ -44,6 +44,7 @@ const router = createRouter({
     {
       path: "/feedback/:petitionid",
       name: "Feedback",
+      props: true,
       component: ResponseFeedbackView,
       meta: { requiresAuth: true },
     },

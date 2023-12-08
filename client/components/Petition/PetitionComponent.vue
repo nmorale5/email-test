@@ -3,7 +3,9 @@ import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, onUpdated, ref } from "vue";
+import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
+import FeedbackStateForm from "../Feedback State/FeedbackStateForm.vue";
 
 const props = defineProps(["petition"]);
 const emit = defineEmits(["editPetition", "refreshPetitions"]);
@@ -11,6 +13,8 @@ const { currentUsername, currentUserId } = storeToRefs(useUserStore());
 const signed = ref(false);
 const signers = ref(0);
 const restaurantNameLoading = ref(true);
+const response:any = ref({});
+const madeFeedback: any = ref({});
 
 const deletePetition = async () => {
   try {
@@ -66,13 +70,44 @@ const convertIDtoNames = async () => {
     restaurantNameLoading.value = false;
 }
 
+const getResponse =async () => {
+  let tempResponse;
+  try {
+    tempResponse = await fetchy(`/api/response/concern/${props.petition._id}`, "GET");
+  } catch (e) {
+    return;
+  }
+  response.value = tempResponse;
+}
+
+const getPersonalFeedback =async () => {
+  let tempFeedback;
+  let query: Record<string, string> = response.value._id !== undefined ? {response: response.value._id} : {};
+  try {
+    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET", query)
+  } catch (e) {
+    return;
+  }
+  madeFeedback.value = tempFeedback;
+}
+
+const refreshPetitionList =async () => {
+  emit("refreshPetitions"); 
+}
+
+const goToResponseFeedbackView = async () => {
+  await router.push({path: `/feedback/${props.petition._id}`})
+}
+
 onUpdated(async () => {
   await convertIDtoNames();
 })
 
 onBeforeMount(async ()=> {
-    updateSigned();
-    convertIDtoNames();
+    await updateSigned();
+    await convertIDtoNames();
+    await getResponse();
+    if(response.value._id) await getPersonalFeedback();
 });
 </script>
 
@@ -91,18 +126,40 @@ onBeforeMount(async ()=> {
         <p>Solution: {{ props.petition.solution }}</p>
         <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
     </div>
-  <div class="base">
-    <div v-if="currentUserId">
+    <div v-if="response._id">
+      <div v-if="response.type.valueOf() === 1">
+        <p>-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
+        <p>Response: {{ response.response }}</p>
+        <div v-if="madeFeedback._id">
+          <article class="timestamp">
+            <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
+          </article>
+          <menu v-if="props.petition.creator == currentUsername">
+            <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
+          </menu>
+          <button @click="goToResponseFeedbackView">View Feedback</button>
+        </div>
+        <div v-else>
+          <FeedbackStateForm :response="response" @refreshPetitions="refreshPetitionList"/>
+        </div>
+      </div>
+      <div v-else>
+        <p>-- Petition Rejected on {{ formatDate(response.dateCreated) }} --</p>
+        <p>Response: {{ response.response }}</p>
+      </div>
+    </div>
+    <div class="base" v-else>
+      <div v-if="currentUserId">
         <button v-if="!signed" @click="trySign">Sign</button>
         <button v-else @click="tryUnsign"><em>Signed!</em></button>
+      </div>
+      <article class="timestamp">
+        <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
+      </article>
+      <menu v-if="props.petition.creator == currentUsername">
+        <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
+      </menu>
     </div>
-    <article class="timestamp">
-      <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
-    </article>
-    <menu v-if="props.petition.creator == currentUsername">
-      <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
-    </menu>
-  </div>
 </template>
 
 <style scoped>

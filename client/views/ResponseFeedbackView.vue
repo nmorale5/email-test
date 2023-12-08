@@ -4,14 +4,14 @@ import PetitionFeedbackListComponent from "../components/Feedback State/Petition
 import { fetchy } from "../utils/fetchy";
 
 const props = defineProps(["petitionid"]);
-const averageEffectiveness = ref(0)
-const response: any = ref({})
-const petition:any = ref({})
+const averageEffectiveness = ref(0);
+const response: any = ref({});
+const petition:any = ref({});
 
 const convertIDtoName = async () => {
     let restaurant;
     try {
-        restaurant = await fetchy(`/api/business/id/${petition.target}`, "GET");
+        restaurant = await fetchy(`/api/business/id/${petition.value.target}`, "GET");
     } catch (e) {
         return;
     }
@@ -20,10 +20,11 @@ const convertIDtoName = async () => {
 
 const getEffectiveness =async () => {
     let feedbackList;
-    let query: Record<string, string> = response !== undefined ? {response: response._id} : {};
     try {
-        feedbackList = await fetchy(`/api/feedback/all/userFeedback/`, "GET", query)
+        feedbackList = await fetchy(`/api/feedback/all/userFeedback/${response.value._id}`, "GET")
+        
     } catch (_) {
+        console.log
         return;
     }
     averageEffectiveness.value = (feedbackList.length > 0)? feedbackList.map((feedback: any) => feedback.rating).reduce((prevRating: any, currRating: any)=> prevRating+currRating, 0)/feedbackList.length : -1;
@@ -59,22 +60,45 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <div class="response-info">
+    <div class="page">
+        <div class="response-info">
         <div class="selectables">
-            <p>Restaurant: <div class="tag">{{ petition.target }}</div></p>
-            <p>Topic: <div class="tag">{{ petition.topic }}</div></p>
+            <p><b>Restaurant:</b> <div>{{ petition.target }}</div></p>
+            <p><b>Topic:</b> <div>{{ petition.topic }}</div></p>
         </div>
         <div class="information">
-            <p>Problem: {{ petition.problem }}</p>
-            <p>Proposed Solution: {{ petition.solution }}</p>
-            <p>Restaurant Response: {{ response.explanation }}</p>
+            <p><b>Problem:</b> <div>{{ petition.problem }}</div></p>
+            <p><b>Proposed Solution:</b> <div>{{ petition.solution }}</div></p>
+            <p><b>Restaurant Response:</b> <div>{{ response.response }}</div></p>
         </div>
-    </div>
-    <div class="feedback">
-        <p>Effectiveness: {{ (averageEffectiveness >= 0)? averageEffectiveness.toFixed(1): "-" }}</p>
-        <PetitionFeedbackListComponent :response="response" />
+        </div>
+        <div class="feedback">
+        <h1>Effectiveness: {{ (averageEffectiveness >= 0)? averageEffectiveness.toFixed(1): "-" }}</h1>
+        <PetitionFeedbackListComponent :response="response"/>
+        </div>
     </div>
 </template>
 
 <style scoped>
+.page {
+    padding: 8px;
+    display: grid;
+    gap: 8px 8px;
+    grid-template-columns: 30vw 65vw;
+    grid-template-rows: 85vh ;
+}
+
+.response-info {
+    grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+.feedback {
+    grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
 </style>

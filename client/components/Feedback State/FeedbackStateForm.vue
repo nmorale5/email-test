@@ -7,6 +7,7 @@ const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5])
 const hover = ref(0)
 const props: any = defineProps(['response'])
+const emit = defineEmits(["refreshPetitions"])
 const decision = ref(true);
 const feedback = ref("")
 
@@ -34,20 +35,6 @@ const getEffectiveness = async () => {
     effectiveness.value = (feedbackList.length > 0)? feedbackList.map((feedback: any) => feedback.rating).reduce((prevRating: any, currRating: any)=> prevRating+currRating, 0)/feedbackList.length : -1;
 }
 
-const getPersonalFeedback = async () => {
-    let userFeedback;
-    let query: Record<string, string> = props.response !== undefined ? {response: props.response._id} : {};
-    try {
-        userFeedback = await fetchy(`/api/feedback/userFeedback/${props.response._id}`, "GET", query)
-    } catch (_) {
-        return;
-    }
-    rating.value = userFeedback.rating;
-    decision.value = userFeedback.decision;
-    feedback.value = userFeedback.feedback;
-
-}
-
 const createFeedback = async () => {
     try {
         await fetchy(`/api/feedback/responses/${props.response._id}`, "POST", {
@@ -61,10 +48,10 @@ const createFeedback = async () => {
     } catch (_) {
         return;
     }
+    emit("refreshPetitions");
 }
 onBeforeMount(async () => {
     await getEffectiveness();
-    await getPersonalFeedback();
 })
 </script>
 
