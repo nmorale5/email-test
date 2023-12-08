@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Response, Reputation, Upvote, User, WebSession } from "./app";
+import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Reputation, Response, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -335,7 +335,14 @@ class Routes {
 
   @Router.post("/response")
   async createResponse(concern: ObjectId, response: string, type: RESPONSE_TYPE) {
-    return await Response.createResponse(concern, response, type);
+    const res = await Response.createResponse(new ObjectId(concern), response, Number(type));
+    // response possibly null
+    if (res.post !== null) {
+      if (res.post.type == 1) {
+        // accept response
+        return Feedback.enterFeedbackState(res.post._id)
+      }
+    }
   }
 
   @Router.get("/response/:id")
