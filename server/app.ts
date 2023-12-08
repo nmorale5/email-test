@@ -5,6 +5,7 @@ import FeedbackConcept from "./concepts/feedback";
 import FriendConcept from "./concepts/friend";
 import PetitionConcept from "./concepts/petition";
 import PostConcept from "./concepts/post";
+import ReputationConcept from "./concepts/reputation";
 import ResponseConcept from "./concepts/response";
 import UpvoteConcept from "./concepts/upvote";
 import UserConcept from "./concepts/user";
@@ -20,6 +21,7 @@ export const Emailer = new EmailerTool();
 export const Petition = new PetitionConcept();
 export const Upvote = new UpvoteConcept();
 export const Badge = new BadgeConcept();
+export const Reputation = new ReputationConcept();
 export const Feedback = new FeedbackConcept();
 export const Response = new ResponseConcept();
 // Constants
