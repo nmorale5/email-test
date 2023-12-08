@@ -68,12 +68,13 @@ nav {
   background-color: var(--green);
   display: flex;
   align-items: center;
-  /*width: calc(100%-2em);*/
 }
 
 .sticky {
   position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
 }
 
 h1 {
