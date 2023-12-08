@@ -111,6 +111,8 @@ menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-width: 2px;
+  border-color: var(--black);
 }
 
 .base article:only-child {

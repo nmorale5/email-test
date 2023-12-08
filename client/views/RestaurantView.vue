@@ -13,7 +13,7 @@ onBeforeMount(async () => {
   const restaurantId = router.currentRoute.value.params.id;
   try {
     restaurant.value = await fetchy(`/api/business/id/${restaurantId}`, "GET");
-    petitions.value = await fetchy(`/api/petitions/business/${restaurantId}`, "GET");
+    petitions.value = await fetchy(`/api/business/${restaurantId}/petitions/approved`, "GET");
     badges.value = await fetchy(`/api/badges/${restaurantId}`, "GET");
     loaded.value = true;
   } catch {

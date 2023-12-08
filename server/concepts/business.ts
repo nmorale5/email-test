@@ -52,6 +52,9 @@ export default class BusinessConcept {
   }
 
   public async addUser(userId: ObjectId, token: string) {
+    if (userId.toString() === "") {
+      throw new Error("Must be logged in");
+    }
     const business = await this.businesses.readOne({ token });
     if (business === null) {
       throw new UnauthenticatedError("validation token is incorrect");

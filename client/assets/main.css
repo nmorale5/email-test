@@ -2,7 +2,12 @@
 
 :root {
   --red: rgb(208, 67, 12);
-  --base-bg: #f1f3f5;
+  --base-bg: #f3ddac;
+  --base-bg-dark: #e3cc9b;
+  --green: #459658;
+  --blue: #3e509a;
+  --black: #2b0c19;
+  /* --base-bg: #f1f3f5; */
 }
 
 button.btn-small {
@@ -16,7 +21,8 @@ button.button-error {
 
 a.button {
   color: #212529;
-  background-color: #f1f3f5;
+  /* background-color: #f1f3f5; */
+  background-color: var(--base-bg);
   border: 1px solid #dee2e6;
   border-radius: 0.25em;
   padding: 0.375em 0.75em;
@@ -29,4 +35,53 @@ a.button {
   justify-content: center;
   align-items: center;
   gap: 1em;
+}
+
+.submit-button {
+  background-color: var(--blue);
+  color: white;
+}
+
+.pure-button-primary {
+  background-color: var(--blue);
+  color: white;
+}
+
+.navbar {
+  background-color: var(--green);
+}
+
+html {
+  background-color: var(--base-bg);
+}
+
+.button-list {
+  padding: 1em 2em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.restaurant-button {
+  background-color: var(--base-bg);
+  color: var(--black);
+  padding: 1cm;
+  border-radius: 1cm;
+  border-color: var(--black);
+  border-width: 2px;
+  height: 200px;
+  width: 200px;
+}
+
+.restaurant-button:hover {
+  background-color: #e3cc9b !important;
+}
+
+.stack-sideways {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }

@@ -8,7 +8,7 @@ const emit = defineEmits(["getRestaurantsByName"]);
 <template>
   <form @submit.prevent="emit('getRestaurantsByName', filter)" class="pure-form">
     <fieldset>
-      <legend>Search by Name</legend>
+      <h2 class="big-text">Search by Name</h2>
       <input id="restaurant" type="text" v-model="filter" placeholder="Restaurant Name" />
       <button type="submit" class="pure-button pure-button-primary">Search</button>
     </fieldset>
@@ -21,5 +21,9 @@ form {
   gap: 0.5em;
   padding: 1em;
   align-items: center;
+}
+
+.big-text {
+  font-size: xx-large;
 }
 </style>

@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
+import "./assets/main.css";
 
 const currentRoute = useRoute();
 const currentRouteName = computed(() => currentRoute.name);
@@ -32,13 +33,13 @@ onBeforeMount(async () => {
       </div>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Petitions </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Petition' }" :class="{ underline: currentRouteName == 'Petition' }"> Petition </RouterLink>
+          <RouterLink :to="{ name: 'Petition' }" :class="{ underline: currentRouteName == 'Petition' }"> Create </RouterLink>
         </li>
         <li>
-          <RouterLink :to="{ name: 'RestaurantHome' }" :class="{ underline: currentRouteName == 'RestaurantHome' }"> Restaurant </RouterLink>
+          <RouterLink :to="{ name: 'RestaurantHome' }" :class="{ underline: currentRouteName == 'RestaurantHome' }"> Restaurants </RouterLink>
         </li>
         <li v-if="isLoggedIn">
           <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
@@ -55,12 +56,16 @@ onBeforeMount(async () => {
   <RouterView />
 </template>
 
+<style>
+@import "./assets/main.css";
+</style>
+
 <style scoped>
 @import "./assets/toast.css";
 
 nav {
   padding: 1em 2em;
-  background-color: lightgray;
+  background-color: var(--green);
   display: flex;
   align-items: center;
 }

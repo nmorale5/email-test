@@ -2,15 +2,16 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Reputation, Upvote, User, WebSession } from "./app";
+import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Response, Reputation, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import { containsObjectId } from "./framework/utils";
-import Responses from "./responses";
 
 import { PetitionDoc } from "./concepts/petition";
+import { RESPONSE_TYPE, ResponseDoc } from "./concepts/response";
+import Responses from "./responses";
 
 class Routes {
   @Router.get("/session")
@@ -26,7 +27,6 @@ class Routes {
 
   @Router.get("/users/:username")
   async getUser(username: string) {
-    console.log("In here");
     return await User.getUserByUsername(username);
   }
 
@@ -224,7 +224,6 @@ class Routes {
   async getApprovedBusinessPetitions(businessId: ObjectId) {
     const approved: PetitionDoc[] = [];
     const allPetitions = await Petition.getAllPetitions(businessId);
-
     for (const petition of allPetitions) {
       const numSigners = (await Upvote.getUpvotes(petition._id)).length;
       if (numSigners >= petition.upvoteThreshold) {
@@ -232,6 +231,14 @@ class Routes {
       }
     }
     return approved;
+  }
+
+  @Router.get("/petitions/approved")
+  async isPetitionApproved(petitionId: ObjectId) {
+    const petition = await Petition.getPetition(petitionId);
+
+    const numSigners = (await Upvote.getUpvotes(petition._id)).length;
+    return numSigners >= petition.upvoteThreshold;
   }
 
   @Router.put("/petition/:petitionId/:signerId")
@@ -267,7 +274,7 @@ class Routes {
     if (!WebSession.getUser(session).equals(userId)) {
       throw new UnauthenticatedError("userId is different from session user id");
     }
-    await Upvote.addUpvote(postId, userId);
+    await Upvote.addUpvote(new ObjectId(postId), userId);
   }
 
   @Router.delete("/upvote/:postId/:userId")
@@ -275,23 +282,23 @@ class Routes {
     if (!WebSession.getUser(session).equals(userId)) {
       throw new UnauthenticatedError("userId is different from session user id");
     }
-    await Upvote.removeUpvote(postId, userId);
+    await Upvote.removeUpvote(new ObjectId(postId), userId);
   }
 
   @Router.get("/upvote/:postId/:userId")
   async isUpvoting(postId: ObjectId, userId: ObjectId) {
-    return await Upvote.isUpvoting(postId, userId);
+    return await Upvote.isUpvoting(new ObjectId(postId), userId);
   }
 
   @Router.get("/upvote/:postId")
   async getUpvotes(postId: ObjectId) {
-    return await Upvote.getUpvotes(postId);
+    return await Upvote.getUpvotes(new ObjectId(postId));
   }
 
   @Router.post("/petition")
   async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, topic: string, restaurant: ObjectId) {
     const user = await User.getUserById(WebSession.getUser(session));
-    const threshold = 200;
+    const threshold = 3;
     return await Petition.createPetition(title, problem, solution, topic, restaurant, user.username, threshold);
   }
 
@@ -324,6 +331,39 @@ class Routes {
   async filterPetitionsBySearch(search: string) {
     const inputWords = search.split(" ");
     return await Petition.filterPetitions(inputWords);
+  }
+
+  @Router.post("/response")
+  async createResponse(concern: ObjectId, response: string, type: RESPONSE_TYPE) {
+    return await Response.createResponse(concern, response, type);
+  }
+
+  @Router.get("/response/:id")
+  async getResponse(id: ObjectId) {
+    return await Response.getResponse(id);
+  }
+
+  @Router.get("/response/concern/:concern")
+  async getResponseByConcern(concern: ObjectId) {
+    return await Response.getResponseByConcern(concern);
+  }
+
+  @Router.delete("/response/:id")
+  async deleteResponse(id: ObjectId) {
+    return await Response.deleteResponse(id);
+  }
+
+  // sync to get all responses associated with a business
+  @Router.get("/response/business/:business")
+  async getResponseByBusiness(business: ObjectId) {
+    const businessPetitions = await Petition.getAllPetitions(business);
+    const respondedPetitions = businessPetitions.filter(async (petition) => {
+      return await Response.hasResponse(petition._id);
+    });
+    const responses: Array<Promise<ResponseDoc>> = respondedPetitions.map((petition) => {
+      return Response.getResponseByConcern(petition._id);
+    });
+    return await Promise.all(responses);
   }
 
   @Router.get("/badges/:owner")
@@ -364,7 +404,7 @@ class Routes {
   }
   @Router.get("/feedback/state/:response")
   async getFeedBackState(response: ObjectId) {
-    return await Feedback.getFeedbackState(response)
+    return await Feedback.getFeedbackState(response);
   }
 
   @Router.get("/feedback/ratio/:response")
@@ -379,14 +419,14 @@ class Routes {
 
     if (ratio >= MINIMUM_RATIO) {
       // TODO: Remove attempt badge?
-      // TODO: Add badge, increase karma 
-      await Feedback.updateFeedbackState(response, true, false)
+      // TODO: Add badge, increase karma
+      await Feedback.updateFeedbackState(response, true, false);
     } else {
       // TODO: Decrease karma
-      await Feedback.updateFeedbackState(response, false, false)
+      await Feedback.updateFeedbackState(response, false, false);
     }
-    
-    return { msg: "Response successfully evaluated!" }
+
+    return { msg: "Response successfully evaluated!" };
   }
 
   @Router.get("/feedback/userFeedback/:user")
@@ -396,19 +436,19 @@ class Routes {
 
   @Router.get("/feedback/all/userFeedback/")
   async getAllUserFeedback(response: ObjectId) {
-    return await Feedback.getAllFeedback(response)
+    return await Feedback.getAllFeedback(response);
   }
 
-  @Router.post("/feedback/responses/:response") 
+  @Router.post("/feedback/responses/:response")
   async createFeedback(session: WebSessionDoc, response: ObjectId, feedback: string, rating: number, decision: boolean) {
-    const user = WebSession.getUser(session)
-    return await Feedback.createFeedback(user, response, feedback, rating, decision)
+    const user = WebSession.getUser(session);
+    return await Feedback.createFeedback(user, response, feedback, rating, decision);
   }
 
-  @Router.delete("/feedback/responses/:response") 
+  @Router.delete("/feedback/responses/:response")
   async deleteFeedback(session: WebSessionDoc, response: ObjectId) {
-    const user = WebSession.getUser(session)
-    return await Feedback.deleteUserFeedback(user, response)
+    const user = WebSession.getUser(session);
+    return await Feedback.deleteUserFeedback(user, response);
   }
 }
 

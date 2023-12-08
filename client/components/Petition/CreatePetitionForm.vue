@@ -54,7 +54,7 @@ const selectRestaurant = (selection: any) => {
 };
 
 const hideSearch = () => {
-  setTimeout(() => (displaySearch.value = false), 200);
+  setTimeout(() => (displaySearch.value = false), 500);
 };
 
 const getRestaurants = async () => {
