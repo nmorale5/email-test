@@ -156,7 +156,7 @@ const linkRestaurantButtonToPage = () => {
         <p class="statement">-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
         <p>Response: {{ response.response }}</p>
         <div v-if="madeFeedback._id" class="base">
-          <button class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
+          <button id="view-feedback-button" class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
           <p>
             <b>{{ props.petition.creator }}</b>
           </p>
@@ -300,5 +300,9 @@ menu {
 .information p {
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+#view-feedback-button {
+  margin-top: 8px;
 }
 </style>
