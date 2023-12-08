@@ -345,7 +345,8 @@ class Routes {
     if (res.post !== null) {
       if (res.post.type == 1) {
         // accept response
-        return Feedback.enterFeedbackState(res.post._id)
+        Feedback.enterFeedbackState(res.post._id)
+        return { msg: "Response created!"}
       }
     }
   }
