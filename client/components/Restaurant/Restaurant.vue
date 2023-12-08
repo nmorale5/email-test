@@ -18,7 +18,7 @@ const getMyRestaurants = async () => {
     const user = await fetchy(`/api/users/${currentUsername.value}`, "GET");
     const restaurants = await fetchy(`/api/business/user/${user._id}`, "GET");
     if (!restaurants) return;
-    const restaurantIds = restaurants.map((restaurant: { _id: { toString: () => any; }; }) => {
+    const restaurantIds = restaurants.map((restaurant: { _id: { toString: () => any } }) => {
       return restaurant._id.toString();
     });
     isOwner.value = restaurantIds.includes(restaurant._id.toString());
@@ -45,14 +45,33 @@ onBeforeMount(async () => {
   <p v-if="petitions.length === 0"><em>None</em></p>
   <div v-else v-for="petition in petitions" :key="petition._id">
     <PetitionComponent
-      :petition="{ _id: petition._id, creator: petition.creator, title: petition.title, 
-        problem: petition.problem, solution: petition.solution, upvoteThreshold: petition.upvoteThreshold,
-        topic: petition.topic, target: petition.target,
-        dateUpdated: petition.dateUpdated, dateCreated: petition.dateCreated }"
+      :petition="{
+        _id: petition._id,
+        creator: petition.creator,
+        title: petition.title,
+        problem: petition.problem,
+        solution: petition.solution,
+        upvoteThreshold: petition.upvoteThreshold,
+        topic: petition.topic,
+        target: petition.target,
+        dateUpdated: petition.dateUpdated,
+        dateCreated: petition.dateCreated,
+      }"
     />
-    <ResponseFormComponent v-if="isOwner" :petition="{ _id: petition._id, creator: petition.creator, title: petition.title, 
-        problem: petition.problem, solution: petition.solution, upvoteThreshold: petition.upvoteThreshold,
-        topic: petition.topic, target: restaurant._id,
-        dateUpdated: petition.dateUpdated, dateCreated: petition.dateCreated }"/>
+    <ResponseFormComponent
+      v-if="isOwner"
+      :petition="{
+        _id: petition._id,
+        creator: petition.creator,
+        title: petition.title,
+        problem: petition.problem,
+        solution: petition.solution,
+        upvoteThreshold: petition.upvoteThreshold,
+        topic: petition.topic,
+        target: restaurant._id,
+        dateUpdated: petition.dateUpdated,
+        dateCreated: petition.dateCreated,
+      }"
+    />
   </div>
 </template>
