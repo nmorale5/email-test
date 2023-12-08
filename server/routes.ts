@@ -25,6 +25,11 @@ class Routes {
     return await User.getUsers();
   }
 
+  @Router.get("/users/id/:id")
+  async getUserById(id: ObjectId) {
+    return await User.getUserById(id);
+  }
+
   @Router.get("/users/:username")
   async getUser(username: string) {
     return await User.getUserByUsername(username);
@@ -436,14 +441,16 @@ class Routes {
     return { msg: "Response successfully evaluated!" };
   }
 
-  @Router.get("/feedback/userFeedback/:user")
-  async getUserFeedback(user: ObjectId, response: ObjectId) {
-    return await Feedback.getOneUserFeedback(user, response);
+  @Router.get("/feedback/userFeedback/:response")
+  async getUserFeedback(session: WebSessionDoc, response: ObjectId) {
+    const responseId = new ObjectId(response);
+    const user = WebSession.getUser(session);
+    return await Feedback.getOneUserFeedback(user, responseId);
   }
 
-  @Router.get("/feedback/all/userFeedback/")
+  @Router.get("/feedback/all/userFeedback/:response")
   async getAllUserFeedback(response: ObjectId) {
-    return await Feedback.getAllFeedback(response);
+    return await Feedback.getAllFeedback(new ObjectId(response));
   }
 
   @Router.post("/feedback/responses/:response")
