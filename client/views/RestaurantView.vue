@@ -31,4 +31,8 @@ onBeforeMount(async () => {
 h1 {
   text-align: center;
 }
+
+.pad {
+  margin-top: 100px;
+}
 </style>
