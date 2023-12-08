@@ -7,7 +7,6 @@ import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
 import FeedbackStateForm from "../Feedback State/FeedbackStateForm.vue";
 
-
 const props = defineProps(["petition"]);
 const emit = defineEmits(["editPetition", "refreshPetitions"]);
 const { currentUsername, currentUserId } = storeToRefs(useUserStore());
@@ -15,7 +14,7 @@ const signed = ref(false);
 const signers = ref(0);
 const restaurantNameLoading = ref(true);
 const restaurantName = ref("");
-const response:any = ref({});
+const response: any = ref({});
 const madeFeedback: any = ref({});
 
 const deletePetition = async () => {
@@ -61,17 +60,17 @@ const tryUnsign = async () => {
 };
 
 const convertIDtoNames = async () => {
-    let restaurant;
-    try {
-        restaurant = await fetchy(`/api/business/id/${props.petition.target}`, "GET");
-    } catch (e) {
-        return;
-    }
-    //props.petition.target = restaurant.name;
-    //props.petition.restaurant_name = restaurant.name;
-    restaurantName.value = restaurant.name;
-    restaurantNameLoading.value = false;
-}
+  let restaurant;
+  try {
+    restaurant = await fetchy(`/api/business/id/${props.petition.target}`, "GET");
+  } catch (e) {
+    return;
+  }
+  //props.petition.target = restaurant.name;
+  //props.petition.restaurant_name = restaurant.name;
+  restaurantName.value = restaurant.name;
+  restaurantNameLoading.value = false;
+};
 
 const getResponse = async () => {
   let tempResponse;
@@ -81,58 +80,75 @@ const getResponse = async () => {
     return;
   }
   response.value = tempResponse;
-}
+};
 
 const getPersonalFeedback = async () => {
   let tempFeedback;
-  let query: Record<string, string> = response.value._id !== undefined ? {response: response.value._id} : {};
+  let query: Record<string, string> = response.value._id !== undefined ? { response: response.value._id } : {};
   try {
-    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET", query)
+    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET", query);
     if (tempFeedback) {
-      madeFeedback.value = tempFeedback
+      madeFeedback.value = tempFeedback;
     } else {
-      madeFeedback.value = {}
+      madeFeedback.value = {};
     }
   } catch (e) {
     return;
   }
-}
+};
 
-const refreshPetitionList =async () => {
-  emit("refreshPetitions"); 
-}
+const refreshPetitionList = async () => {
+  emit("refreshPetitions");
+};
 
 const goToResponseFeedbackView = async () => {
-  await router.push({path: `/feedback/${props.petition._id}`})
-}
+  await router.push({ path: `/feedback/${props.petition._id}` });
+};
 
 onUpdated(async () => {
   await convertIDtoNames();
-})
-
-onBeforeMount(async ()=> {
-    await updateSigned();
-    await convertIDtoNames();
-    await getResponse();
-    if(response.value._id) {
-      await getPersonalFeedback();
-    }
 });
+
+onBeforeMount(async () => {
+  await updateSigned();
+  await convertIDtoNames();
+  await getResponse();
+  if (response.value._id) {
+    await getPersonalFeedback();
+  }
+});
+
+onBeforeMount(async () => {
+  await updateSigned();
+  await convertIDtoNames();
+  await getResponse();
+  if (response.value._id) {
+    console.log("TRYING TO GET FEEDBACK");
+    console.log(JSON.stringify(response.value));
+    await getPersonalFeedback();
+  }
+});
+
+const linkRestaurantButtonToPage = () => {
+  void router.push({ name: "Restaurant", params: { id: props.petition.target } });
+};
 </script>
 
 <template>
   <div class="petition-container">
     <div class="top">
-        <h1>{{ props.petition.title }}</h1>
+      <h1>{{ props.petition.title }}</h1>
     </div>
     <div class="selectables">
-        <p v-if="restaurantNameLoading">Loading...</p>
-        <p v-else>Restaurant: <button type="submit" class="pure-button pure-button-primary pad">{{ restaurantName }}</button></p>
-        <p>Topic: {{ props.petition.topic }}</p>
+      <p v-if="restaurantNameLoading">Loading...</p>
+      <p v-else>
+        Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
+      </p>
+      <p>Topic: {{ props.petition.topic }}</p>
     </div>
     <div class="information">
-        <p>Problem: {{ props.petition.problem }}</p>
-        <p>Solution: {{ props.petition.solution }}</p>
+      <p>Problem: {{ props.petition.problem }}</p>
+      <p>Solution: {{ props.petition.solution }}</p>
     </div>
     <div class="line"></div>
     <div v-if="response._id">
@@ -141,8 +157,10 @@ onBeforeMount(async ()=> {
         <p>Response: {{ response.response }}</p>
         <div v-if="madeFeedback._id" class="base">
           <button id="view-feedback-button" class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
-          <p><b>{{ props.petition.creator }}</b></p>
-          <article class="timestamp ">
+          <p>
+            <b>{{ props.petition.creator }}</b>
+          </p>
+          <article class="timestamp">
             <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
           </article>
           <menu v-if="props.petition.creator == currentUsername">
@@ -150,7 +168,7 @@ onBeforeMount(async ()=> {
           </menu>
         </div>
         <div v-else>
-          <FeedbackStateForm :response="response" @refreshPetitions="refreshPetitionList"/>
+          <FeedbackStateForm :response="response" @refreshPetitions="refreshPetitionList" />
         </div>
       </div>
       <div v-else>
@@ -166,7 +184,9 @@ onBeforeMount(async ()=> {
         </div>
         <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
       </div>
-      <p><b>{{ props.petition.creator }}</b></p>
+      <p>
+        <b>{{ props.petition.creator }}</b>
+      </p>
       <article class="timestamp">
         <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
       </article>
@@ -182,9 +202,9 @@ p {
   margin: 0em;
 }
 .line {
-height: 1px;
-background: black;
-margin-top: 5px;
+  height: 1px;
+  background: black;
+  margin-top: 5px;
 }
 
 .statement {
@@ -251,21 +271,21 @@ menu {
 }
 
 .top {
-    text-align: center;
+  text-align: center;
 }
 
-.top h1{
-    margin: 5px;
+.top h1 {
+  margin: 5px;
 }
 
 .selectables {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
-.selectables p{
-    display: flex;
-    align-items: center;
+.selectables p {
+  display: flex;
+  align-items: center;
 }
 
 .tag {
@@ -277,9 +297,9 @@ menu {
   color: white;
 }
 
-.information p{
-    padding-top: 5px;
-    padding-bottom: 5px;
+.information p {
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 #view-feedback-button {
