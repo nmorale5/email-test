@@ -9,11 +9,15 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 </script>
 
 <template>
-  <Restaurants />
+  <Restaurants/>
 </template>
 
 <style scoped>
 h1 {
   text-align: center;
+}
+
+.pad {
+  padding-top: 100px;
 }
 </style>

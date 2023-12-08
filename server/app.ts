@@ -26,3 +26,6 @@ export const Feedback = new FeedbackConcept();
 export const Response = new ResponseConcept();
 // Constants
 export const MINIMUM_RATIO = 0.6;
+export const AWARD_THRESHOLD = 5; 
+/* Number of feedback reviews before evaluation
+Will break createFeedback evaluation if set to 0*/
