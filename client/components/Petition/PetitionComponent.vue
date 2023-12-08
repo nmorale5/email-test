@@ -128,29 +128,29 @@ onBeforeMount(async ()=> {
         <p>Problem: {{ props.petition.problem }}</p>
         <p>Solution: {{ props.petition.solution }}</p>
     </div>
+    <div class="line"></div>
     <div v-if="response._id">
       <div v-if="response.type.valueOf() === 1">
-        <p>-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
+        <p class="statement">-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
         <p>Response: {{ response.response }}</p>
-        <div v-if="madeFeedback._id">
-          <article class="timestamp">
+        <div v-if="madeFeedback._id" class="base">
+          <button class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
+          <article class="timestamp ">
             <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
           </article>
           <menu v-if="props.petition.creator == currentUsername">
             <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
           </menu>
-          <button @click="goToResponseFeedbackView">View Feedback</button>
         </div>
         <div v-else>
           <FeedbackStateForm :response="response" @refreshPetitions="refreshPetitionList"/>
         </div>
       </div>
       <div v-else>
-        <p>-- Petition Rejected on {{ formatDate(response.dateCreated) }} --</p>
+        <p class="statement">-- Petition Rejected on {{ formatDate(response.dateCreated) }} --</p>
         <p>Response: {{ response.response }}</p>
       </div>
     </div>
-    <div class="line"></div>
     <div class="base" v-else>
       <div class="progress">
         <div class="sign" v-if="currentUserId">
@@ -178,6 +178,10 @@ p {
 height: 1px;
 background: black;
 margin-top: 5px;
+}
+
+.statement {
+  text-align: center;
 }
 
 .progress {
