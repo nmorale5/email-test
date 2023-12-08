@@ -33,7 +33,7 @@ const sendThresholdEmail = async () => {
       <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
       <h1 v-else>Please login!</h1>
     </section>
-    <VerificationForm class="pad-left-big"/>
+    <VerificationForm class="pad-left-big" />
     <PetitionListComponent />
   </main>
 </template>

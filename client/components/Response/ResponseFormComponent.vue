@@ -3,16 +3,15 @@ import { computed, ref } from "vue";
 
 import { fetchy } from "../../utils/fetchy";
 
-const props = defineProps(["petition"])
+const props = defineProps(["petition"]);
 
-const types = ["Accept", "Reject"]
-const type = ref("Accept")
+const types = ["Accept", "Reject"];
+const type = ref("Accept");
 const typeSelection = computed(() => {
-  if (type.value === "Accept") 
-    return 1
-  else return 0
-})
-const response = ref("")
+  if (type.value === "Accept") return 1;
+  else return 0;
+});
+const response = ref("");
 
 const createResponse = async () => {
   try {
@@ -21,14 +20,13 @@ const createResponse = async () => {
         concern: props.petition._id,
         response: response.value,
         type: typeSelection.value,
-      }
+      },
     });
   } catch (_) {
     return;
   }
   //await router.push({ name: "Home" });
-}
-
+};
 </script>
 
 <template>
