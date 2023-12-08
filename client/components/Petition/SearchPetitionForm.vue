@@ -8,7 +8,7 @@ const emit = defineEmits(["getPetitionsByTitle"]);
 <template>
   <form @submit.prevent="emit('getPetitionsByTitle', search)" class="pure-form">
     <fieldset>
-      <legend>Search </legend>
+      <h2 class="big-text">Search Petitions</h2>
       <input id="author" type="text" v-model="search" placeholder="Petition title" />
       <button type="submit" class="pure-button pure-button-primary">Search</button>
     </fieldset>
@@ -21,5 +21,9 @@ form {
   gap: 0.5em;
   padding: 1em;
   align-items: center;
+}
+
+.big-text {
+  font-size: xx-large;
 }
 </style>

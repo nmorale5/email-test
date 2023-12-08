@@ -24,22 +24,22 @@ onBeforeMount(async () => {
 
 <template>
   <header>
-    <nav>
+    <nav class="sticky">
       <div class="title">
-        <img src="@/assets/images/logo.svg" />
+        <img src="@/assets/images/boldnbrash.png" />
         <RouterLink :to="{ name: 'Home' }">
           <h1>Restaurant Reform</h1>
         </RouterLink>
       </div>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Petitions </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Petition' }" :class="{ underline: currentRouteName == 'Petition' }"> Petition </RouterLink>
+          <RouterLink :to="{ name: 'Petition' }" :class="{ underline: currentRouteName == 'Petition' }"> Start Petition </RouterLink>
         </li>
         <li>
-          <RouterLink :to="{ name: 'RestaurantHome' }" :class="{ underline: currentRouteName == 'RestaurantHome' }"> Restaurant </RouterLink>
+          <RouterLink :to="{ name: 'RestaurantHome' }" :class="{ underline: currentRouteName == 'RestaurantHome' }"> View Restaurants </RouterLink>
         </li>
         <li v-if="isLoggedIn">
           <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
@@ -53,7 +53,7 @@ onBeforeMount(async () => {
       <p>{{ toast.message }}</p>
     </article>
   </header>
-  <RouterView/>
+  <RouterView />
 </template>
 
 <style>
@@ -63,12 +63,19 @@ onBeforeMount(async () => {
 <style scoped>
 @import "./assets/toast.css";
 
-
 nav {
   padding: 1em 2em;
   background-color: var(--green);
   display: flex;
   align-items: center;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0em;
+  bottom: calc(100%-5em);
 }
 
 h1 {

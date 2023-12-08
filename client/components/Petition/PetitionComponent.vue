@@ -7,12 +7,14 @@ import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
 import FeedbackStateForm from "../Feedback State/FeedbackStateForm.vue";
 
+
 const props = defineProps(["petition"]);
 const emit = defineEmits(["editPetition", "refreshPetitions"]);
 const { currentUsername, currentUserId } = storeToRefs(useUserStore());
 const signed = ref(false);
 const signers = ref(0);
 const restaurantNameLoading = ref(true);
+const restaurantName = ref("");
 const response:any = ref({});
 const madeFeedback: any = ref({});
 
@@ -66,7 +68,8 @@ const convertIDtoNames = async () => {
         return;
     }
     //props.petition.target = restaurant.name;
-    props.petition.restaurant_name = restaurant.name
+    //props.petition.restaurant_name = restaurant.name;
+    restaurantName.value = restaurant.name;
     restaurantNameLoading.value = false;
 }
 
@@ -112,19 +115,18 @@ onBeforeMount(async ()=> {
 </script>
 
 <template>
+  <div class="petition-container">
     <div class="top">
         <h1>{{ props.petition.title }}</h1>
-        <p>{{ props.petition.creator }}</p>
     </div>
     <div class="selectables">
         <p v-if="restaurantNameLoading">Loading...</p>
-        <p v-else="restaurantNameLoading">Restaurant: <div class="tag">{{ props.petition.restaurant_name }}</div></p>
-        <p>Topic: <div class="tag">{{ props.petition.topic }}</div></p>
+        <p v-else>Restaurant: <button type="submit" class="pure-button pure-button-primary pad">{{ restaurantName }}</button></p>
+        <p>Topic: {{ props.petition.topic }}</p>
     </div>
     <div class="information">
         <p>Problem: {{ props.petition.problem }}</p>
         <p>Solution: {{ props.petition.solution }}</p>
-        <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
     </div>
     <div v-if="response._id">
       <div v-if="response.type.valueOf() === 1">
@@ -148,11 +150,16 @@ onBeforeMount(async ()=> {
         <p>Response: {{ response.response }}</p>
       </div>
     </div>
+    <div class="line"></div>
     <div class="base" v-else>
-      <div v-if="currentUserId">
-        <button v-if="!signed" @click="trySign">Sign</button>
-        <button v-else @click="tryUnsign"><em>Signed!</em></button>
+      <div class="progress">
+        <div class="sign" v-if="currentUserId">
+          <button class="pure-button pure-button-primary" v-if="!signed" @click="trySign">Sign</button>
+          <button class="pure-button pure-button-primary" v-else @click="tryUnsign"><em>Signed!</em></button>
+        </div>
+        <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
       </div>
+      <p><b>{{ props.petition.creator }}</b></p>
       <article class="timestamp">
         <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
       </article>
@@ -160,13 +167,47 @@ onBeforeMount(async ()=> {
         <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
       </menu>
     </div>
+  </div>
 </template>
 
 <style scoped>
 p {
   margin: 0em;
 }
+.line {
+height: 1px;
+background: black;
+margin-top: 5px;
+}
 
+.progress {
+  display: flex;
+  align-items: center;
+}
+
+.sign {
+  margin-left: 5px;
+}
+
+.pure-button-primary {
+  margin: 2px;
+}
+
+.pad {
+  padding-top: 1px;
+  padding-right: 4px;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  font-weight: lighter;
+}
+
+.petition-container {
+  background-color: var(--base-bg);
+  border-radius: 10px;
+  padding: 10px 10px 0px 10px;
+  border-style: solid;
+  border-width: 2px;
+}
 .author {
   font-weight: bold;
   font-size: 1.2em;
@@ -217,12 +258,12 @@ menu {
 }
 
 .tag {
-  background-color: white;
+  background-color: var(--blue);
   margin-left: 2px;
   margin-right: 2px;
-  border-radius: 45px;
+  border-radius: 5px;
   padding: 4px;
-  border: 1px black solid;
+  color: white;
 }
 
 .information p{

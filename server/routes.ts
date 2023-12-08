@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Response, Upvote, User, WebSession } from "./app";
+import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Response, Reputation, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -32,7 +32,6 @@ class Routes {
 
   @Router.get("/users/:username")
   async getUser(username: string) {
-    console.log("In here");
     return await User.getUserByUsername(username);
   }
 
@@ -228,21 +227,14 @@ class Routes {
 
   @Router.get("/business/:businessId/petitions/approved")
   async getApprovedBusinessPetitions(businessId: ObjectId) {
-    console.log("hello");
     const approved: PetitionDoc[] = [];
     const allPetitions = await Petition.getAllPetitions(businessId);
-    console.log(allPetitions);
-
     for (const petition of allPetitions) {
       const numSigners = (await Upvote.getUpvotes(petition._id)).length;
-      console.log("signers:", numSigners, "UVThreshold:", petition.upvoteThreshold);
-      if (true) {
-        // numSigners >= petition.upvoteThreshold
-        console.log("boop");
+      if (numSigners >= petition.upvoteThreshold) {
         approved.push(petition);
       }
     }
-    console.log("approved", approved);
     return approved;
   }
 
@@ -287,7 +279,7 @@ class Routes {
     if (!WebSession.getUser(session).equals(userId)) {
       throw new UnauthenticatedError("userId is different from session user id");
     }
-    await Upvote.addUpvote(postId, userId);
+    await Upvote.addUpvote(new ObjectId(postId), userId);
   }
 
   @Router.delete("/upvote/:postId/:userId")
@@ -295,17 +287,17 @@ class Routes {
     if (!WebSession.getUser(session).equals(userId)) {
       throw new UnauthenticatedError("userId is different from session user id");
     }
-    await Upvote.removeUpvote(postId, userId);
+    await Upvote.removeUpvote(new ObjectId(postId), userId);
   }
 
   @Router.get("/upvote/:postId/:userId")
   async isUpvoting(postId: ObjectId, userId: ObjectId) {
-    return await Upvote.isUpvoting(postId, userId);
+    return await Upvote.isUpvoting(new ObjectId(postId), userId);
   }
 
   @Router.get("/upvote/:postId")
   async getUpvotes(postId: ObjectId) {
-    return await Upvote.getUpvotes(postId);
+    return await Upvote.getUpvotes(new ObjectId(postId));
   }
 
   @Router.post("/petition")
@@ -401,6 +393,20 @@ class Routes {
     return await Badge.add(business!._id, "nuts");
   }
 
+  @Router.post("/reputation/increase/:business")
+  async increaseReputation(business: ObjectId) {
+    return await Reputation.updateReputation(business, 1);
+  }
+
+  @Router.post("/reputation/decrease/:business")
+  async decreaseReputation(business: ObjectId) {
+    return await Reputation.updateReputation(business, -1);
+  }
+
+  @Router.get("/reputation/:business")
+  async getReputation(business: ObjectId) {
+    return await Reputation.getEntityReputation(business);
+  }
   @Router.get("/feedback/state/:response")
   async getFeedBackState(response: ObjectId) {
     return await Feedback.getFeedbackState(response);
