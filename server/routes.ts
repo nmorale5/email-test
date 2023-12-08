@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Reputation, Response, Upvote, User, WebSession } from "./app";
+import { AWARD_THRESHOLD, Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Reputation, Response, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -449,7 +449,26 @@ class Routes {
   @Router.post("/feedback/responses/:response")
   async createFeedback(session: WebSessionDoc, response: ObjectId, feedback: string, rating: number, decision: boolean) {
     const user = WebSession.getUser(session);
-    return await Feedback.createFeedback(user, response, feedback, rating, decision);
+    const res = await Response.getResponse(new ObjectId(response))
+
+    await Feedback.createFeedback(user, new ObjectId(response), feedback, Number(rating), decision);
+
+    if ((await Feedback.getAllFeedback(new ObjectId(response))).length === AWARD_THRESHOLD) {
+      const ratio = await Feedback.getYesRatio(response);
+      const petition = await Petition.getPetition(res.concern)
+
+      if (ratio >= MINIMUM_RATIO) {
+        // TODO: Remove attempt badge?
+        await Badge.add(petition.target, petition.topic)
+        await Feedback.updateFeedbackState(response, true, false);
+        await Reputation.updateReputation(petition.target, 1)
+      } else {
+        await Feedback.updateFeedbackState(response, false, false);
+        await Reputation.updateReputation(petition.target, 1)        
+      }
+
+    return { msg: "Response successfully evaluated!" };
+    }
   }
 
   @Router.delete("/feedback/responses/:response")
