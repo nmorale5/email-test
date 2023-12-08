@@ -12,6 +12,7 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
 const myRestaurants = ref(new Array<RestaurantData>());
 const isOwner = ref(false);
+const reputation = ref(0);
 
 const getMyRestaurants = async () => {
   try {
@@ -30,48 +31,93 @@ const getMyRestaurants = async () => {
 
 const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions", "badges"]);
 
+const getReputation =async () => {
+  let restaurantReputation;
+  try {
+    restaurantReputation = await fetchy(`/api/reputation/${restaurant._id}`, "GET")
+  } catch (e) {
+    return;
+  }
+  reputation.value = restaurantReputation;
+}
+
 onBeforeMount(async () => {
   if (isLoggedIn.value) {
     await getMyRestaurants();
+    await getReputation();
   }
 });
 </script>
 <template>
-  <header>
-    <h2>{{ restaurant.name }}</h2>
-    <BadgeList :badges="badges" />
-  </header>
-  <h3>Petitions:</h3>
-  <p v-if="petitions.length === 0"><em>None</em></p>
-  <div v-else v-for="petition in petitions" :key="petition._id">
-    <PetitionComponent
-      :petition="{
-        _id: petition._id,
-        creator: petition.creator,
-        title: petition.title,
-        problem: petition.problem,
-        solution: petition.solution,
-        upvoteThreshold: petition.upvoteThreshold,
-        topic: petition.topic,
-        target: petition.target,
-        dateUpdated: petition.dateUpdated,
-        dateCreated: petition.dateCreated,
-      }"
-    />
-    <ResponseFormComponent
-      v-if="isOwner"
-      :petition="{
-        _id: petition._id,
-        creator: petition.creator,
-        title: petition.title,
-        problem: petition.problem,
-        solution: petition.solution,
-        upvoteThreshold: petition.upvoteThreshold,
-        topic: petition.topic,
-        target: restaurant._id,
-        dateUpdated: petition.dateUpdated,
-        dateCreated: petition.dateCreated,
-      }"
-    />
+  <div class="page">
+    <header>
+      <h1 class="name">{{ restaurant.name }}</h1>
+      <div class="restaurant-info">
+        <BadgeList :badges="badges" />
+        <h2>+{{ reputation }}</h2>
+      </div>
+    </header>
+    <div class="line"></div>
+    <h3>Petitions:</h3>
+    <p v-if="petitions.length === 0"><em>None</em></p>
+    <div v-else v-for="petition in petitions" :key="petition._id">
+      <PetitionComponent
+        :petition="{
+          _id: petition._id,
+          creator: petition.creator,
+          title: petition.title,
+          problem: petition.problem,
+          solution: petition.solution,
+          upvoteThreshold: petition.upvoteThreshold,
+          topic: petition.topic,
+          target: petition.target,
+          dateUpdated: petition.dateUpdated,
+          dateCreated: petition.dateCreated,
+        }"
+      />
+      <ResponseFormComponent
+        v-if="isOwner"
+        :petition="{
+          _id: petition._id,
+          creator: petition.creator,
+          title: petition.title,
+          problem: petition.problem,
+          solution: petition.solution,
+          upvoteThreshold: petition.upvoteThreshold,
+          topic: petition.topic,
+          target: restaurant._id,
+          dateUpdated: petition.dateUpdated,
+          dateCreated: petition.dateCreated,
+        }"
+      />
+    </div>
   </div>
 </template>
+<style scoped>
+.name {
+  text-align: center;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+}
+
+.restaurant-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.page {
+  padding: 8px;
+}
+
+.line {
+  height: 1px;
+  background: black;
+}
+
+h1 {
+  margin-bottom: 4px;
+}
+</style>
