@@ -35,10 +35,10 @@ onBeforeMount(async () => {
 
 <template>
   <div class="row">
-    <h2 v-if="!searchTitle">All Petitions:</h2>
-    <h2 v-else>Petitions matching: "{{ searchTitle }}":</h2>
     <SearchPetitionForm @getPetitionsByTitle="getPetitions" />
   </div>
+  <h2 v-if="!searchTitle" class="row">All Petitions:</h2>
+  <h2 v-else class="row">Petitions matching: "{{ searchTitle }}":</h2>
   <section class="petitions" v-if="loaded && petitions.length !== 0">
     <article v-for="petition in petitions" :key="petition._id">
       <PetitionComponent :petition="petition" @refreshPetitions="getPetitions()" />
@@ -80,5 +80,6 @@ article {
   justify-content: space-between;
   margin: 0 auto;
   max-width: 60em;
+  align-items: end;
 }
 </style>

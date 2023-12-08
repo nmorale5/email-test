@@ -2,6 +2,7 @@
 
 :root {
   --red: rgb(208, 67, 12);
+  --base-bg-light: #fff7c6;
   --base-bg: #f3ddac;
   --base-bg-dark: #e3cc9b;
   --green: #459658;
@@ -52,7 +53,8 @@ a.button {
 }
 
 html {
-  background-color: var(--base-bg);
+  background-color: var(--base-bg-light);
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
 .button-list {

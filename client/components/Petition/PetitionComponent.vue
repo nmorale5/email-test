@@ -5,6 +5,7 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, onUpdated, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
+
 const props = defineProps(["petition"]);
 const emit = defineEmits(["editPetition", "refreshPetitions"]);
 const { currentUsername, currentUserId } = storeToRefs(useUserStore());
@@ -79,9 +80,9 @@ onBeforeMount(async ()=> {
 </script>
 
 <template>
+  <div class="petition-container">
     <div class="top">
         <h1>{{ props.petition.title }}</h1>
-        <p>{{ props.petition.creator }}</p>
     </div>
     <div class="selectables">
         <p v-if="restaurantNameLoading">Loading...</p>
@@ -91,27 +92,56 @@ onBeforeMount(async ()=> {
     <div class="information">
         <p>Problem: {{ props.petition.problem }}</p>
         <p>Solution: {{ props.petition.solution }}</p>
+    </div>
+    
+    <div class="line"></div>
+
+    <div class="base">
+      <p><b>{{ props.petition.creator }}</b></p>
+      <div class="progress">
         <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
+        <div class="sign" v-if="currentUserId">
+          <button class="pure-button pure-button-primary" v-if="!signed" @click="trySign">Sign</button>
+          <button class="pure-button pure-button-primary" v-else @click="tryUnsign"><em>Signed!</em></button>
+        </div>
+      </div>
+      <article class="timestamp">
+        <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
+      </article>
+      <menu v-if="props.petition.creator == currentUsername">
+        <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
+      </menu>
     </div>
-  <div class="base">
-    <div v-if="currentUserId">
-        <button v-if="!signed" @click="trySign">Sign</button>
-        <button v-else @click="tryUnsign"><em>Signed!</em></button>
-    </div>
-    <article class="timestamp">
-      <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
-    </article>
-    <menu v-if="props.petition.creator == currentUsername">
-      <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
-    </menu>
   </div>
+    
 </template>
 
 <style scoped>
 p {
   margin: 0em;
 }
+.line {
+height: 1px;
+background: black;
+margin-top: 5px;
+}
 
+.progress {
+  display: flex;
+  align-items: center;
+}
+
+.sign {
+  margin-left: 5px;
+}
+
+.petition-container {
+  background-color: var(--base-bg);
+  border-radius: 10px;
+  padding: 10px 10px 0px 10px;
+  border-style: solid;
+  border-width: 2px;
+}
 .author {
   font-weight: bold;
   font-size: 1.2em;

@@ -89,7 +89,7 @@ onBeforeMount(async () => {
   </div>
   <h2>My Restaurants:</h2>
   <div v-if="isLoggedIn" class="button-list">
-    <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()">
+    <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()" class="light-padding">
       <SelectableRestaurant :restaurant="restaurant"/>
     </div>
     <p v-if="myRestaurants.length === 0">You manage no restaurants.</p>
