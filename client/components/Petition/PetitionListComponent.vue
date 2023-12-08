@@ -26,7 +26,7 @@ const filteredPetitions = computed(() => {
 });
 const searchTitle = ref("");
 
-async function getPetitions(search?: string) {
+const getPetitions = async (search?: string) => {
   let petitionResults;
   try {
     if (search !== undefined && search !== "") {
@@ -41,7 +41,7 @@ async function getPetitions(search?: string) {
   }
   searchTitle.value = search ? search : "";
   allPetitions.value = petitionResults;
-}
+};
 
 onBeforeMount(async () => {
   await getPetitions();
@@ -51,7 +51,7 @@ onBeforeMount(async () => {
 
 <template>
   <div>
-    <select v-model="filterType">
+    <select v-model="filterType" @click="() => getPetitions()">
       <option value="all">All petitions</option>
       <option value="signed">Petitions I've signed</option>
       <option value="created">Petitions I created</option>
