@@ -114,6 +114,15 @@ onBeforeMount(async () => {
   await convertIDtoNames();
   await getResponse();
   if (response.value._id) {
+    await getPersonalFeedback();
+  }
+});
+
+onBeforeMount(async () => {
+  await updateSigned();
+  await convertIDtoNames();
+  await getResponse();
+  if (response.value._id) {
     console.log("TRYING TO GET FEEDBACK");
     console.log(JSON.stringify(response.value));
     await getPersonalFeedback();

@@ -58,18 +58,18 @@ onBeforeMount(async () => {
 <template>
     <form @submit.prevent="createFeedback">
         <div class="feedback-info">
-            <div>
+            <div class="pad">
                 <i>Effectiveness: {{ (effectiveness >= 0)? effectiveness.toFixed(1): "-" }}</i>
             </div>
             <div class="rating">
-                <div>Your Rating: </div>
+                <div class="pad">Your Rating: </div>
                 <span v-for="star in stars" :key="star" @click="updateRating(star)"
                     @mouseover="hoverRating(star)"
                     @mouseleave="resetHover"
                     :class="{ 'active': star <= rating || star <= hover }"></span>
             </div>
             <div class="decision">
-                <div>Your Decision: </div>
+                <div class="pad">Your Decision: </div>
                 <select id="private" v-model="decision">
                     <option value="true">Effective</option>
                     <option value="false">Ineffective</option>
@@ -77,11 +77,11 @@ onBeforeMount(async () => {
             </div>
         </div>
         <div class="feedback">
-                <div>Feedback: </div>
+                <div class="pad">Feedback: </div>
                 <input id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" />
             </div>
-        <div class="submit-button">
-            <button type="submit" class="pure-button-primary pure-button">Submit Feedback</button>
+        <div>
+            <button type="submit" class="pure-button pure-button-primary">Submit Feedback</button>
         </div>
     </form>
 </template>
@@ -106,6 +106,15 @@ onBeforeMount(async () => {
     background-image: url('../../assets/images/black-star.png'); /* Replace with your star image */
     background-size: cover;
     margin-right: 5px;
+}
+
+.pure-button-primary {
+    margin: 2px;
+}
+
+.pad {
+    padding: 2px;
+    padding-right: 10px;
 }
 
 .rating span:hover,
