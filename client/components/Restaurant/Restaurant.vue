@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BadgeList from "@/components/Badges/BadgeList.vue";
+import { ObjectId } from "mongodb";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import { useUserStore } from "../../stores/user";
@@ -8,10 +9,33 @@ import PetitionComponent from "../Petition/PetitionComponent.vue";
 import ResponseFormComponent from "../Response/ResponseFormComponent.vue";
 import { RestaurantData } from "./Restaurants.vue";
 
+enum RESPONSE_TYPE {
+  REJECTED,
+  ACCEPTED,
+}
+
+export interface ResponseData {
+  concern: ObjectId;
+  response: string;
+  date: number;
+  type: RESPONSE_TYPE;
+}
+
+export interface PetitionData {
+  _id: ObjectId;
+  title: string;
+  problem: string;
+  solution: string;
+  topic: string;
+  target: ObjectId;
+  creator: string;
+  upvoteThreshold: number;
+}
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
 const myRestaurants = ref(new Array<RestaurantData>());
 const isOwner = ref(false);
+const responsePetitions = ref(new Array<string>());
 
 const getMyRestaurants = async () => {
   try {
@@ -22,11 +46,22 @@ const getMyRestaurants = async () => {
       return restaurant._id.toString();
     });
     isOwner.value = restaurantIds.includes(restaurant._id.toString());
+    const responses = await fetchy(`/api/response/business/${restaurant._id}`, "GET");
+    responsePetitions.value = responses.map((response: ResponseData) => {
+      return response.concern.toString();
+    });
     return;
   } catch {
     return;
   }
 };
+
+const displayResponseForm = (petition: PetitionData) => {
+  const id = petition._id.toString();
+  return isOwner && !responsePetitions.value.includes(id);
+}
+
+
 
 const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions", "badges"]);
 
@@ -59,7 +94,7 @@ onBeforeMount(async () => {
       }"
     />
     <ResponseFormComponent
-      v-if="isOwner"
+      v-if="displayResponseForm(petition)"
       :petition="{
         _id: petition._id,
         creator: petition.creator,
