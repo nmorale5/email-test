@@ -135,6 +135,7 @@ onBeforeMount(async ()=> {
         <p>Response: {{ response.response }}</p>
         <div v-if="madeFeedback._id" class="base">
           <button class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
+          <p><b>{{ props.petition.creator }}</b></p>
           <article class="timestamp ">
             <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
           </article>
