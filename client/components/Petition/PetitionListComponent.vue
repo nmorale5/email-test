@@ -64,7 +64,18 @@ onBeforeMount(async () => {
   </div>
   <section class="petitions" v-if="loaded && filteredPetitions.length !== 0">
     <article v-for="petition in filteredPetitions" :key="petition._id">
-      <PetitionComponent :petition="petition" @refreshPetitions="getPetitions()" />
+      <PetitionComponent :petition="{
+          _id: petition._id,
+          creator: petition.creator,
+          title: petition.title,
+          problem: petition.problem,
+          solution: petition.solution,
+          upvoteThreshold: petition.upvoteThreshold,
+          topic: petition.topic,
+          target: petition.target,
+          dateUpdated: petition.dateUpdated,
+          dateCreated: petition.dateCreated,
+        }" @refreshPetitions="getPetitions()" />
     </article>
   </section>
   <p v-else-if="loaded">No petitions found</p>

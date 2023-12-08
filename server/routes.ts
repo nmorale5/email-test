@@ -345,7 +345,7 @@ class Routes {
     if (res.post !== null) {
       if (res.post.type == 1) {
         // accept response
-        return Feedback.enterFeedbackState(res.post._id)
+        return Feedback.enterFeedbackState(res.post._id);
       }
     }
   }
@@ -355,18 +355,17 @@ class Routes {
     try {
       return await Response.getResponse(id);
     } catch (e) {
-      return null
+      return null;
     }
   }
 
   @Router.get("/response/concern/:concern")
   async getResponseByConcern(concern: ObjectId) {
     try {
-      const res = await Response.getResponseByConcern(concern);
-      return res
-    }
-    catch (e) {
-      return null
+      const res = await Response.getResponseByConcern(new ObjectId(concern));
+      return res;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -455,7 +454,7 @@ class Routes {
   async getUserFeedback(session: WebSessionDoc, response: ObjectId) {
     const responseId = new ObjectId(response);
     const user = WebSession.getUser(session);
-    
+
     return await Feedback.getOneUserFeedback(user, responseId);
   }
 
@@ -467,25 +466,25 @@ class Routes {
   @Router.post("/feedback/responses/:response")
   async createFeedback(session: WebSessionDoc, response: ObjectId, feedback: string, rating: number, decision: boolean) {
     const user = WebSession.getUser(session);
-    const res = await Response.getResponse(new ObjectId(response))
+    const res = await Response.getResponse(new ObjectId(response));
 
     await Feedback.createFeedback(user, new ObjectId(response), feedback, Number(rating), decision);
 
     if ((await Feedback.getAllFeedback(new ObjectId(response))).length === AWARD_THRESHOLD) {
       const ratio = await Feedback.getYesRatio(response);
-      const petition = await Petition.getPetition(res.concern)
+      const petition = await Petition.getPetition(res.concern);
 
       if (ratio >= MINIMUM_RATIO) {
         // TODO: Remove attempt badge?
-        await Badge.add(petition.target, petition.topic)
+        await Badge.add(petition.target, petition.topic);
         await Feedback.updateFeedbackState(response, true, false);
-        await Reputation.updateReputation(petition.target, 1)
+        await Reputation.updateReputation(petition.target, 1);
       } else {
         await Feedback.updateFeedbackState(response, false, false);
-        await Reputation.updateReputation(petition.target, 1)        
+        await Reputation.updateReputation(petition.target, 1);
       }
 
-    return { msg: "Response successfully evaluated!" };
+      return { msg: "Response successfully evaluated!" };
     }
   }
 

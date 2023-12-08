@@ -1,11 +1,35 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
+import { ObjectId } from "mongodb";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, onUpdated, ref } from "vue";
 import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
 import FeedbackStateForm from "../Feedback State/FeedbackStateForm.vue";
+
+enum RESPONSE_TYPE {
+  REJECTED,
+  ACCEPTED,
+}
+
+export interface ResponseData {
+  concern: ObjectId;
+  response: string;
+  date: number;
+  type: RESPONSE_TYPE;
+}
+
+export interface PetitionData {
+  _id: ObjectId;
+  title: string;
+  problem: string;
+  solution: string;
+  topic: string;
+  target: ObjectId;
+  creator: string;
+  upvoteThreshold: number;
+}
 
 
 const props = defineProps(["petition"]);
@@ -15,7 +39,7 @@ const signed = ref(false);
 const signers = ref(0);
 const restaurantNameLoading = ref(true);
 const restaurantName = ref("");
-const response:any = ref({});
+const response: any = ref({});
 const madeFeedback: any = ref({});
 
 const deletePetition = async () => {
