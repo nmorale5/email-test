@@ -73,7 +73,7 @@ const convertIDtoNames = async () => {
     restaurantNameLoading.value = false;
 }
 
-const getResponse =async () => {
+const getResponse = async () => {
   let tempResponse;
   try {
     tempResponse = await fetchy(`/api/response/concern/${props.petition._id}`, "GET");
@@ -83,15 +83,19 @@ const getResponse =async () => {
   response.value = tempResponse;
 }
 
-const getPersonalFeedback =async () => {
+const getPersonalFeedback = async () => {
   let tempFeedback;
   let query: Record<string, string> = response.value._id !== undefined ? {response: response.value._id} : {};
   try {
     tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET", query)
+    if (tempFeedback) {
+      madeFeedback.value = tempFeedback
+    } else {
+      madeFeedback.value = {}
+    }
   } catch (e) {
     return;
   }
-  madeFeedback.value = tempFeedback;
 }
 
 const refreshPetitionList =async () => {
@@ -110,7 +114,11 @@ onBeforeMount(async ()=> {
     await updateSigned();
     await convertIDtoNames();
     await getResponse();
-    if(response.value._id) await getPersonalFeedback();
+    if(response.value._id) {
+      console.log("TRYING TO GET FEEDBACK")
+      console.log(JSON.stringify(response.value))
+      await getPersonalFeedback();
+    }
 });
 </script>
 

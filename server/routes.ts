@@ -352,12 +352,22 @@ class Routes {
 
   @Router.get("/response/:id")
   async getResponse(id: ObjectId) {
-    return await Response.getResponse(id);
+    try {
+      return await Response.getResponse(id);
+    } catch (e) {
+      return null
+    }
   }
 
   @Router.get("/response/concern/:concern")
   async getResponseByConcern(concern: ObjectId) {
-    return await Response.getResponseByConcern(concern);
+    try {
+      const res = await Response.getResponseByConcern(concern);
+      return res
+    }
+    catch (e) {
+      return null
+    }
   }
 
   @Router.delete("/response/:id")
@@ -445,6 +455,7 @@ class Routes {
   async getUserFeedback(session: WebSessionDoc, response: ObjectId) {
     const responseId = new ObjectId(response);
     const user = WebSession.getUser(session);
+    
     return await Feedback.getOneUserFeedback(user, responseId);
   }
 
