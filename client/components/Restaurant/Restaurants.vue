@@ -92,14 +92,14 @@ onBeforeMount(async () => {
     <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()" class="light-padding">
       <SelectableRestaurant :restaurant="restaurant"/>
     </div>
-    <p v-if="myRestaurants.length === 0">You manage no restaurants.</p>
+    <p v-if="myRestaurants.length === 0"  class="align-center pad-bottom">You manage no restaurants.</p>
     <!-- <article>
       <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
       <button @click="addRandomBadge">Add Random Badge (debug) (refresh page after)</button>
     </article> -->
   </div>
   <div v-else>
-    <p>Log in if you wish to view your restaurants or be added as an owner of a restaurant.</p>
+    <p class="align-center pad-bottom">Log in if you wish to view your restaurants or be added as an owner of a restaurant.</p>
   </div>
 </template>
 
@@ -157,5 +157,9 @@ h2 {
 
 .light-padding {
   padding: 3px;
+}
+
+.pad-bottom {
+  padding-bottom: 10cm;
 }
 </style>
