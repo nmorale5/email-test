@@ -24,7 +24,7 @@ onBeforeMount(async () => {
 
 <template>
   <header>
-    <nav>
+    <nav class="sticky">
       <div class="title">
         <img src="@/assets/images/logo.svg" />
         <RouterLink :to="{ name: 'Home' }">
@@ -68,6 +68,13 @@ nav {
   background-color: var(--green);
   display: flex;
   align-items: center;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 h1 {
