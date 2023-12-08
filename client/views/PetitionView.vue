@@ -9,11 +9,11 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 </script>
 
 <template>
-  <CreatePetitionForm />
+  <CreatePetitionForm/>
 </template>
 
 <style scoped>
-h1 {
-  text-align: center;
+.pad {
+  padding-top: 100px;
 }
 </style>

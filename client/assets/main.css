@@ -57,6 +57,7 @@ a.button {
 html {
   background-color: var(--base-bg-light);
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  padding-top: 70px;
 }
 
 .button-list {

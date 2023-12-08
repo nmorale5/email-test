@@ -64,7 +64,7 @@ onBeforeMount(async () => {
 @import "./assets/toast.css";
 
 nav {
-  padding: 1em 2em;
+  padding: 10px 20px;
   background-color: var(--green);
   display: flex;
   align-items: center;
@@ -77,7 +77,9 @@ nav {
   right: 0em;
   bottom: calc(100%-5em);
 }
-
+.pad {
+  padding-top: 1000px;
+}
 h1 {
   font-size: 2em;
   margin: 0;

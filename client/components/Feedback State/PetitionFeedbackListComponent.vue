@@ -14,7 +14,6 @@ async function getFeedback(){
         const initialFeedback = await fetchy(`/api/feedback/all/userFeedback/${props.response._id}`, "GET")
         const authors = await Promise.all(
             initialFeedback.map(async (feedback:any) => await fetchy(`/api/users/id/${feedback.user}`, "GET")));
-        console.log(authors)
         listOfFeedback = initialFeedback.map((feedback:any, i: number, a: Array<any>) => {
             return {
                 author: authors[i].username,

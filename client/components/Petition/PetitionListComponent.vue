@@ -59,9 +59,9 @@ onBeforeMount(async () => {
   </div>
   <div class="row">
     <SearchPetitionForm @getPetitionsByTitle="getPetitions" />
+    <h2 v-if="!searchTitle" class="row">{{ filterType === "all" ? "All Petitions" : filterType === "signed" ? "My Signed Petitions" : "My Created Petitions" }}</h2>
+    <h2 v-else class="row">Petitions matching: "{{ searchTitle }}":</h2>
   </div>
-  <h2 v-if="!searchTitle" class="row">All Petitions:</h2>
-  <h2 v-else class="row">Petitions matching: "{{ searchTitle }}":</h2>
   <section class="petitions" v-if="loaded && filteredPetitions.length !== 0">
     <article v-for="petition in filteredPetitions" :key="petition._id">
       <PetitionComponent :petition="petition" @refreshPetitions="getPetitions()" />
@@ -79,8 +79,7 @@ section {
 }
 
 section,
-p,
-.row {
+p {
   margin: 0 auto;
   max-width: 60em;
 }
@@ -100,13 +99,9 @@ article {
 
 .row {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
+  flex-direction: column;
   margin: 0 auto;
   max-width: 60em;
-  align-items: end;
-}
-
-h2 {
-  padding-left: 5cm;
 }
 </style>
