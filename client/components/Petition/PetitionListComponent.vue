@@ -82,4 +82,8 @@ article {
   max-width: 60em;
   align-items: end;
 }
+
+h2 {
+  padding-left: 5cm;
+}
 </style>

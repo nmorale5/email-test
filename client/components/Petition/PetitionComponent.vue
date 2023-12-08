@@ -86,8 +86,8 @@ onBeforeMount(async ()=> {
     </div>
     <div class="selectables">
         <p v-if="restaurantNameLoading">Loading...</p>
-        <p v-else>Restaurant: <div class="tag">{{ restaurantName }}</div></p>
-        <p>Topic: <div class="tag">{{ props.petition.topic }}</div></p>
+        <p v-else>Restaurant: <button type="submit" class="pure-button pure-button-primary pad">{{ restaurantName }}</button></p>
+        <p>Topic: {{ props.petition.topic }}</p>
     </div>
     <div class="information">
         <p>Problem: {{ props.petition.problem }}</p>
@@ -97,14 +97,14 @@ onBeforeMount(async ()=> {
     <div class="line"></div>
 
     <div class="base">
-      <p><b>{{ props.petition.creator }}</b></p>
       <div class="progress">
-        <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
         <div class="sign" v-if="currentUserId">
           <button class="pure-button pure-button-primary" v-if="!signed" @click="trySign">Sign</button>
           <button class="pure-button pure-button-primary" v-else @click="tryUnsign"><em>Signed!</em></button>
         </div>
+        <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
       </div>
+      <p><b>{{ props.petition.creator }}</b></p>
       <article class="timestamp">
         <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
       </article>
@@ -133,6 +133,18 @@ margin-top: 5px;
 
 .sign {
   margin-left: 5px;
+}
+
+.pure-button-primary {
+  margin: 2px;
+}
+
+.pad {
+  padding-top: 1px;
+  padding-right: 4px;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  font-weight: lighter;
 }
 
 .petition-container {
@@ -192,12 +204,12 @@ menu {
 }
 
 .tag {
-  background-color: white;
+  background-color: var(--blue);
   margin-left: 2px;
   margin-right: 2px;
-  border-radius: 45px;
+  border-radius: 5px;
   padding: 4px;
-  border: 1px black solid;
+  color: white;
 }
 
 .information p{

@@ -26,7 +26,7 @@ onBeforeMount(async () => {
   <header>
     <nav>
       <div class="title">
-        <img src="@/assets/images/logo.svg" />
+        <img src="@/assets/images/boldnbrash.png" />
         <RouterLink :to="{ name: 'Home' }">
           <h1>Restaurant Reform</h1>
         </RouterLink>
