@@ -126,6 +126,7 @@ onBeforeMount(async () => {
     display: grid;
     gap: 4px 4px;
     grid-template-columns: 8% 91%;
+    padding-bottom: 4px;
 }
 
 #verbal-feedback {
