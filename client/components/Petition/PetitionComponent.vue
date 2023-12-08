@@ -11,6 +11,7 @@ const { currentUsername, currentUserId } = storeToRefs(useUserStore());
 const signed = ref(false);
 const signers = ref(0);
 const restaurantNameLoading = ref(true);
+const restaurantName = ref("");
 
 const deletePetition = async () => {
   try {
@@ -62,7 +63,8 @@ const convertIDtoNames = async () => {
         return;
     }
     //props.petition.target = restaurant.name;
-    props.petition.restaurant_name = restaurant.name
+    //props.petition.restaurant_name = restaurant.name;
+    restaurantName.value = restaurant.name;
     restaurantNameLoading.value = false;
 }
 
@@ -83,7 +85,7 @@ onBeforeMount(async ()=> {
     </div>
     <div class="selectables">
         <p v-if="restaurantNameLoading">Loading...</p>
-        <p v-else="restaurantNameLoading">Restaurant: <div class="tag">{{ props.petition.restaurant_name }}</div></p>
+        <p v-else>Restaurant: <div class="tag">{{ restaurantName }}</div></p>
         <p>Topic: <div class="tag">{{ props.petition.topic }}</div></p>
     </div>
     <div class="information">

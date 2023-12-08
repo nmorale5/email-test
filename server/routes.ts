@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Response, Upvote, User, WebSession } from "./app";
+import { Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Response, Reputation, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -298,7 +298,7 @@ class Routes {
   @Router.post("/petition")
   async createPetition(session: WebSessionDoc, title: string, problem: string, solution: string, topic: string, restaurant: ObjectId) {
     const user = await User.getUserById(WebSession.getUser(session));
-    const threshold = 3;
+    const threshold = 1;
     return await Petition.createPetition(title, problem, solution, topic, restaurant, user.username, threshold);
   }
 
@@ -388,6 +388,20 @@ class Routes {
     return await Badge.add(business!._id, "nuts");
   }
 
+  @Router.post("/reputation/increase/:business")
+  async increaseReputation(business: ObjectId) {
+    return await Reputation.updateReputation(business, 1);
+  }
+
+  @Router.post("/reputation/decrease/:business")
+  async decreaseReputation(business: ObjectId) {
+    return await Reputation.updateReputation(business, -1);
+  }
+
+  @Router.get("/reputation/:business")
+  async getReputation(business: ObjectId) {
+    return await Reputation.getEntityReputation(business);
+  }
   @Router.get("/feedback/state/:response")
   async getFeedBackState(response: ObjectId) {
     return await Feedback.getFeedbackState(response);
