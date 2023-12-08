@@ -225,7 +225,7 @@ class Routes {
     const approved: PetitionDoc[] = [];
     const allPetitions = await Petition.getAllPetitions(businessId);
     for (const petition of allPetitions) {
-      const numSigners = (await Upvote.getUpvotes(petition._id.toString())).length;
+      const numSigners = (await Upvote.getUpvotes(petition._id)).length;
       if (numSigners >= petition.upvoteThreshold) {
         approved.push(petition);
       }
