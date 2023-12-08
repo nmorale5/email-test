@@ -28,7 +28,7 @@ const getEffectiveness = async () => {
     let feedbackList;
     let query: Record<string, string> = props.response !== undefined ? {response: props.response._id} : {};
     try {
-        feedbackList = await fetchy(`/api/feedback/all/userFeedback/`, "GET", query)
+        feedbackList = await fetchy(`/api/feedback/all/userFeedback/${props.response._id}`, "GET")
     } catch (_) {
         return;
     }

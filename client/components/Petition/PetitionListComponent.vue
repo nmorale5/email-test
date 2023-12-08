@@ -3,14 +3,28 @@ import PetitionComponent from "@/components/Petition/PetitionComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import SearchPetitionForm from "./SearchPetitionForm.vue";
 
-const { isLoggedIn } = storeToRefs(useUserStore());
+const { isLoggedIn, currentUsername, currentUserId } = storeToRefs(useUserStore());
 
 const loaded = ref(false);
-let petitions = ref<Array<Record<string, string>>>([]);
-let searchTitle = ref("");
+const filterType = ref("all");
+const upvoteResults = ref(new Array<Array<string>>());
+const allPetitions = ref<Array<Record<string, string>>>([]);
+const filteredPetitions = computed(() => {
+  if (filterType.value == "all") {
+    return allPetitions.value;
+  } else if (filterType.value == "signed") {
+    return allPetitions.value.filter((p, i) => {
+      return upvoteResults.value[i].some((u: any) => u.toString() === currentUserId.value);
+    });
+  } else if (filterType.value == "created") {
+    return allPetitions.value.filter((p) => p.creator === currentUsername.value);
+  }
+  return allPetitions.value; // should not get here
+});
+const searchTitle = ref("");
 
 async function getPetitions(search?: string) {
   let petitionResults;
@@ -20,11 +34,13 @@ async function getPetitions(search?: string) {
     } else {
       petitionResults = await fetchy("/api/petitions/all", "GET");
     }
+    const upvotes = petitionResults.map(async (p: any) => await fetchy(`/api/upvote/${p._id}`, "GET"));
+    upvoteResults.value = await Promise.all(upvotes);
   } catch (_) {
     return;
   }
   searchTitle.value = search ? search : "";
-  petitions.value = petitionResults;
+  allPetitions.value = petitionResults;
 }
 
 onBeforeMount(async () => {
@@ -34,13 +50,20 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+  <div>
+    <select v-model="filterType">
+      <option value="all">All petitions</option>
+      <option value="signed">Petitions I've signed</option>
+      <option value="created">Petitions I created</option>
+    </select>
+  </div>
   <div class="row">
     <SearchPetitionForm @getPetitionsByTitle="getPetitions" />
-    <h2 v-if="!searchTitle" class="row">All Petitions:</h2>
+    <h2 v-if="!searchTitle" class="row">{{ filterType === "all" ? "All Petitions" : filterType === "signed" ? "My Signed Petitions" : "My Created Petitions" }}</h2>
     <h2 v-else class="row">Petitions matching: "{{ searchTitle }}":</h2>
   </div>
-  <section class="petitions" v-if="loaded && petitions.length !== 0">
-    <article v-for="petition in petitions" :key="petition._id">
+  <section class="petitions" v-if="loaded && filteredPetitions.length !== 0">
+    <article v-for="petition in filteredPetitions" :key="petition._id">
       <PetitionComponent :petition="petition" @refreshPetitions="getPetitions()" />
     </article>
   </section>

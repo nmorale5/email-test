@@ -61,10 +61,6 @@ export default class FeedbackConcept {
   async getOneUserFeedback(user: ObjectId, response: ObjectId) {
     //await this.getFeedbackState(response)
     const doc = await this.feedback.readOne({ user, response });
-
-    if (doc === null) {
-      throw new NotFoundError("User's feedback not found!");
-    }
     return doc;
   }
 
