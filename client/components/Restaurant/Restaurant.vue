@@ -34,13 +34,12 @@ export interface PetitionData {
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
 const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions", "badges"]);
-const emit = defineEmits(["refreshPetitions"])
+const emit = defineEmits(["refreshResponse"])
 
 const myRestaurants = ref(new Array<RestaurantData>());
 const isOwner = ref(false);
 const reputation = ref(0);
 const responsePetitions = ref(new Array<string>());
-const updatedPetitions = ref(petitions.value)
 
 const getMyRestaurants = async () => {
   try {
@@ -68,7 +67,7 @@ const displayResponseForm = (petition: PetitionData) => {
 
 const handleResponseEvent = async () => {
   await getMyRestaurants()
-  emit("refreshPetitions")
+  emit("refreshResponse")
 }
 
 
