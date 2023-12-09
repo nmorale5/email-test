@@ -26,7 +26,6 @@ const resetHover = async () => {
 
 const getEffectiveness = async () => {
     let feedbackList;
-    let query: Record<string, string> = props.response !== undefined ? {response: props.response._id} : {};
     try {
         feedbackList = await fetchy(`/api/feedback/all/userFeedback/${props.response._id}`, "GET")
     } catch (_) {
@@ -77,7 +76,7 @@ onBeforeMount(async () => {
             </div>
         </div>
         <div class="feedback">
-                <div class="pad">Feedback: </div>
+                <div class="pad" id="feedback-label">Feedback: </div>
                 <input id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" />
             </div>
         <div>
@@ -121,5 +120,22 @@ onBeforeMount(async () => {
 .rating span.active,
 .rating span.active:hover {
     background-image: url('../../assets/images/gold-star.png'); /* Replace with your filled star image */
+}
+
+.feedback {
+    display: grid;
+    gap: 4px 4px;
+    grid-template-columns: 8% 91%;
+    padding-bottom: 4px;
+}
+
+#verbal-feedback {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+#feedback-label {
+    grid-column-start: 1;
+    grid-column-end: 2;
 }
 </style>

@@ -26,7 +26,7 @@ const filteredPetitions = computed(() => {
 });
 const searchTitle = ref("");
 
-async function getPetitions(search?: string) {
+const getPetitions = async (search?: string) => {
   let petitionResults;
   try {
     if (search !== undefined && search !== "") {
@@ -41,7 +41,7 @@ async function getPetitions(search?: string) {
   }
   searchTitle.value = search ? search : "";
   allPetitions.value = petitionResults;
-}
+};
 
 onBeforeMount(async () => {
   await getPetitions();
@@ -51,7 +51,7 @@ onBeforeMount(async () => {
 
 <template>
   <div>
-    <select v-model="filterType">
+    <select v-model="filterType" @click="() => getPetitions()">
       <option value="all">All petitions</option>
       <option value="signed">Petitions I've signed</option>
       <option value="created">Petitions I created</option>
@@ -64,7 +64,18 @@ onBeforeMount(async () => {
   </div>
   <section class="petitions" v-if="loaded && filteredPetitions.length !== 0">
     <article v-for="petition in filteredPetitions" :key="petition._id">
-      <PetitionComponent :petition="petition" @refreshPetitions="getPetitions()" />
+      <PetitionComponent :petition="{
+          _id: petition._id,
+          creator: petition.creator,
+          title: petition.title,
+          problem: petition.problem,
+          solution: petition.solution,
+          upvoteThreshold: petition.upvoteThreshold,
+          topic: petition.topic,
+          target: petition.target,
+          dateUpdated: petition.dateUpdated,
+          dateCreated: petition.dateCreated,
+        }" @refreshPetitions="getPetitions()" />
     </article>
   </section>
   <p v-else-if="loaded">No petitions found</p>
