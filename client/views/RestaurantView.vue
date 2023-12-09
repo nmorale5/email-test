@@ -8,6 +8,17 @@ const restaurant = ref();
 const petitions = ref();
 const badges = ref();
 const loaded = ref(false);
+const forceRenderKey = ref(0);
+
+const getRestaurantPetitions = async () => {
+  const restaurantId = router.currentRoute.value.params.id;
+  try {
+    petitions.value = await fetchy(`/api/business/${restaurantId}/petitions/approved`, "GET");
+    forceRenderKey.value += 1
+  } catch (e) {
+    console.log(e)
+  }  
+}
 
 onBeforeMount(async () => {
   const restaurantId = router.currentRoute.value.params.id;
@@ -24,7 +35,7 @@ onBeforeMount(async () => {
 
 <template>
   <h2 v-if="!loaded">loading...</h2>
-  <Restaurant v-else :restaurant="restaurant" :petitions="petitions" :badges="badges" />
+  <Restaurant @refreshPetitions="getRestaurantPetitions" :key="forceRenderKey" v-else :restaurant="restaurant" :petitions="petitions" :badges="badges" />
 </template>
 
 <style scoped>
