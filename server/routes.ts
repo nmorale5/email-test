@@ -379,12 +379,18 @@ class Routes {
   @Router.get("/response/business/:business")
   async getResponseByBusiness(business: ObjectId) {
     const businessPetitions = await Petition.getAllPetitions(business);
-    const respondedPetitions = businessPetitions.filter(async (petition) => {
-      return await Response.hasResponse(petition._id);
-    });
+    // Array.filter doesn't work with async functions apparently, had to do this
+    const hasResponseArr = await Promise.all(businessPetitions.map(async (petition) => {
+      return await Response.hasResponse(petition._id)
+    }))
+    const respondedPetitions = businessPetitions.filter((petition, i) => {
+      return hasResponseArr[i]
+    })
+
     const responses: Array<Promise<ResponseDoc>> = respondedPetitions.map((petition) => {
       return Response.getResponseByConcern(petition._id);
     });
+
     return await Promise.all(responses);
   }
 
