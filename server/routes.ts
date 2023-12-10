@@ -463,8 +463,7 @@ class Routes {
     const responseId = new ObjectId(response);
     const user = WebSession.getUser(session);
 
-    const res = await Feedback.getOneUserFeedback(user, responseId);
-    return res
+    return await Feedback.getOneUserFeedback(user, responseId);
   }
 
   @Router.get("/feedback/all/userFeedback/:response")

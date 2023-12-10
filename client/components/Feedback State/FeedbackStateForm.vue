@@ -121,4 +121,19 @@ onBeforeMount(async () => {
 .rating span.active:hover {
     background-image: url('../../assets/images/gold-star.png'); /* Replace with your filled star image */
 }
+
+.feedback {
+    display: grid;
+    gap: 4px 4px;
+    grid-template-columns: 8% 91%;
+    padding-bottom: 4px;
+}
+#verbal-feedback {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+#feedback-label {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
 </style>
