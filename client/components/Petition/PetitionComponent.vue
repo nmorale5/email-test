@@ -128,30 +128,34 @@ const linkRestaurantButtonToPage = () => {
     <div class="top">
       <h1>{{ props.petition.title }}</h1>
     </div>
-    <div class="selectables">
-      <p v-if="restaurantNameLoading">Loading...</p>
-      <p v-else>
-        Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
-      </p>
-      <p>Topic: {{ props.petition.topic }}</p>
-    </div>
-    <div class="information">
-      <p>Problem: {{ props.petition.problem }}</p>
-      <p>Solution: {{ props.petition.solution }}</p>
-    </div>
+    <div class="line"></div>
+    <p v-if="restaurantNameLoading">Loading...</p>
+    <p v-else>
+      Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
+    </p>
+    <div class="line"></div>
+    <p>Topic: {{ props.petition.topic }}</p>
+    <div class="line"></div>
+    <p>Problem: {{ props.petition.problem }}</p>
+    <div class="line"></div>
+    <p>Solution: {{ props.petition.solution }}</p>
     <div class="line"></div>
     <div v-if="response._id">
       <div v-if="response.type.valueOf() === 1">
         <p class="statement">-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
+        <div class="line"></div>
         <p>Response: {{ response.response }}</p>
+        <div class="line"></div>
         <div v-if="madeFeedback._id" class="base">
           <button id="view-feedback-button" class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
           <p>
             <b>{{ props.petition.creator }}</b>
           </p>
+          <div class="line"></div>
           <article class="timestamp">
             <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
           </article>
+          <div class="line"></div>
           <menu v-if="props.petition.creator == currentUsername">
             <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
           </menu>
@@ -162,10 +166,11 @@ const linkRestaurantButtonToPage = () => {
       </div>
       <div v-else>
         <p class="statement">-- Petition Rejected on {{ formatDate(response.dateCreated) }} --</p>
+        <div class="line"></div>
         <p>Response: {{ response.response }}</p>
       </div>
     </div>
-    <div class="base" v-else>
+    <div v-else>
       <div class="progress">
         <div class="sign" v-if="currentUserId">
           <button class="pure-button pure-button-primary" v-if="!signed" @click="trySign">Sign</button>
@@ -173,9 +178,11 @@ const linkRestaurantButtonToPage = () => {
         </div>
         <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
       </div>
+      <div class="line"></div>
       <p>
         <b>{{ props.petition.creator }}</b>
       </p>
+      <div class="line"></div>
       <article class="timestamp">
         <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
       </article>
@@ -193,7 +200,7 @@ p {
 .line {
   height: 1px;
   background: black;
-  margin-top: 5px;
+  margin: 5px;
 }
 
 .statement {
@@ -227,6 +234,8 @@ p {
   padding: 10px 10px 0px 10px;
   border-style: solid;
   border-width: 2px;
+  display: flex;
+  flex-direction: column;
 }
 .author {
   font-weight: bold;

@@ -73,7 +73,7 @@ onBeforeMount(async () => {
     </div>
   </div>
   <section class="petitions" v-if="loaded && filteredPetitions.length !== 0">
-    <article v-for="petition in filteredPetitions" :key="petition._id">
+    <article v-for="petition in filteredPetitions" :key="petition._id" class="thinner">
       <PetitionComponent :petition="{
           _id: petition._id,
           creator: petition.creator,
@@ -115,13 +115,19 @@ article {
 }
 
 .petitions {
-  padding: 1em;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 
 .row {
   display: flex;
   justify-content: space-evenly;
   flex-direction: row;
+}
+
+.thinner{
+  width: 100%;
 }
 
 .dropdown {
