@@ -401,7 +401,7 @@ class Routes {
 
   @Router.post("/badges/:owner/:badgeName")
   async addBadge(owner: ObjectId, badgeName: string) {
-    return await Badge.add(owner, badgeName);
+    return await Badge.add(new ObjectId(owner), badgeName);
   }
 
   @Router.delete("/badges/:owner/:badgeName")
@@ -468,7 +468,7 @@ class Routes {
 
       if (ratio >= MINIMUM_RATING) {
         // TODO: Remove attempt badge?
-        await Badge.add(petition.target, petition.topic);
+        await Badge.add(new ObjectId(petition.target), petition.topic);
         await Feedback.updateFeedbackState(responseID, true, false);
         await Reputation.updateReputation(petition.target, 1);
       } else {
