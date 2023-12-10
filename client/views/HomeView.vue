@@ -32,12 +32,18 @@ const sendThresholdEmail = async () => {
       <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
       <h1 v-else>Please login!</h1>
     </section>
+    <h2>Big changes start just one petition at a time.</h2>
+
     <PetitionListComponent />
   </main>
 </template>
 
 <style scoped>
 h1 {
+  text-align: center;
+}
+
+h2 {
   text-align: center;
 }
 

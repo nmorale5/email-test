@@ -97,7 +97,7 @@ const getPersonalFeedback = async () => {
   }
 };
 
-const refreshPetitionList = async () => {
+const refreshPetitionList = () => {
   emit("refreshPetitions");
 };
 
