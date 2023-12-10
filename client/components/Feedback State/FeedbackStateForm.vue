@@ -7,7 +7,7 @@ const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5])
 const hover = ref(0)
 const props: any = defineProps(['response'])
-const emit = defineEmits(["refreshPetitions"])
+const emit = defineEmits(["refreshPetitions", "refreshFeedback"])
 const decision = ref(true);
 const feedback = ref("")
 
@@ -38,16 +38,16 @@ const createFeedback = async () => {
     try {
         await fetchy(`/api/feedback/responses/${props.response._id}`, "POST", {
             body: {
-                response: props.response._id,
                 feedback: feedback.value,
                 rating: rating.value,
                 decision: decision.value,
             }})
         await getEffectiveness();
-    } catch (_) {
-        return;
+    } catch (e) {
+        console.log(e);
     }
     emit("refreshPetitions");
+    emit("refreshFeedback");
 }
 onBeforeMount(async () => {
     await getEffectiveness();
@@ -76,7 +76,7 @@ onBeforeMount(async () => {
             </div>
         </div>
         <div class="feedback">
-                <div class="pad" id="feedback-label">Feedback: </div>
+                <div class="pad">Feedback: </div>
                 <input id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" />
             </div>
         <div>
@@ -120,22 +120,5 @@ onBeforeMount(async () => {
 .rating span.active,
 .rating span.active:hover {
     background-image: url('../../assets/images/gold-star.png'); /* Replace with your filled star image */
-}
-
-.feedback {
-    display: grid;
-    gap: 4px 4px;
-    grid-template-columns: 8% 91%;
-    padding-bottom: 4px;
-}
-
-#verbal-feedback {
-    grid-column-start: 2;
-    grid-column-end: 3;
-}
-
-#feedback-label {
-    grid-column-start: 1;
-    grid-column-end: 2;
 }
 </style>
