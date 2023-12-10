@@ -87,7 +87,7 @@ const getPersonalFeedback = async () => {
   let query: Record<string, string> = response.value._id !== undefined ? { response: response.value._id } : {};
   try {
     tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET", query);
-    if (tempFeedback) {
+    if (tempFeedback !== null) {
       madeFeedback.value = tempFeedback;
     } else {
       madeFeedback.value = {};
@@ -157,7 +157,7 @@ const linkRestaurantButtonToPage = () => {
           </menu>
         </div>
         <div v-else>
-          <FeedbackStateForm :response="response" @refreshPetitions="refreshPetitionList" />
+          <FeedbackStateForm @refreshFeedback="getPersonalFeedback" :response="response" @refreshPetitions="refreshPetitionList" />
         </div>
       </div>
       <div v-else>

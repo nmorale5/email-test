@@ -33,6 +33,9 @@ export interface PetitionData {
 }
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
+const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions", "badges"]);
+const emit = defineEmits(["refreshResponse"])
+
 const myRestaurants = ref(new Array<RestaurantData>());
 const isOwner = ref(false);
 const reputation = ref(0);
@@ -62,9 +65,11 @@ const displayResponseForm = (petition: PetitionData) => {
   return isOwner && !responsePetitions.value.includes(id);
 }
 
+const handleResponseEvent = async () => {
+  await getMyRestaurants()
+  emit("refreshResponse")
+}
 
-
-const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions", "badges"]);
 
 const getReputation =async () => {
   let restaurantReputation;
@@ -111,6 +116,7 @@ onBeforeMount(async () => {
         }"
       />
       <ResponseFormComponent
+      @refreshResponse="handleResponseEvent"
       v-if="displayResponseForm(petition)"
         :petition="{
           _id: petition._id,
