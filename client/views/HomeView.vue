@@ -2,10 +2,12 @@
 import PetitionListComponent from "@/components/Petition/PetitionListComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { ref } from "vue";
+import CreatePetitionForm from "../components/Petition/CreatePetitionForm.vue";
+import { fetchy } from "../utils/fetchy";
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
-
-import { fetchy } from "../utils/fetchy";
+const isFormOnScreen = ref(false);
 
 const sendRegisterEmail = async () => {
   try {
@@ -26,12 +28,22 @@ const sendThresholdEmail = async () => {
 
 <template>
   <main>
+    <div class="shadow" v-if="isFormOnScreen" @click="isFormOnScreen = false"></div>
     <section>
       <!-- <button @click="sendRegisterEmail">Send Register Email</button> -->
       <!-- <button @click="sendThresholdEmail">Send Threshold Email</button> -->
       <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
       <h1 v-else>Please login!</h1>
     </section>
+    <button @click="isFormOnScreen = true">Create a Petition</button>
+    <div v-if="isFormOnScreen" class="popup">
+      <div class="component">
+        <button class="close-button" @click="isFormOnScreen = false">
+          <i class="fas fa-times"></i>
+        </button>
+        <CreatePetitionForm @form-submitted="isFormOnScreen = false" />
+      </div>
+    </div>
     <PetitionListComponent />
   </main>
 </template>
@@ -43,5 +55,47 @@ h1 {
 
 .pad-left-big {
   padding-left: 5cm;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+}
+
+.shadow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Black color with 50% opacity */
+  /* pointer-events: all; */
+}
+
+.component {
+  position: relative;
+  /* Other styles for your component */
+}
+
+.close-button {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  border: none;
+  border-radius: 50%;
+  background-color: #ccc;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.close-button i {
+  color: #fff;
 }
 </style>
