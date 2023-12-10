@@ -169,13 +169,11 @@ const linkRestaurantButtonToPage = () => {
       <div class="top">
         <h1>{{ petition.title }}</h1>
       </div>
-      <div class="selectables">
-        <p v-if="restaurantNameLoading">Loading...</p>
-        <p v-else>
-          Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
-        </p>
-        <p>Topic: {{ petition.topic }}</p>
-      </div>
+      <p v-if="restaurantNameLoading" class="center">Loading...</p>
+      <p v-else  class="center">
+        Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
+      </p>
+      <p class="center">Topic: {{ petition.topic }}</p>
       <div class="information">
         <p>Problem: {{ petition.problem }}</p>
         <p>Solution: {{ petition.solution }}</p>
@@ -230,7 +228,7 @@ p {
 .line {
   height: 1px;
   background: black;
-  margin-top: 5px;
+  margin: 5px;
 }
 
 .statement {
@@ -265,6 +263,16 @@ p {
   border-style: solid;
   border-width: 2px;
   width: 80%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.center {
+  justify-content: center;
+  font-size: larger;
+  font-weight: bold;
 }
 .author {
   font-weight: bold;
@@ -345,7 +353,15 @@ menu {
 }
 
 .arrow-button {
-  height: 10%;
-  width: 10%;
+  height: 50px;
+  width: 50px;
+  padding: 5px;
+}
+
+.arrow-button:hover {
+  height: 60px;
+  width: 60px;
+  cursor: pointer;
+  padding: 0px;
 }
 </style>

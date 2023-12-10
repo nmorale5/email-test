@@ -56,7 +56,7 @@ a.button {
 
 html {
   background-color: var(--base-bg-light);
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
   padding-top: 70px;
 }
 
