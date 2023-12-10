@@ -19,10 +19,7 @@ async function navigateToRestaurant() {
 async function getRestaurantBadges() {
   try {
     badges.value = await fetchy(`/api/badges/${props.restaurant._id}`, "GET");
-    console.log("Got badges")
-    console.log(badges.value)
   } catch {
-    console.log("Error with getting badges")
     return;
   }
 }
