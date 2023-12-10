@@ -44,7 +44,12 @@ const sendThresholdEmail = async () => {
         <button class="close-button" @click="isFormOnScreen = false">
           <i class="fas fa-times"></i>
         </button>
-        <CreatePetitionForm @formSubmitted="isFormOnScreen = false" />
+        <CreatePetitionForm
+          @formSubmitted="
+            isFormOnScreen = false;
+            $router.go(0);
+          "
+        />
       </div>
     </div>
     <PetitionListComponent />
