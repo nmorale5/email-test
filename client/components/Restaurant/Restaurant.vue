@@ -94,7 +94,7 @@ onBeforeMount(async () => {
       <h1 class="name">{{ restaurant.name }}</h1>
       <div class="restaurant-info">
         <BadgeList :badges="badges" />
-        <h2>+{{ reputation }}</h2>
+        <h2>Reputation: {{ reputation }}</h2>
       </div>
     </header>
     <div class="line"></div>
