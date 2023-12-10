@@ -76,7 +76,7 @@ onBeforeMount(async () => {
             </div>
         </div>
         <div class="feedback">
-                <div class="pad">Feedback: </div>
+                <div class="pad" id="feedback-label">Feedback: </div>
                 <input id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" />
             </div>
         <div>
