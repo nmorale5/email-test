@@ -80,19 +80,17 @@ export default class FeedbackConcept {
     return responses;
   }
 
-  async getYesRatio(response: ObjectId) {
+  async getAverageRating(response: ObjectId) {
     const responses = await this.getAllFeedback(response);
 
     if (responses.length === 0) {
       return 0;
     }
 
-    var count = 0;
+    var total = 0;
     for (const r of responses) {
-      if (r.decision) {
-        count += 1;
-      }
+      total += r.rating
     }
-    return count / responses.length;
+    return total / responses.length;
   }
 }

@@ -8,7 +8,6 @@ const stars = ref([1, 2, 3, 4, 5])
 const hover = ref(0)
 const props: any = defineProps(['response'])
 const emit = defineEmits(["refreshPetitions", "refreshFeedback"])
-const decision = ref(true);
 const feedback = ref("")
 
 
@@ -40,7 +39,6 @@ const createFeedback = async () => {
             body: {
                 feedback: feedback.value,
                 rating: rating.value,
-                decision: decision.value,
             }})
         await getEffectiveness();
     } catch (e) {
@@ -67,13 +65,6 @@ onBeforeMount(async () => {
                     @mouseleave="resetHover"
                     :class="{ 'active': star <= rating || star <= hover }"></span>
             </div>
-            <div class="decision">
-                <div class="pad">Your Decision: </div>
-                <select id="private" v-model="decision">
-                    <option value="true">Effective</option>
-                    <option value="false">Ineffective</option>
-                </select>
-            </div>
         </div>
         <div class="feedback">
                 <div class="pad" id="feedback-label">Feedback: </div>
@@ -92,7 +83,7 @@ onBeforeMount(async () => {
     align-items: center;
 }
 
-.rating, .decision, .feedback {
+.rating, .feedback {
     display: flex;
     flex-direction: row;
     align-items: center;
