@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import CreatePetitionForm from "../components/Petition/CreatePetitionForm.vue";
+import FeaturedPetition from "../components/Petition/FeaturedPetition.vue";
 import { fetchy } from "../utils/fetchy";
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
@@ -36,13 +37,14 @@ const sendThresholdEmail = async () => {
       <h1 v-else>Please login!</h1>
     </section>
     <h2>Big changes start just one petition at a time.</h2>
-    <button @click="isFormOnScreen = true">Create a Petition</button>
+    <FeaturedPetition />
+    <button class="create-petition-button" @click="isFormOnScreen = true">Create a Petition</button>
     <div v-if="isFormOnScreen" class="popup">
       <div class="component">
         <button class="close-button" @click="isFormOnScreen = false">
           <i class="fas fa-times"></i>
         </button>
-        <CreatePetitionForm @form-submitted="isFormOnScreen = false" />
+        <CreatePetitionForm @formSubmitted="isFormOnScreen = false" />
       </div>
     </div>
     <PetitionListComponent />
@@ -102,5 +104,11 @@ h2 {
 
 .close-button i {
   color: #fff;
+}
+
+.create-petition-button {
+  display: block;
+  margin: 0 auto;
+  margin-top: 1em;
 }
 </style>

@@ -5,7 +5,6 @@ import { fetchy } from "@/utils/fetchy";
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, ref } from "vue";
 import router from "../../router";
-import FeaturedPetition from "./FeaturedPetition.vue";
 import SearchPetitionForm from "./SearchPetitionForm.vue";
 
 const { isLoggedIn, currentUsername, currentUserId } = storeToRefs(useUserStore());
@@ -31,7 +30,7 @@ const searchTitle = ref("");
 
 const refreshPage = () => {
   router.go(0);
-}
+};
 
 const getPetitions = async (search?: string) => {
   let petitionResults;
@@ -59,7 +58,6 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <FeaturedPetition/>
   <div class="row center">
     <div>
       <SearchPetitionForm @getPetitionsByTitle="getPetitions" />
@@ -74,7 +72,8 @@ onBeforeMount(async () => {
   </div>
   <section class="petitions" v-if="loaded && filteredPetitions.length !== 0">
     <article v-for="petition in filteredPetitions" :key="petition._id">
-      <PetitionComponent :petition="{
+      <PetitionComponent
+        :petition="{
           _id: petition._id,
           creator: petition.creator,
           title: petition.title,
@@ -85,7 +84,9 @@ onBeforeMount(async () => {
           target: petition.target,
           dateUpdated: petition.dateUpdated,
           dateCreated: petition.dateCreated,
-        }" @refreshPetitions="refreshPage" />
+        }"
+        @refreshPetitions="refreshPage"
+      />
     </article>
   </section>
   <p v-else-if="loaded">No petitions found</p>
@@ -136,7 +137,6 @@ article {
 .center {
   display: flex;
   justify-content: space-evenly;
-
 }
 
 .constrict {
