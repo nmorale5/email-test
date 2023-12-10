@@ -9,7 +9,7 @@ const getBadgeIconFile = (badgeName: string) => {
   if (idx === -1) {
     return;
   }
-  return `/client/assets/images/tile${idx.toString().padStart(3, "0")}.png`;
+  return `/assets/images/tile${idx.toString().padStart(3, "0")}.png`;
 };
 </script>
 
