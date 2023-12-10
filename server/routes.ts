@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Router, getExpressRouter } from "./framework/router";
 
-import { AWARD_THRESHOLD, Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATIO, Petition, Post, Reputation, Response, Upvote, User, WebSession } from "./app";
+import { AWARD_THRESHOLD, Badge, Business, Emailer, Feedback, Friend, MINIMUM_RATING, Petition, Post, Reputation, Response, Upvote, User, WebSession } from "./app";
 import { UnauthenticatedError } from "./concepts/errors";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
@@ -430,31 +430,15 @@ class Routes {
   async getReputation(business: ObjectId) {
     return await Reputation.getEntityReputation(business);
   }
+
   @Router.get("/feedback/state/:response")
   async getFeedBackState(response: ObjectId) {
     return await Feedback.getFeedbackState(response);
   }
 
   @Router.get("/feedback/ratio/:response")
-  async getYesRatio(response: ObjectId) {
-    return await Feedback.getYesRatio(response);
-  }
-
-  @Router.get("/feedback/evaluate/:response")
-  async evaluateResponse(response: ObjectId) {
-    const state = await Feedback.getFeedbackState(response);
-    const ratio = await Feedback.getYesRatio(response);
-
-    if (ratio >= MINIMUM_RATIO) {
-      // TODO: Remove attempt badge?
-      // TODO: Add badge, increase karma
-      await Feedback.updateFeedbackState(response, true, false);
-    } else {
-      // TODO: Decrease karma
-      await Feedback.updateFeedbackState(response, false, false);
-    }
-
-    return { msg: "Response successfully evaluated!" };
+  async getAverageRating(response: ObjectId) {
+    return await Feedback.getAverageRating(response);
   }
 
   @Router.get("/feedback/userFeedback/:response")
@@ -473,22 +457,23 @@ class Routes {
   @Router.post("/feedback/responses/:response")
   async createFeedback(session: WebSessionDoc, response: ObjectId, feedback: string, rating: number, decision: boolean) {
     const user = WebSession.getUser(session);
-    const res = await Response.getResponse(new ObjectId(response));
+    const responseID = new ObjectId(response);
+    const res = await Response.getResponse(responseID);
 
-    await Feedback.createFeedback(user, new ObjectId(response), feedback, Number(rating), decision);
+    await Feedback.createFeedback(user, responseID, feedback, Number(rating), decision);
 
-    if ((await Feedback.getAllFeedback(new ObjectId(response))).length === AWARD_THRESHOLD) {
-      const ratio = await Feedback.getYesRatio(response);
+    if ((await Feedback.getAllFeedback(responseID)).length === AWARD_THRESHOLD) {
+      const ratio = await Feedback.getAverageRating(responseID);
       const petition = await Petition.getPetition(res.concern);
 
-      if (ratio >= MINIMUM_RATIO) {
+      if (ratio >= MINIMUM_RATING) {
         // TODO: Remove attempt badge?
         await Badge.add(petition.target, petition.topic);
-        await Feedback.updateFeedbackState(response, true, false);
+        await Feedback.updateFeedbackState(responseID, true, false);
         await Reputation.updateReputation(petition.target, 1);
       } else {
-        await Feedback.updateFeedbackState(response, false, false);
-        await Reputation.updateReputation(petition.target, 1);
+        await Feedback.updateFeedbackState(responseID, false, false);
+        await Reputation.updateReputation(petition.target, -1);
       }
 
       return { msg: "Response successfully evaluated!" };

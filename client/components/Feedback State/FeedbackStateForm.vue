@@ -7,8 +7,7 @@ const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5])
 const hover = ref(0)
 const props: any = defineProps(['response'])
-const emit = defineEmits(["refreshPetitions"])
-const decision = ref(true);
+const emit = defineEmits(["refreshPetitions", "refreshFeedback"])
 const feedback = ref("")
 
 
@@ -38,16 +37,15 @@ const createFeedback = async () => {
     try {
         await fetchy(`/api/feedback/responses/${props.response._id}`, "POST", {
             body: {
-                response: props.response._id,
                 feedback: feedback.value,
                 rating: rating.value,
-                decision: decision.value,
             }})
         await getEffectiveness();
-    } catch (_) {
-        return;
+    } catch (e) {
+        console.log(e);
     }
     emit("refreshPetitions");
+    emit("refreshFeedback");
 }
 onBeforeMount(async () => {
     await getEffectiveness();
@@ -67,13 +65,6 @@ onBeforeMount(async () => {
                     @mouseleave="resetHover"
                     :class="{ 'active': star <= rating || star <= hover }"></span>
             </div>
-            <div class="decision">
-                <div class="pad">Your Decision: </div>
-                <select id="private" v-model="decision">
-                    <option value="true">Effective</option>
-                    <option value="false">Ineffective</option>
-                </select>
-            </div>
         </div>
         <div class="feedback">
                 <div class="pad" id="feedback-label">Feedback: </div>
@@ -92,7 +83,7 @@ onBeforeMount(async () => {
     align-items: center;
 }
 
-.rating, .decision, .feedback {
+.rating, .feedback {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -128,12 +119,10 @@ onBeforeMount(async () => {
     grid-template-columns: 8% 91%;
     padding-bottom: 4px;
 }
-
 #verbal-feedback {
     grid-column-start: 2;
     grid-column-end: 3;
 }
-
 #feedback-label {
     grid-column-start: 1;
     grid-column-end: 2;

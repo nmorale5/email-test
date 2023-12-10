@@ -8,6 +8,11 @@ const restaurant = ref();
 const petitions = ref();
 const badges = ref();
 const loaded = ref(false);
+const forceRenderKey = ref(0);
+
+const refresh = () => {
+  forceRenderKey.value += 1
+}
 
 onBeforeMount(async () => {
   const restaurantId = router.currentRoute.value.params.id;
@@ -24,7 +29,7 @@ onBeforeMount(async () => {
 
 <template>
   <h2 v-if="!loaded">loading...</h2>
-  <Restaurant v-else :restaurant="restaurant" :petitions="petitions" :badges="badges" />
+  <Restaurant @refreshResponse="refresh" :key="forceRenderKey" v-else :restaurant="restaurant" :petitions="petitions" :badges="badges" />
 </template>
 
 <style scoped>
