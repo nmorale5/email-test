@@ -41,7 +41,7 @@ const updateSigned = async () => {
 
 const trySign = async () => {
   try {
-    await fetchy(`/api/upvote/${props.petition._id}/${currentUserId.value}`, "PUT");
+    await fetchy(`/api/petition/${props.petition._id}/${currentUserId.value}`, "PUT");
   } catch {
     return;
   } finally {
@@ -131,34 +131,26 @@ const linkRestaurantButtonToPage = () => {
     <div class="top">
       <h1>{{ props.petition.title }}</h1>
     </div>
-    <div class="line"></div>
     <p v-if="restaurantNameLoading">Loading...</p>
     <p v-else>
       Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
     </p>
-    <div class="line"></div>
     <p>Topic: {{ props.petition.topic }}</p>
-    <div class="line"></div>
     <p>Problem: {{ props.petition.problem }}</p>
-    <div class="line"></div>
     <p>Solution: {{ props.petition.solution }}</p>
     <div class="line"></div>
     <div v-if="response._id">
       <div v-if="response.type.valueOf() === 1">
         <p class="statement">-- Petition Accepted on {{ formatDate(response.dateCreated, true) }} --</p>
-        <div class="line"></div>
         <p>Response: {{ response.response }}</p>
-        <div class="line"></div>
         <div v-if="madeFeedback._id" class="base">
           <button id="view-feedback-button" class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
           <p>
             <b>{{ props.petition.creator }}</b>
           </p>
-          <div class="line"></div>
           <article class="timestamp">
             <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
           </article>
-          <div class="line"></div>
           <menu v-if="props.petition.creator == currentUsername">
             <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
           </menu>
@@ -169,11 +161,10 @@ const linkRestaurantButtonToPage = () => {
       </div>
       <div v-else>
         <p class="statement">-- Petition Rejected on {{ formatDate(response.dateCreated, true) }} --</p>
-        <div class="line"></div>
         <p>Response: {{ response.response }}</p>
       </div>
     </div>
-    <div v-else>
+    <div v-else class="base">
       <div class="progress">
         <div class="sign" v-if="currentUserId">
           <button class="pure-button pure-button-primary" v-if="!signed" @click="trySign">Sign</button>
@@ -181,11 +172,9 @@ const linkRestaurantButtonToPage = () => {
         </div>
         <p>Progress: {{ signers }}/{{ props.petition.upvoteThreshold }}</p>
       </div>
-      <div class="line"></div>
       <p>
         <b>{{ props.petition.creator }}</b>
       </p>
-      <div class="line"></div>
       <article class="timestamp">
         <p>Created on: {{ formatDate(props.petition.dateCreated) }}</p>
       </article>
@@ -202,7 +191,7 @@ p {
 }
 .line {
   height: 1px;
-  background: black;
+  background: var(--line);
   margin: 5px;
 }
 
@@ -228,7 +217,7 @@ p {
   padding-right: 4px;
   padding-bottom: 1px;
   padding-left: 4px;
-  font-weight: lighter;
+  font-weight: light;
 }
 
 .petition-container {
@@ -236,6 +225,7 @@ p {
   border-radius: 10px;
   padding: 10px 10px 0px 10px;
   border-style: solid;
+  color: var(--line);
   border-width: 2px;
   display: flex;
   flex-direction: column;
@@ -265,6 +255,8 @@ menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 
 .base article:only-child {

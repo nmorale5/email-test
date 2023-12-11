@@ -184,7 +184,12 @@ class Routes {
 
   @Router.get("/business/id/:id")
   async getBusiness(id: ObjectId) {
-    return await Business.getBusiness(id);
+
+    try {
+      return await Business.getBusiness(new ObjectId(id));
+    } catch (e) {
+      return
+    }
   }
 
   @Router.get("/business/:filter")
@@ -225,6 +230,19 @@ class Routes {
     return await Petition.getAllPetitions(businessId);
   }
 
+  @Router.get("/business/:businessId/petitions/unapproved") 
+  async getUnapprovedBusinessPetitions(businessId: ObjectId) {
+    const unapproved: PetitionDoc[] = [];
+    const allPetitions = await Petition.getAllPetitions(businessId);
+    for (const petition of allPetitions) {
+      const numSigners = (await Upvote.getUpvotes(petition._id)).length;
+      if (numSigners < petition.upvoteThreshold) {
+        unapproved.push(petition);
+      }
+    }
+    return unapproved;
+  }
+
   @Router.get("/business/:businessId/petitions/approved")
   async getApprovedBusinessPetitions(businessId: ObjectId) {
     const approved: PetitionDoc[] = [];
@@ -252,10 +270,10 @@ class Routes {
       throw new UnauthenticatedError("signerId is different from session user id");
     }
 
-    await Upvote.addUpvote(signerId, petitionId);
+    await Upvote.addUpvote(new ObjectId(petitionId), new ObjectId(signerId));
 
-    const petition = await Petition.getPetition(petitionId);
-    const signers = (await Upvote.getUpvotes(petitionId)).length;
+    const petition = await Petition.getPetition(new ObjectId(petitionId));
+    const signers = (await Upvote.getUpvotes(new ObjectId(petitionId))).length;
     const business = await Business.getBusiness(petition.target);
 
     // send email to target once threshold is met
@@ -272,6 +290,7 @@ class Routes {
         },
       });
     }
+    return {msg: ""}
   }
 
   @Router.put("/upvote/:postId/:userId")

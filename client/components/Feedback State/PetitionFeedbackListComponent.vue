@@ -33,21 +33,23 @@ onUpdated(async () => {
 });
 </script>
 <template>
-    <section v-for="feedback in feedbackList">
-        <section class="feedback">
+    <section v-for="feedback in feedbackList" class="row">
+        <div class="feedback">
+            <div class="line"></div>
             <div class="top">
                 <p><b>{{ feedback.author }}</b> - {{ feedback.rating }}/5</p>
             </div>
             <div class="bottom">
                 <p>{{ feedback.feedback }}</p>
             </div>
-        </section>
+        </div>
     </section>
 </template>
 <style scoped>
 .feedback {
     display: flex;
     flex-direction: column;
+    width: 15%;
 }
 
 .top, .bottom {
@@ -64,5 +66,17 @@ p {
 
 .bottom p {
     margin-top: 2px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.line {
+  height: 1px;
+  background: var(--line);
+  margin: 5px;
 }
 </style>
