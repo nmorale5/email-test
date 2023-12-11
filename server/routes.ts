@@ -252,10 +252,10 @@ class Routes {
       throw new UnauthenticatedError("signerId is different from session user id");
     }
 
-    await Upvote.addUpvote(signerId, petitionId);
+    await Upvote.addUpvote(new ObjectId(petitionId), new ObjectId(signerId));
 
-    const petition = await Petition.getPetition(petitionId);
-    const signers = (await Upvote.getUpvotes(petitionId)).length;
+    const petition = await Petition.getPetition(new ObjectId(petitionId));
+    const signers = (await Upvote.getUpvotes(new ObjectId(petitionId))).length;
     const business = await Business.getBusiness(petition.target);
 
     // send email to target once threshold is met
@@ -272,6 +272,7 @@ class Routes {
         },
       });
     }
+    return {msg: ""}
   }
 
   @Router.put("/upvote/:postId/:userId")
