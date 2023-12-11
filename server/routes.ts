@@ -230,6 +230,19 @@ class Routes {
     return await Petition.getAllPetitions(businessId);
   }
 
+  @Router.get("/business/:businessId/petitions/unapproved") 
+  async getUnapprovedBusinessPetitions(businessId: ObjectId) {
+    const unapproved: PetitionDoc[] = [];
+    const allPetitions = await Petition.getAllPetitions(businessId);
+    for (const petition of allPetitions) {
+      const numSigners = (await Upvote.getUpvotes(petition._id)).length;
+      if (numSigners < petition.upvoteThreshold) {
+        unapproved.push(petition);
+      }
+    }
+    return unapproved;
+  }
+
   @Router.get("/business/:businessId/petitions/approved")
   async getApprovedBusinessPetitions(businessId: ObjectId) {
     const approved: PetitionDoc[] = [];
