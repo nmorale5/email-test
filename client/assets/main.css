@@ -1,17 +1,20 @@
 /* Add some global styles here! */
 
 :root {
-  --red: rgb(208, 67, 12);
-  --base-bg-light: #fff7c6;
-  --base-bg: #f3ddac;
-  --base-bg-dark: #e3cc9b;
-  --green: #459658;
-  --green-light: #78b98a;
-  --blue: #3e509a;
-  --blue-light: #7283cd;
-  --black: #2b0c19;
+  --red: #d0430c;
+  --base-bg-light: #FEFAF5; /*background*/
+  --base-bg: #FFEAE9; /*petition*/
+  --base-bg-dark: #FCCBC8; /*hovered restaurant*/
+  --green: #D35163; /*navbar*/
+  --green-light: #E7CFCD; /*settings/login*/
+  --blue: #752984; /*button: 752984*/
+  --blue-light: #CFD8D7; /*registeruser*/
+  --black: #000000; 
+  --line: #000000;
   /* --base-bg: #f1f3f5; */
 }
+
+/* [250902, c4cbca, 640d14, 800e13, 5e6572] */
 
 button.btn-small {
   font-size: 80%;
@@ -81,7 +84,7 @@ html {
 }
 
 .restaurant-button:hover {
-  background-color: #e3cc9b !important;
+  background-color: var(--base-bg-dark) !important;
 }
 
 .stack-sideways {

@@ -5,7 +5,6 @@ import { useUserStore } from "@/stores/user";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
-import PetitionView from "../views/PetitionView.vue";
 import ResponseFeedbackView from "../views/ResponseFeedbackView.vue";
 import RestaurantHomeView from "../views/RestaurantHomeView.vue";
 import RestaurantView from "../views/RestaurantView.vue";
@@ -28,12 +27,6 @@ const router = createRouter({
       path: "/home/restaurant",
       name: "RestaurantHome",
       component: RestaurantHomeView,
-    },
-    {
-      path: "/petition",
-      name: "Petition",
-      component: PetitionView,
-      meta: { requiresAuth: true },
     },
     {
       path: "/setting",

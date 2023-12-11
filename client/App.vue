@@ -40,9 +40,6 @@ onBeforeMount(async () => {
         <li>
           <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Petitions </RouterLink>
         </li>
-        <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Petition' }" :class="{ underline: currentRouteName == 'Petition' }"> Start Petition </RouterLink>
-        </li>
         <li>
           <RouterLink :to="{ name: 'RestaurantHome' }" :class="{ underline: currentRouteName == 'RestaurantHome' }"> View Restaurants </RouterLink>
         </li>
@@ -102,7 +99,7 @@ img {
 
 a {
   font-size: large;
-  color: black;
+  color: var(--line);
   text-decoration: none;
 }
 
