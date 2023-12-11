@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useUserStore } from "@/stores/user";
 import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
+const { isLoggedIn } = useUserStore();
 const rating = ref(0);
 const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5]);
@@ -54,7 +56,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <form @submit.prevent="createFeedback">
+  <form v-if="isLoggedIn" @submit.prevent="createFeedback">
     <div class="feedback-info">
       <div class="pad">
         <i>Effectiveness: {{ effectiveness >= 0 ? effectiveness.toFixed(1) : "-" }}</i>
