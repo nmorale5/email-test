@@ -77,6 +77,20 @@ onBeforeMount(async () => {
 </script>
 <template>
   <h1 v-if="!loaded">Loading...</h1>
+  <h1 class="center">My Restaurants:</h1>
+  <div v-if="isLoggedIn" class="button-list">
+    <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()" class="light-padding">
+      <SelectableRestaurant :restaurant="restaurant"/>
+    </div>
+    <p v-if="myRestaurants.length === 0"  class="align-center">You manage no restaurants.</p>
+    <!-- <article>
+      <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
+      <button @click="addRandomBadge">Add Random Badge (debug) (refresh page after)</button>
+    </article> -->
+  </div>
+  <div v-else>
+    <p class="align-center">Log in if you wish to view your restaurants or be added as an owner of a restaurant.</p>
+  </div>
   <div class="stack-sideways">
     <VerificationForm @verified="getMyRestaurants" />
     <SearchRestaurantForm @getRestaurantsByName="getRestaurants" />
@@ -86,20 +100,6 @@ onBeforeMount(async () => {
     <div v-for="restaurant in filteredRestaurants" :key="restaurant._id.toString()" class="light-padding">
       <SelectableRestaurant :restaurant="restaurant" />
     </div>
-  </div>
-  <h2>My Restaurants:</h2>
-  <div v-if="isLoggedIn" class="button-list">
-    <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()" class="light-padding">
-      <SelectableRestaurant :restaurant="restaurant"/>
-    </div>
-    <p v-if="myRestaurants.length === 0"  class="align-center pad-bottom">You manage no restaurants.</p>
-    <!-- <article>
-      <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
-      <button @click="addRandomBadge">Add Random Badge (debug) (refresh page after)</button>
-    </article> -->
-  </div>
-  <div v-else>
-    <p class="align-center pad-bottom">Log in if you wish to view your restaurants or be added as an owner of a restaurant.</p>
   </div>
 </template>
 
@@ -161,5 +161,9 @@ h2 {
 
 .pad-bottom {
   padding-bottom: 10cm;
+}
+
+.center {
+  text-align: center;
 }
 </style>

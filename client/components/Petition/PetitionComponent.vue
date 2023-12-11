@@ -9,7 +9,7 @@ import FeedbackStateForm from "../Feedback State/FeedbackStateForm.vue";
 
 const props = defineProps(["petition"]);
 const emit = defineEmits(["editPetition", "refreshPetitions"]);
-const { currentUsername, currentUserId } = storeToRefs(useUserStore());
+const { currentUsername, currentUserId, isLoggedIn } = storeToRefs(useUserStore());
 const signed = ref(false);
 const signers = ref(0);
 const restaurantNameLoading = ref(true);
@@ -41,7 +41,7 @@ const updateSigned = async () => {
 
 const trySign = async () => {
   try {
-    await fetchy(`/api/upvote/${props.petition._id}/${currentUserId.value}`, "PUT");
+    await fetchy(`/api/petition/${props.petition._id}/${currentUserId.value}`, "PUT")
   } catch {
     return;
   } finally {
@@ -83,11 +83,14 @@ const getResponse = async () => {
 };
 
 const getPersonalFeedback = async () => {
+  if (!isLoggedIn.value) {
+    return
+  }
+
   let tempFeedback;
-  let query: Record<string, string> = response.value._id !== undefined ? { response: response.value._id } : {};
   try {
-    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET", query);
-    if (tempFeedback) {
+    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET");
+    if (tempFeedback !== null) {
       madeFeedback.value = tempFeedback;
     } else {
       madeFeedback.value = {};
@@ -97,7 +100,7 @@ const getPersonalFeedback = async () => {
   }
 };
 
-const refreshPetitionList = async () => {
+const refreshPetitionList = () => {
   emit("refreshPetitions");
 };
 
@@ -128,17 +131,13 @@ const linkRestaurantButtonToPage = () => {
     <div class="top">
       <h1>{{ props.petition.title }}</h1>
     </div>
-    <div class="selectables">
-      <p v-if="restaurantNameLoading">Loading...</p>
-      <p v-else>
-        Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
-      </p>
-      <p>Topic: {{ props.petition.topic }}</p>
-    </div>
-    <div class="information">
-      <p>Problem: {{ props.petition.problem }}</p>
-      <p>Solution: {{ props.petition.solution }}</p>
-    </div>
+    <p v-if="restaurantNameLoading">Loading...</p>
+    <p v-else>
+      Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
+    </p>
+    <p>Topic: {{ props.petition.topic }}</p>
+    <p>Problem: {{ props.petition.problem }}</p>
+    <p>Solution: {{ props.petition.solution }}</p>
     <div class="line"></div>
     <div v-if="response._id">
       <div v-if="response.type.valueOf() === 1">
@@ -157,7 +156,7 @@ const linkRestaurantButtonToPage = () => {
           </menu>
         </div>
         <div v-else>
-          <FeedbackStateForm :response="response" @refreshPetitions="refreshPetitionList" />
+          <FeedbackStateForm @refreshFeedback="getPersonalFeedback" :response="response" @refreshPetitions="refreshPetitionList" />
         </div>
       </div>
       <div v-else>
@@ -165,7 +164,7 @@ const linkRestaurantButtonToPage = () => {
         <p>Response: {{ response.response }}</p>
       </div>
     </div>
-    <div class="base" v-else>
+    <div v-else class="base">
       <div class="progress">
         <div class="sign" v-if="currentUserId">
           <button class="pure-button pure-button-primary" v-if="!signed" @click="trySign">Sign</button>
@@ -193,7 +192,7 @@ p {
 .line {
   height: 1px;
   background: var(--line);
-  margin-top: 5px;
+  margin: 5px;
 }
 
 .statement {
@@ -218,7 +217,7 @@ p {
   padding-right: 4px;
   padding-bottom: 1px;
   padding-left: 4px;
-  font-weight: lighter;
+  font-weight: light;
 }
 
 .petition-container {
@@ -228,6 +227,8 @@ p {
   border-style: solid;
   color: var(--line);
   border-width: 2px;
+  display: flex;
+  flex-direction: column;
 }
 .author {
   font-weight: bold;
@@ -254,6 +255,8 @@ menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 
 .base article:only-child {

@@ -4,6 +4,7 @@ import { computed, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["petition"]);
+const emit = defineEmits(["refreshResponse"])
 
 const types = ["Accept", "Reject"];
 const type = ref("Accept");
@@ -41,7 +42,7 @@ const createResponse = async () => {
     <label for="response">Response</label>
     <input id="response" v-model="response" placeholder="Write your response to the problem" autocomplete="off" required />
 
-    <button type="submit" class="pure-button-primary pure-button">Create Response</button>
+    <button @click="$emit('refreshResponse')" type="submit" class="pure-button-primary pure-button">Create Response</button>
   </form>
 </template>
 

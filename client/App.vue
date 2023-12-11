@@ -14,6 +14,11 @@ const { toast } = storeToRefs(useToastStore());
 
 // Make sure to update the session before mounting the app in case the user is already logged in
 onBeforeMount(async () => {
+  if (toast.value?.message) {
+    setTimeout(() => {
+      toast.value = null;
+    }, 1500);
+  }
   try {
     await userStore.updateSession();
   } catch {
