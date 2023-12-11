@@ -71,17 +71,8 @@ onBeforeMount(async () => {
     </div>
   </div>
   <section class="petitions" v-if="loaded && filteredPetitions.length !== 0">
-<<<<<<< HEAD
     <article v-for="petition in filteredPetitions" :key="petition._id" class="thinner">
       <PetitionComponent :petition="{
-||||||| af04f79
-    <article v-for="petition in filteredPetitions" :key="petition._id">
-      <PetitionComponent :petition="{
-=======
-    <article v-for="petition in filteredPetitions" :key="petition._id">
-      <PetitionComponent
-        :petition="{
->>>>>>> 661ef376ec0d73b63606002e2ffac2ac7406bd6d
           _id: petition._id,
           creator: petition.creator,
           title: petition.title,
