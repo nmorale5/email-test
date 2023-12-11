@@ -66,7 +66,7 @@ onBeforeMount(async () => {
     </div>
     <div class="feedback">
       <div class="pad" id="feedback-label">Feedback:</div>
-      <input id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" />
+      <textarea id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made"></textarea>
     </div>
     <div>
       <button type="submit" class="pure-button pure-button-primary">Submit Feedback</button>
@@ -115,15 +115,6 @@ onBeforeMount(async () => {
 .feedback {
   display: grid;
   gap: 4px 4px;
-  grid-template-columns: 8% 91%;
   padding-bottom: 4px;
-}
-#verbal-feedback {
-  grid-column-start: 2;
-  grid-column-end: 3;
-}
-#feedback-label {
-  grid-column-start: 1;
-  grid-column-end: 2;
 }
 </style>

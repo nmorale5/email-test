@@ -120,6 +120,7 @@ h2 {
   background-color: var(--blue);
   width: 30%;
   border-radius: 5px;
+  color: white;
 }
 
 .create-petition-text {
