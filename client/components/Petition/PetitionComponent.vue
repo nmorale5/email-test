@@ -33,7 +33,6 @@ const updateSigned = async () => {
     newSigned = currentUserId.value !== "" ? await fetchy(`/api/upvote/${props.petition._id}/${currentUserId.value}`, "GET") : false;
     newSigners = (await fetchy(`/api/upvote/${props.petition._id}`, "GET")).length;
   } catch {
-    console.log("Failed to update signed and signers")
     return;
   }
   signed.value = newSigned;
@@ -44,7 +43,6 @@ const trySign = async () => {
   try {
     await fetchy(`/api/petition/${props.petition._id}/${currentUserId.value}`, "PUT")
   } catch {
-    console.log("Failed to sign petition")
     return;
   } finally {
     await updateSigned();
