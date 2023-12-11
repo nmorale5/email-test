@@ -184,7 +184,12 @@ class Routes {
 
   @Router.get("/business/id/:id")
   async getBusiness(id: ObjectId) {
-    return await Business.getBusiness(id);
+
+    try {
+      return await Business.getBusiness(new ObjectId(id));
+    } catch (e) {
+      return
+    }
   }
 
   @Router.get("/business/:filter")
