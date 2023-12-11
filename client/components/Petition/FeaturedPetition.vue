@@ -2,7 +2,7 @@
 import { useUserStore } from "@/stores/user";
 import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, onUpdated, ref } from "vue";
+import { onBeforeMount, onUpdated, ref, watch } from "vue";
 import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
 import FeedbackStateForm from "../Feedback State/FeedbackStateForm.vue";
@@ -22,6 +22,7 @@ const restaurantName = ref("");
 const response: any = ref({});
 const madeFeedback: any = ref({});
 
+watch(petitionIndex, () => setPetition());
 
 const updateSigned = async () => {
   let newSigned: boolean;
@@ -82,7 +83,7 @@ const getResponse = async () => {
 
 const getPersonalFeedback = async () => {
   if (!isLoggedIn.value) {
-    return
+    return;
   }
 
   let tempFeedback;
@@ -108,7 +109,7 @@ const goToResponseFeedbackView = async () => {
 
 const getPetition = async () => {
   petitions.value = await fetchy("api/petitions/all", "GET");
-  if (!petitions) {
+  if (!petitions.value) {
     return;
   }
   for (let i = 0; i < NUM_FEATURED; i++) {
@@ -118,7 +119,7 @@ const getPetition = async () => {
     }
     randoms.push(x);
   }
-}
+};
 
 const setPetition = async () => {
   petition.value = petitions.value[randoms[petitionIndex.value]];
@@ -128,28 +129,7 @@ const setPetition = async () => {
   if (response.value._id) {
     await getPersonalFeedback();
   }
-}
-
-const changeIndex = (incr: boolean) => {
-  if (incr) {
-    if (petitionIndex.value === NUM_FEATURED - 1) {
-      petitionIndex.value = 0;
-      setPetition();
-      return;
-    }
-    petitionIndex.value += 1;
-    setPetition();
-    return;
-  }
-  if (petitionIndex.value === 0) {
-      petitionIndex.value = NUM_FEATURED - 1;
-      setPetition();
-      return;
-    }
-    petitionIndex.value -= 1;
-    setPetition();
-    return;
-}
+};
 
 onUpdated(async () => {
   await convertIDtoNames();
@@ -168,15 +148,19 @@ const linkRestaurantButtonToPage = () => {
 <template>
   <h1 class="center">Featured Petitions</h1>
   <div class="row">
-    <div class="arrow-container" >
-      <img src="../../assets/images/left-arrow.png" v-on:click="changeIndex(false)" class="arrow-button" />
+    <img src="../../assets/images/left-arrow.png" v-on:click="petitionIndex = (petitionIndex - 1 + NUM_FEATURED) % NUM_FEATURED" class="arrow-button" />
+    <div class="pagination">
+      <span v-for="(_, index) in NUM_FEATURED" :key="index" :class="{ current: index === petitionIndex }" @click="petitionIndex = index"></span>
     </div>
+    <img src="../../assets/images/right-arrow.png" v-on:click="petitionIndex = (petitionIndex + 1) % NUM_FEATURED" class="arrow-button" />
+  </div>
+  <div class="row">
     <div class="petition-container">
       <div class="top pad-text">
         <h1>{{ petition.title }}</h1>
       </div>
       <p v-if="restaurantNameLoading" class="center pad-text">Loading...</p>
-      <p v-else  class="center pad-text">
+      <p v-else class="center pad-text">
         Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
       </p>
       <p class="center pad-text">Topic: {{ petition.topic }}</p>
@@ -222,9 +206,6 @@ const linkRestaurantButtonToPage = () => {
           <p class="pad-text">Created on: {{ formatDate(petition.dateCreated) }}</p>
         </article>
       </div>
-    </div>
-    <div class="arrow-container">
-      <img src="../../assets/images/right-arrow.png" v-on:click="changeIndex(true)" class="arrow-button" />
     </div>
   </div>
 </template>
@@ -356,8 +337,8 @@ menu {
 .row {
   display: flex;
   justify-content: center;
-  align-items: top;
-  align-content: top;
+  align-items: center;
+  align-content: center;
 }
 
 .center {
@@ -365,15 +346,37 @@ menu {
 }
 
 .arrow-button {
-  height: 50px;
-  width: 50px;
-  padding: 5px;
+  height: 32px;
+  width: 32px;
+  padding: 0px;
+  margin: 0px;
 }
 
 .arrow-button:hover {
-  width: 60px;
-  height: 60px;
+  /* width: 48px;
+  height: 48px; */
   cursor: pointer;
   padding: 0px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center; /* Horizontally centers the div */
+  align-items: center; /* Vertically centers the div */
+  /* padding-bottom: 1em; */
+}
+
+span {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin: 0 5px;
+  background-color: #ccc; /* Default dot color */
+  cursor: pointer;
+}
+
+span.current {
+  background-color: #f00; /* Current dot color */
 }
 </style>

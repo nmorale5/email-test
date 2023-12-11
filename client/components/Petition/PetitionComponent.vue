@@ -84,7 +84,7 @@ const getResponse = async () => {
 
 const getPersonalFeedback = async () => {
   if (!isLoggedIn.value) {
-    return
+    return;
   }
 
   let tempFeedback;
@@ -145,7 +145,7 @@ const linkRestaurantButtonToPage = () => {
     <div class="line"></div>
     <div v-if="response._id">
       <div v-if="response.type.valueOf() === 1">
-        <p class="statement">-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
+        <p class="statement">-- Petition Accepted on {{ formatDate(response.dateCreated, true) }} --</p>
         <div class="line"></div>
         <p>Response: {{ response.response }}</p>
         <div class="line"></div>
@@ -168,7 +168,7 @@ const linkRestaurantButtonToPage = () => {
         </div>
       </div>
       <div v-else>
-        <p class="statement">-- Petition Rejected on {{ formatDate(response.dateCreated) }} --</p>
+        <p class="statement">-- Petition Rejected on {{ formatDate(response.dateCreated, true) }} --</p>
         <div class="line"></div>
         <p>Response: {{ response.response }}</p>
       </div>
