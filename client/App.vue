@@ -97,7 +97,7 @@ img {
 
 a {
   font-size: large;
-  color: black;
+  color: var(--line);
   text-decoration: none;
 }
 

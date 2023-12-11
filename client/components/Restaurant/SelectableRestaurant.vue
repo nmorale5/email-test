@@ -40,7 +40,7 @@ p {
 }
 
 .restaurant-button {
-  color: var(--black);
+  color: var(--line);
   border-radius: 3px;
   border-color: var(--black);
   border-width: 2px;
