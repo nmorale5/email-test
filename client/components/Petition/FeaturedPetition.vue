@@ -377,6 +377,6 @@ span {
 }
 
 span.current {
-  background-color: #f00; /* Current dot color */
+  background-color: var(--green); /* Current dot color */
 }
 </style>
