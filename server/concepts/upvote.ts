@@ -33,7 +33,7 @@ export default class UpvoteConcept {
 
   public async isUpvoting(postId: ObjectId, userId: ObjectId) {
     const upvotesOnThisPost = await this.upvotes.readOne({ postId });
-    return upvotesOnThisPost !== null && containsObjectId(upvotesOnThisPost.userIds, userId);
+    return upvotesOnThisPost !== null && containsObjectId(upvotesOnThisPost.userIds, new ObjectId(userId));
   }
 
   public async getUpvotes(postId: ObjectId) {

@@ -41,7 +41,7 @@ const updateSigned = async () => {
 
 const trySign = async () => {
   try {
-    await fetchy(`/api/upvote/${props.petition._id}/${currentUserId.value}`, "PUT");
+    await fetchy(`/api/petition/${props.petition._id}/${currentUserId.value}`, "PUT")
   } catch {
     return;
   } finally {
