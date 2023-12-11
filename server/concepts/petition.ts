@@ -36,7 +36,14 @@ export default class PetitionConcept {
     if (target && creator) return (await this.petitions.readMany({ target, creator })) ?? [];
     if (creator) return (await this.petitions.readMany({ creator })) ?? [];
     if (target) return (await this.petitions.readMany({ target })) ?? [];
-    return (await this.petitions.readMany({})) ?? [];
+    return (
+      (await this.petitions.readMany(
+        {},
+        {
+          sort: { dateUpdated: -1 },
+        },
+      )) ?? []
+    );
   }
 
   public async filterPetitions(words: Array<string>) {

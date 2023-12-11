@@ -191,7 +191,7 @@ p {
 }
 .line {
   height: 1px;
-  background: black;
+  background: var(--line);
   margin: 5px;
 }
 
@@ -225,6 +225,7 @@ p {
   border-radius: 10px;
   padding: 10px 10px 0px 10px;
   border-style: solid;
+  color: var(--line);
   border-width: 2px;
   display: flex;
   flex-direction: column;
