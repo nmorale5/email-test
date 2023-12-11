@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, ref } from "vue";
-import router from "../../router";
 import { useRestrictionStore } from "../../stores/restrictions";
 import { fetchy } from "../../utils/fetchy";
 
+const emit = defineEmits(["formSubmitted"]);
 const title = ref("");
 const problem = ref("");
 const solution = ref("");
 const topic = ref("");
 const restaurantSearch = ref("");
-const selectedRestaurant: any = ref({})
+const selectedRestaurant: any = ref({});
 const email = ref("");
 const displaySearch = ref(false);
 const allRestaurants: any = ref([]);
@@ -25,7 +25,7 @@ const createPetition = async () => {
     const businessID = await createRestaurant(restaurantSearch.value, email.value);
     selectedRestaurant.value = await fetchy(`/api/business/id/${businessID}`, "GET");
   }
-  if(selectedRestaurant.value.name !== restaurantSearch.value) throw new Error("A restaurant has not been selected")
+  if (selectedRestaurant.value.name !== restaurantSearch.value) throw new Error("A restaurant has not been selected");
   try {
     await fetchy("/api/petition", "POST", {
       body: { title: title.value, problem: problem.value, solution: solution.value, topic: topic.value, restaurant: selectedRestaurant.value._id },
@@ -33,8 +33,7 @@ const createPetition = async () => {
   } catch (_) {
     return;
   }
-  // todo: navigate to users own profile page so they can see published petition
-  await router.push({ name: "Home" });
+  emit("formSubmitted");
 };
 
 const createRestaurant = async (name: string, email: string) => {
@@ -75,11 +74,11 @@ onBeforeMount(async () => {
 <template>
   <form @submit.prevent="createPetition">
     <label for="name">Title:</label>
-    <input id="name" v-model="title" placeholder="Enter a title" autocomplete="off" required />
+    <textarea id="name" class="no-resize-textarea" rows="1" cols="50" v-model="title" placeholder="Enter a title" autocomplete="off" required></textarea>
     <label for="problem">Problem:</label>
-    <input id="problem" v-model="problem" placeholder="List the current problem" autocomplete="off" required />
+    <textarea id="problem" class="no-resize-textarea" rows="5" cols="50" v-model="problem" placeholder="List the current problem" autocomplete="off" required></textarea>
     <label for="solution">Proposed Solution:</label>
-    <input id="solution" v-model="solution" placeholder="Propose a solution to the problem" autocomplete="off" required />
+    <textarea id="solution" class="no-resize-textarea" rows="5" cols="50" v-model="solution" placeholder="Propose a solution to the problem" autocomplete="off" required></textarea>
     <label for="topic">Topic:</label>
     <select v-model="topic" id="topic">
       <option v-for="restriction of restrictions" :value="restriction" :key="restriction">{{ restriction }}</option>
@@ -121,5 +120,10 @@ textarea {
 
 .selection:hover {
   background-color: darkgray;
+}
+
+.no-resize-textarea {
+  resize: none;
+  height: auto;
 }
 </style>

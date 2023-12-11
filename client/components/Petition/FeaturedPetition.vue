@@ -14,7 +14,7 @@ const petitions: any = ref([]);
 const randoms: Array<number> = [];
 const petitionIndex = ref(0);
 const emit = defineEmits(["editPetition", "refreshPetitions"]);
-const { currentUsername, currentUserId } = storeToRefs(useUserStore());
+const { currentUsername, currentUserId, isLoggedIn } = storeToRefs(useUserStore());
 const signed = ref(false);
 const signers = ref(0);
 const restaurantNameLoading = ref(true);
@@ -80,10 +80,13 @@ const getResponse = async () => {
 };
 
 const getPersonalFeedback = async () => {
+  if (!isLoggedIn.value) {
+    return
+  }
+
   let tempFeedback;
-  let query: Record<string, string> = response.value._id !== undefined ? { response: response.value._id } : {};
   try {
-    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET", query);
+    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET");
     if (tempFeedback) {
       madeFeedback.value = tempFeedback;
     } else {
