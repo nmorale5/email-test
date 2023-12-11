@@ -74,6 +74,7 @@ const getResponse = async () => {
   try {
     tempResponse = await fetchy(`/api/response/concern/${petition.value._id}`, "GET");
   } catch (e) {
+    response.value = {};
     return;
   }
   response.value = tempResponse;
@@ -119,8 +120,14 @@ const getPetition = async () => {
   }
 }
 
-const setPetition = () => {
-  petition.value = petitions.value[randoms[petitionIndex.value]]
+const setPetition = async () => {
+  petition.value = petitions.value[randoms[petitionIndex.value]];
+  await updateSigned();
+  await convertIDtoNames();
+  await getResponse();
+  if (response.value._id) {
+    await getPersonalFeedback();
+  }
 }
 
 const changeIndex = (incr: boolean) => {
@@ -151,12 +158,6 @@ onUpdated(async () => {
 onBeforeMount(async () => {
   await getPetition();
   setPetition();
-  await updateSigned();
-  await convertIDtoNames();
-  await getResponse();
-  if (response.value._id) {
-    await getPersonalFeedback();
-  }
 });
 
 const linkRestaurantButtonToPage = () => {
@@ -167,31 +168,33 @@ const linkRestaurantButtonToPage = () => {
 <template>
   <h1 class="center">Featured Petitions</h1>
   <div class="row">
-    <img src="../../assets/images/left-arrow.png" v-on:click="changeIndex(false)" class="arrow-button" />
+    <div class="arrow-container" >
+      <img src="../../assets/images/left-arrow.png" v-on:click="changeIndex(false)" class="arrow-button" />
+    </div>
     <div class="petition-container">
-      <div class="top">
+      <div class="top pad-text">
         <h1>{{ petition.title }}</h1>
       </div>
-      <p v-if="restaurantNameLoading" class="center">Loading...</p>
-      <p v-else  class="center">
+      <p v-if="restaurantNameLoading" class="center pad-text">Loading...</p>
+      <p v-else  class="center pad-text">
         Restaurant: <button @click="linkRestaurantButtonToPage" class="pure-button pure-button-primary pad">{{ restaurantName }}</button>
       </p>
-      <p class="center">Topic: {{ petition.topic }}</p>
+      <p class="center pad-text">Topic: {{ petition.topic }}</p>
       <div class="information">
-        <p>Problem: {{ petition.problem }}</p>
-        <p>Solution: {{ petition.solution }}</p>
+        <p class="pad-text">Problem: {{ petition.problem }}</p>
+        <p class="pad-text">Solution: {{ petition.solution }}</p>
       </div>
       <div class="line"></div>
       <div v-if="response._id">
         <div v-if="response.type.valueOf() === 1">
-          <p class="statement">-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
-          <p>Response: {{ response.response }}</p>
+          <p class="statement pad-text">-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
+          <p class="pad-text">Response: {{ response.response }}</p>
           <div v-if="madeFeedback._id" class="base">
             <button id="view-feedback-button" class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
             <p>
-              <b>{{ petition.creator }}</b>
+              <b class="pad-text">{{ petition.creator }}</b>
             </p>
-            <article class="timestamp">
+            <article class="timestamp pad-text">
               <p>Created on: {{ formatDate(petition.dateCreated) }}</p>
             </article>
           </div>
@@ -200,8 +203,8 @@ const linkRestaurantButtonToPage = () => {
           </div>
         </div>
         <div v-else>
-          <p class="statement">-- Petition Rejected on {{ formatDate(response.dateCreated) }} --</p>
-          <p>Response: {{ response.response }}</p>
+          <p class="statement pad-text">-- Petition Rejected on {{ formatDate(response.dateCreated) }} --</p>
+          <p class="pad-text">Response: {{ response.response }}</p>
         </div>
       </div>
       <div class="base" v-else>
@@ -210,17 +213,19 @@ const linkRestaurantButtonToPage = () => {
             <button class="pure-button pure-button-primary" v-if="!signed" @click="trySign">Sign</button>
             <button class="pure-button pure-button-primary" v-else @click="tryUnsign"><em>Signed!</em></button>
           </div>
-          <p>Progress: {{ signers }}/{{ petition.upvoteThreshold }}</p>
+          <p class="pad-text">Progress: {{ signers }}/{{ petition.upvoteThreshold }}</p>
         </div>
         <p>
-          <b>{{ petition.creator }}</b>
+          <b class="pad-text">{{ petition.creator }}</b>
         </p>
         <article class="timestamp">
-          <p>Created on: {{ formatDate(petition.dateCreated) }}</p>
+          <p class="pad-text">Created on: {{ formatDate(petition.dateCreated) }}</p>
         </article>
       </div>
     </div>
-    <img src="../../assets/images/right-arrow.png" v-on:click="changeIndex(true)" class="arrow-button" />
+    <div class="arrow-container">
+      <img src="../../assets/images/right-arrow.png" v-on:click="changeIndex(true)" class="arrow-button" />
+    </div>
   </div>
 </template>
 
@@ -257,6 +262,10 @@ p {
   padding-bottom: 1px;
   padding-left: 4px;
   font-weight: lighter;
+}
+
+.pad-text {
+  padding: 10px;
 }
 
 .petition-container {
@@ -347,8 +356,8 @@ menu {
 .row {
   display: flex;
   justify-content: center;
-  align-items: center;
-  align-content: center;
+  align-items: top;
+  align-content: top;
 }
 
 .center {
@@ -362,8 +371,8 @@ menu {
 }
 
 .arrow-button:hover {
-  height: 60px;
   width: 60px;
+  height: 60px;
   cursor: pointer;
   padding: 0px;
 }

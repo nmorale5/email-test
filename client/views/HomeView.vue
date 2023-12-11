@@ -38,7 +38,9 @@ const sendThresholdEmail = async () => {
     </section>
     <h2>Big changes start just one petition at a time.</h2>
     <FeaturedPetition />
-    <button class="create-petition-button" @click="isFormOnScreen = true">Create a Petition</button>
+    <div class="create-petition-button" @click="isFormOnScreen = true">
+      <h1 class="create-petition-text">Create a Petition</h1>
+    </div>
     <div v-if="isFormOnScreen" class="popup">
       <div class="component">
         <button class="close-button" @click="isFormOnScreen = false">
@@ -115,5 +117,13 @@ h2 {
   display: block;
   margin: 0 auto;
   margin-top: 1em;
+  background-color: var(--blue);
+  width: 50%;
+  border-radius: 20px;
+}
+
+.create-petition-text {
+  font-size: 64pt;
+  font-weight: bold;
 }
 </style>
