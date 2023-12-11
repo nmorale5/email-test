@@ -217,7 +217,7 @@ p {
   padding-right: 4px;
   padding-bottom: 1px;
   padding-left: 4px;
-  font-weight: lighter;
+  font-weight: light;
 }
 
 .petition-container {
