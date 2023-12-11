@@ -62,7 +62,7 @@ const getMyRestaurants = async () => {
 
 const displayResponseForm = (petition: PetitionData) => {
   const id = petition._id.toString();
-  return isOwner && !responsePetitions.value.includes(id);
+  return isOwner.value && !responsePetitions.value.includes(id);
 }
 
 const handleResponseEvent = async () => {
