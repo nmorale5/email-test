@@ -33,7 +33,7 @@ export interface PetitionData {
 }
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
-const { restaurant, petitions, badges } = defineProps(["restaurant", "petitions", "badges"]);
+const { restaurant, unapprovedPetitions, approvedPetitions, badges } = defineProps(["restaurant", "unapprovedPetitions", "approvedPetitions", "badges"]);
 const emit = defineEmits(["refreshResponse"])
 
 const myRestaurants = ref(new Array<RestaurantData>());
@@ -98,9 +98,9 @@ onBeforeMount(async () => {
       </div>
     </header>
     <div class="line"></div>
-    <h3>Petitions:</h3>
-    <p v-if="petitions.length === 0"><em>None</em></p>
-    <div v-else v-for="petition in petitions" :key="petition._id">
+    <h3>Approved Petitions:</h3>
+    <p v-if="approvedPetitions.length === 0"><em>None</em></p>
+    <div v-else v-for="petition in approvedPetitions" :key="petition._id">
       <PetitionComponent
         :petition="{
           _id: petition._id,
@@ -132,6 +132,30 @@ onBeforeMount(async () => {
         }"
       />
     </div>
+    
+    <h3>Unapproved Petitions:</h3>
+    
+    <p v-if="unapprovedPetitions.length === 0"><em>None</em></p>
+    
+    <div v-else v-for="petition in unapprovedPetitions" :key="petition._id">
+      <PetitionComponent
+        :petition="{
+          _id: petition._id,
+          creator: petition.creator,
+          title: petition.title,
+          problem: petition.problem,
+          solution: petition.solution,
+          upvoteThreshold: petition.upvoteThreshold,
+          topic: petition.topic,
+          target: petition.target,
+          dateUpdated: petition.dateUpdated,
+          dateCreated: petition.dateCreated,
+        }"
+        
+      />
+      
+    </div>
+    
   </div>
 </template>
 <style scoped>

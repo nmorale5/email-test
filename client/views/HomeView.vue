@@ -118,12 +118,17 @@ h2 {
   margin: 0 auto;
   margin-top: 1em;
   background-color: var(--blue);
-  width: 50%;
-  border-radius: 20px;
+  width: 30%;
+  border-radius: 5px;
+  color: white;
 }
 
 .create-petition-text {
-  font-size: 64pt;
+  font-size: 32pt;
   font-weight: bold;
+}
+
+.create-petition-text:hover {
+  cursor: pointer;
 }
 </style>

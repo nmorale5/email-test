@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
+import FeedbackStateForm from "../components/Feedback State/FeedbackStateForm.vue";
 import PetitionFeedbackListComponent from "../components/Feedback State/PetitionFeedbackListComponent.vue";
+import { useUserStore } from "../stores/user";
 import { fetchy } from "../utils/fetchy";
 
 const props = defineProps(["petitionid"]);
+const { isLoggedIn } = storeToRefs(useUserStore());
 const averageEffectiveness = ref(0);
 const response: any = ref({});
 const petition:any = ref({});
@@ -60,32 +64,43 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-    <div class="page">
-        <div class="response-info">
-        <div class="selectables">
-            <p><b>Restaurant:</b> <div>{{ petition.target }}</div></p>
-            <p><b>Topic:</b> <div>{{ petition.topic }}</div></p>
+    <div class="row">
+        <div class="page">
+            <div class="response-info">
+                <div class="selectables">
+                    <p><b>Restaurant:</b> <div>{{ petition.target }}</div></p>
+                    <p><b>Topic:</b> <div>{{ petition.topic }}</div></p>
+                </div>
+                <div class="information">
+                    <p><b>Problem:</b> <div>{{ petition.problem }}</div></p>
+                    <p><b>Proposed Solution:</b> <div>{{ petition.solution }}</div></p>
+                    <p><b>Restaurant Response:</b> <div>{{ response.response }}</div></p>
+                </div>
+            </div>
         </div>
-        <div class="information">
-            <p><b>Problem:</b> <div>{{ petition.problem }}</div></p>
-            <p><b>Proposed Solution:</b> <div>{{ petition.solution }}</div></p>
-            <p><b>Restaurant Response:</b> <div>{{ response.response }}</div></p>
+        <div class="page">
+            <div v-if="isLoggedIn">
+                <h2>Add your own feedback here!</h2>
+                <FeedbackStateForm @refresh-feedback="getEffectiveness"/>
+            </div>
+            <div v-else>
+                <h2>Log in to submit your own feedback</h2>
+            </div>
         </div>
-        </div>
-        <div class="feedback">
-        <h1>Effectiveness: {{ (averageEffectiveness >= 0)? averageEffectiveness.toFixed(1): "-" }}</h1>
+    </div>
+    <div class="feedback">
+        <h2>Effectiveness: {{ (averageEffectiveness >= 0)? averageEffectiveness.toFixed(1): "-" }}</h2>
         <PetitionFeedbackListComponent :response="response"/>
-        </div>
     </div>
 </template>
 
 <style scoped>
 .page {
-    padding: 8px;
-    display: grid;
-    gap: 8px 8px;
-    grid-template-columns: 30vw 65vw;
-    grid-template-rows: 85vh ;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 40%;
 }
 
 .response-info {
@@ -96,9 +111,14 @@ onBeforeMount(async () => {
 }
 
 .feedback {
-    grid-column-start: 2;
-  grid-column-end: 3;
-  grid-row-start: 1;
-  grid-row-end: 2;
+    margin-left: 5%;
+    margin-bottom: 100px;
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 </style>

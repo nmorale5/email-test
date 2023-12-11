@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { useUserStore } from "@/stores/user";
 import { onBeforeMount, ref } from "vue";
 import { useToastStore } from "../../stores/toast";
 import { fetchy } from "../../utils/fetchy";
 
+const { isLoggedIn } = useUserStore();
 const rating = ref(0);
 const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5]);
@@ -60,7 +62,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <form @submit.prevent="createFeedback">
+  <form v-if="isLoggedIn" @submit.prevent="createFeedback">
     <div class="feedback-info">
       <div class="pad">
         <i>Effectiveness: {{ effectiveness >= 0 ? effectiveness.toFixed(1) : "-" }}</i>
@@ -72,7 +74,7 @@ onBeforeMount(async () => {
     </div>
     <div class="feedback">
       <div class="pad" id="feedback-label">Feedback:</div>
-      <input id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" />
+      <textarea id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made"></textarea>
     </div>
     <div>
       <button type="submit" class="pure-button pure-button-primary">Submit Feedback</button>
@@ -121,15 +123,6 @@ onBeforeMount(async () => {
 .feedback {
   display: grid;
   gap: 4px 4px;
-  grid-template-columns: 8% 91%;
   padding-bottom: 4px;
-}
-#verbal-feedback {
-  grid-column-start: 2;
-  grid-column-end: 3;
-}
-#feedback-label {
-  grid-column-start: 1;
-  grid-column-end: 2;
 }
 </style>
