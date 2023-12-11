@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
+import { useToastStore } from "../../stores/toast";
 import { fetchy } from "../../utils/fetchy";
 
 const rating = ref(0);
@@ -9,6 +10,7 @@ const hover = ref(0);
 const props: any = defineProps(["response"]);
 const emit = defineEmits(["refreshPetitions", "refreshFeedback"]);
 const feedback = ref("");
+const { showToast} = useToastStore();
 
 const updateRating = async (star: number) => {
   rating.value = star;
@@ -34,6 +36,10 @@ const getEffectiveness = async () => {
 };
 
 const createFeedback = async () => {
+  if(rating.value === 0){
+    showToast({message: "You must select a star rating value", style: "error"});
+    return;
+  }
   try {
     await fetchy(`/api/feedback/responses/${props.response._id}`, "POST", {
       body: {
