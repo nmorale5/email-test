@@ -5,6 +5,7 @@ import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import CreatePetitionForm from "../components/Petition/CreatePetitionForm.vue";
 import FeaturedPetition from "../components/Petition/FeaturedPetition.vue";
+import router from "../router";
 import { fetchy } from "../utils/fetchy";
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
@@ -25,6 +26,10 @@ const sendThresholdEmail = async () => {
     return;
   }
 };
+
+const goToLogin = () => {
+  void router.push({ name: "Login" });
+}
 </script>
 
 <template>
@@ -38,7 +43,7 @@ const sendThresholdEmail = async () => {
     </section>
     <h2>Big changes start just one petition at a time.</h2>
     <FeaturedPetition />
-    <div v-if="!isLoggedIn" class="create-petition-button">
+    <div v-if="!isLoggedIn" class="create-petition-button" v-on:click="goToLogin">
       <h1 class="create-petition-text">Log in to Start a Petition!</h1>
     </div>
     <div v-else class="create-petition-button" @click="isFormOnScreen = true">
