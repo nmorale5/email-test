@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import Tooltip from "../Setting/Tooltip.vue";
 import SearchRestaurantForm from "./SearchRestaurantForm.vue";
 import SelectableRestaurant from "./SelectableRestaurant.vue";
 import VerificationForm from "./VerificationForm.vue";
@@ -102,6 +103,10 @@ onBeforeMount(async () => {
     <VerificationForm @verified="getMyRestaurants" />
     <SearchRestaurantForm @getRestaurantsByName="getRestaurants" />
   </div>
+  <Tooltip
+    displaytext="What are badges?"
+    hovertext="Badges are a display of a restaurant's dietary achievements. Each badge indicates a response to a petition and a successful change in the restaurant's policy"
+  />
   <p class="align-center">Number of restaurants found: {{ filteredRestaurants.length }}</p>
   <div class="button-list">
     <div v-for="restaurant in filteredRestaurants" :key="restaurant._id.toString()" class="light-padding">
