@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import { onBeforeMount, ref } from "vue";
+import { ref } from "vue";
 import { useToastStore } from "../../stores/toast";
 import { fetchy } from "../../utils/fetchy";
 
-const { isLoggedIn, currentUsername} = useUserStore();
+const { isLoggedIn} = useUserStore();
 const rating = ref(0);
-const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5]);
 const hover = ref(0);
 const props: any = defineProps(["response"]);
@@ -26,17 +25,6 @@ const resetHover = async () => {
   hover.value = 0;
 };
 
-const getEffectiveness = async () => {
-  let feedbackList;
-  try {
-    feedbackList = await fetchy(`/api/feedback/all/userFeedback/${props.response._id}`, "GET");
-  } catch (_) {
-    return;
-  }
-  effectiveness.value =
-    feedbackList.length > 0 ? feedbackList.map((feedback: any) => feedback.rating).reduce((prevRating: any, currRating: any) => prevRating + currRating, 0) / feedbackList.length : -1;
-};
-
 const createFeedback = async () => {
   if(rating.value === 0){
     showToast({message: "You must select a star rating value", style: "error"});
@@ -49,28 +37,19 @@ const createFeedback = async () => {
         rating: rating.value,
       },
     });
-    await getEffectiveness();
   } catch (e) {
     console.log(e);
   }
   emit("refreshPetitions");
   emit("refreshFeedback");
 };
-onBeforeMount(async () => {
-  await getEffectiveness();
-});
 </script>
 
 <template>
   <form v-if="isLoggedIn" @submit.prevent="createFeedback">
-    <div class="feedback-info">
-      <div class="pad">
-        <i>Effectiveness: {{ effectiveness >= 0 ? effectiveness.toFixed(1) : "-" }}</i>
-      </div>
-      <div class="rating">
-        <div class="pad">Your Rating:</div>
-        <span v-for="star in stars" :key="star" @click="updateRating(star)" @mouseover="hoverRating(star)" @mouseleave="resetHover" :class="{ active: star <= rating || star <= hover }"></span>
-      </div>
+    <div class="rating">
+      <div class="pad">Your Rating:</div>
+      <span v-for="star in stars" :key="star" @click="updateRating(star)" @mouseover="hoverRating(star)" @mouseleave="resetHover" :class="{ active: star <= rating || star <= hover }"></span>
     </div>
     <div class="feedback">
       <div class="pad" id="feedback-label">Feedback:</div>
@@ -100,7 +79,7 @@ onBeforeMount(async () => {
   cursor: pointer;
   width: 40px;
   height: 40px;
-  background-image: url("../../assets/images/black-star.png"); /* Replace with your star image */
+  background-image: url("../../assets/images/black-star.png");
   background-size: cover;
   margin-right: 5px;
 }
@@ -117,7 +96,7 @@ onBeforeMount(async () => {
 .rating span:hover,
 .rating span.active,
 .rating span.active:hover {
-  background-image: url("../../assets/images/gold-star.png"); /* Replace with your filled star image */
+  background-image: url("../../assets/images/gold-star.png");
 }
 
 .feedback {
