@@ -75,6 +75,11 @@ const getPetition =async () => {
     petition.value = currPetition;
 }
 
+const updateFeedback = async () => {
+    madeFeedback.value = true;
+    await getEffectiveness();
+}
+
 onBeforeMount(async () => {
     await getPetition();
     await convertIDtoName();
@@ -103,7 +108,7 @@ onBeforeMount(async () => {
         <div class="page">
             <div v-if="isLoggedIn && !madeFeedback">
                 <h2>Add your own feedback here!</h2>
-                <FeedbackStateForm @refresh-feedback="getEffectiveness"/>
+                <FeedbackStateForm @refresh-feedback="updateFeedback" :response="response"/>
             </div>
             <div v-else-if="isLoggedIn">
                 <h2>Thank you for submitting feedback!</h2>
