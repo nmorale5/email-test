@@ -5,7 +5,6 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, onUpdated, ref } from "vue";
 import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
-import FeedbackStateForm from "../Feedback State/FeedbackStateForm.vue";
 
 const props = defineProps(["petition"]);
 const emit = defineEmits(["editPetition", "refreshPetitions"]);
@@ -15,7 +14,6 @@ const signers = ref(0);
 const restaurantNameLoading = ref(true);
 const restaurantName = ref("");
 const response: any = ref({});
-const madeFeedback: any = ref({});
 
 const deletePetition = async () => {
   try {
@@ -82,24 +80,6 @@ const getResponse = async () => {
   response.value = tempResponse;
 };
 
-const getPersonalFeedback = async () => {
-  if (!isLoggedIn.value) {
-    return;
-  }
-
-  let tempFeedback;
-  try {
-    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET");
-    if (tempFeedback !== null) {
-      madeFeedback.value = tempFeedback;
-    } else {
-      madeFeedback.value = {};
-    }
-  } catch (e) {
-    return;
-  }
-};
-
 const refreshPetitionList = () => {
   emit("refreshPetitions");
 };
@@ -116,9 +96,6 @@ onBeforeMount(async () => {
   await updateSigned();
   await convertIDtoNames();
   await getResponse();
-  if (response.value._id) {
-    await getPersonalFeedback();
-  }
 });
 
 const linkRestaurantButtonToPage = () => {
@@ -143,7 +120,7 @@ const linkRestaurantButtonToPage = () => {
       <div v-if="response.type.valueOf() === 1">
         <p class="statement">-- Petition Accepted on {{ formatDate(response.dateCreated, true) }} --</p>
         <p>Response: {{ response.response }}</p>
-        <div v-if="madeFeedback._id" class="base">
+        <div class="base">
           <button id="view-feedback-button" class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
           <p>
             <b>{{ props.petition.creator }}</b>
@@ -154,9 +131,6 @@ const linkRestaurantButtonToPage = () => {
           <menu v-if="props.petition.creator == currentUsername">
             <li><button class="button-error btn-small pure-button" @click="deletePetition">Delete</button></li>
           </menu>
-        </div>
-        <div v-else>
-          <FeedbackStateForm @refreshFeedback="getPersonalFeedback" :response="response" @refreshPetitions="refreshPetitionList" />
         </div>
       </div>
       <div v-else>
