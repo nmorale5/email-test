@@ -4,7 +4,7 @@ import { onBeforeMount, ref } from "vue";
 import { useToastStore } from "../../stores/toast";
 import { fetchy } from "../../utils/fetchy";
 
-const { isLoggedIn } = useUserStore();
+const { isLoggedIn, currentUsername} = useUserStore();
 const rating = ref(0);
 const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5]);

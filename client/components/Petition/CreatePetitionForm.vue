@@ -73,19 +73,9 @@ onBeforeMount(async () => {
 
 <template>
   <form @submit.prevent="createPetition">
-    <label for="name">Title:</label>
-    <textarea id="name" class="no-resize-textarea" rows="1" cols="50" v-model="title" placeholder="Enter a title" autocomplete="off" required></textarea>
-    <label for="problem">Problem:</label>
-    <textarea id="problem" class="no-resize-textarea" rows="5" cols="50" v-model="problem" placeholder="List the current problem" autocomplete="off" required></textarea>
-    <label for="solution">Proposed Solution:</label>
-    <textarea id="solution" class="no-resize-textarea" rows="5" cols="50" v-model="solution" placeholder="Propose a solution to the problem" autocomplete="off" required></textarea>
-    <label for="topic">Topic:</label>
-    <select v-model="topic" id="topic">
-      <option v-for="restriction of restrictions" :value="restriction" :key="restriction">{{ restriction }}</option>
-    </select>
     <label for="restaurant">Restaurant:</label>
     <input v-model="restaurantSearch" type="text" id="restaurant" @focus="displaySearch = true" @blur="hideSearch" placeholder="Search..." autocomplete="off" />
-    <ul id="autocomplete-list" v-if="!isNewRestaurant && displaySearch">
+    <ul id="autocomplete-list" v-if="!isNewRestaurant && displaySearch && restaurantSearch">
       <li v-for="restaurant in filteredRestaurants.slice(0, 10)" @click="selectRestaurant(restaurant)" :key="restaurant" class="selection">
         {{ restaurant.name }}
       </li>
@@ -95,6 +85,16 @@ onBeforeMount(async () => {
       <label for="email">Email:</label><br />
       <input id="email" v-model="email" placeholder="Owner Email" autocomplete="off" required />
     </div>
+    <label for="topic">Topic:</label>
+    <select v-model="topic" id="topic">
+      <option v-for="restriction of restrictions" :value="restriction" :key="restriction">{{ restriction }}</option>
+    </select>
+    <label for="name">Title:</label>
+    <textarea id="name" class="no-resize-textarea" rows="1" cols="50" v-model="title" placeholder="Enter a title" autocomplete="off" required></textarea>
+    <label for="problem">Problem:</label>
+    <textarea id="problem" class="no-resize-textarea" rows="5" cols="50" v-model="problem" placeholder="List the current problem" autocomplete="off" required></textarea>
+    <label for="solution">Proposed Solution:</label>
+    <textarea id="solution" class="no-resize-textarea" rows="5" cols="50" v-model="solution" placeholder="Propose a solution to the problem" autocomplete="off" required></textarea>
     <button type="submit" class="pure-button-primary pure-button">Create Petition</button>
   </form>
 </template>
