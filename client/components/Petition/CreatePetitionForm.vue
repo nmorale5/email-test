@@ -15,7 +15,14 @@ const email = ref("");
 const displaySearch = ref(false);
 const allRestaurants: any = ref([]);
 const allRestaurantsSorted = computed(() => allRestaurants.value.slice().sort((a: any, b: any) => a.name.localeCompare(b.name, "en", { numeric: true })));
-const filteredRestaurants = computed(() => allRestaurantsSorted.value.filter((restaurant: any) => restaurant.name.toLowerCase().includes(restaurantSearch.value.toLowerCase())));
+const filteredRestaurants = computed(() =>
+  allRestaurantsSorted.value.filter((restaurant: any) =>
+    restaurant.name
+      .toLowerCase()
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .includes(restaurantSearch.value.toLowerCase().replace(/[^a-zA-Z0-9]/g, "")),
+  ),
+);
 const isNewRestaurant = computed(() => filteredRestaurants.value.length === 0);
 const { restrictions } = storeToRefs(useRestrictionStore());
 

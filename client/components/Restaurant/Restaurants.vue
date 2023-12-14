@@ -11,7 +11,14 @@ import VerificationForm from "./VerificationForm.vue";
 const restaurantSearch = ref("");
 const allRestaurants: any = ref([]);
 const allRestaurantsSorted = computed(() => allRestaurants.value.slice().sort((a: any, b: any) => a.name.localeCompare(b.name, "en", { numeric: true })));
-const filteredRestaurants = computed(() => allRestaurantsSorted.value.filter((restaurant: any) => restaurant.name.toLowerCase().includes(restaurantSearch.value.toLowerCase())));
+const filteredRestaurants = computed(() =>
+  allRestaurantsSorted.value.filter((restaurant: any) =>
+    restaurant.name
+      .toLowerCase()
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .includes(restaurantSearch.value.toLowerCase().replace(/[^a-zA-Z0-9]/g, "")),
+  ),
+);
 const isNewRestaurant = computed(() => filteredRestaurants.value.length === 0);
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
@@ -42,7 +49,7 @@ const getMyRestaurants = async () => {
 
 const getRestaurants = async (filter?: string) => {
   try {
-    restaurantSearch.value = filter??"";
+    restaurantSearch.value = filter ?? "";
     allRestaurants.value = await fetchy(`/api/business/`, "GET");
     return;
   } catch {
@@ -80,9 +87,9 @@ onBeforeMount(async () => {
   <h1 class="center">My Restaurants:</h1>
   <div v-if="isLoggedIn" class="button-list">
     <div v-for="restaurant in myRestaurants" :key="restaurant._id.toString()" class="light-padding">
-      <SelectableRestaurant :restaurant="restaurant"/>
+      <SelectableRestaurant :restaurant="restaurant" />
     </div>
-    <p v-if="myRestaurants.length === 0"  class="align-center">You manage no restaurants.</p>
+    <p v-if="myRestaurants.length === 0" class="align-center">You manage no restaurants.</p>
     <!-- <article>
       <button v-on:click="deleteRestaurant">Delete Business (for debugging/testing)</button>
       <button @click="addRandomBadge">Add Random Badge (debug) (refresh page after)</button>
