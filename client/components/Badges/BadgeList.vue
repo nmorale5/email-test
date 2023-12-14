@@ -15,10 +15,12 @@ const getBadgeIconFile = (badgeName: string) => {
 
 <template>
   <p v-if="props.badges.length === 0"><em>no badges yet!</em></p>
-  <section v-else v-for="badge in props.badges" :key="badge.name">
-    <img :src="getBadgeIconFile(badge.name)" :alt="badge.name" />
-    x{{ badge.count }}
-  </section>
+  <div v-else class="badge-list">
+    <section v-for="badge in props.badges" :key="badge.name">
+      <img :src="getBadgeIconFile(badge.name)" :alt="badge.name" />
+      <p>x{{ badge.count }}</p>
+    </section>
+  </div>
 </template>
 
 <style scoped>
@@ -27,5 +29,21 @@ img {
   height: auto;
   border: 1px solid black;
   border-radius: 10%;
+}
+
+.badge-list {
+  display: flex;
+  align-items: center;
+
+}
+
+section {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+}
+
+section p{
+  font-size: 20px;
 }
 </style>
