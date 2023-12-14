@@ -74,7 +74,7 @@ onBeforeMount(async () => {
     </div>
     <div class="feedback">
       <div class="pad" id="feedback-label">Feedback:</div>
-      <textarea id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made"></textarea>
+      <textarea id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" required></textarea>
     </div>
     <div>
       <button type="submit" class="pure-button pure-button-primary">Submit Feedback</button>
