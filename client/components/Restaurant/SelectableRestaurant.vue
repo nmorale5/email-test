@@ -44,5 +44,7 @@ p {
   border-radius: 3px;
   border-color: var(--black);
   border-width: 2px;
+  display: flex;
+  flex-direction: column;
 }
 </style>

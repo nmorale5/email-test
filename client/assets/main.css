@@ -76,12 +76,14 @@ html {
 .restaurant-button {
   background-color: var(--base-bg);
   color: var(--black);
-  padding: 1cm;
-  border-radius: 1cm;
+  border-radius: 0.5cm;
   border-color: var(--black);
   border-width: 2px;
-  height: 200px;
-  width: 200px;
+  height: 300px;
+  width: 300px;
+  font-size: larger;
+  justify-content: center;
+  align-items: center;
 }
 
 .restaurant-button:hover {
