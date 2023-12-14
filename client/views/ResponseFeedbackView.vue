@@ -11,6 +11,7 @@ const { isLoggedIn } = storeToRefs(useUserStore());
 const averageEffectiveness = ref(0);
 const response: any = ref({});
 const petition:any = ref({});
+const madeFeedback: any = ref(false);
 
 const convertIDtoName = async () => {
     let restaurant;
@@ -21,6 +22,26 @@ const convertIDtoName = async () => {
     }
     petition.value.target = restaurant.name;
 }
+
+const getPersonalFeedback = async () => {
+  if (!isLoggedIn.value) {
+    return;
+  }
+
+  let tempFeedback;
+  try {
+    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET");
+  } catch (e) {
+    return;
+  }
+
+  if (tempFeedback !== null) {
+      madeFeedback.value = true;
+    } else {
+      madeFeedback.value = false;
+    }
+    console.log(tempFeedback)
+};
 
 const getEffectiveness =async () => {
     let feedbackList;
@@ -59,6 +80,7 @@ onBeforeMount(async () => {
     await convertIDtoName();
     await getResponse();
     await getEffectiveness();
+    await getPersonalFeedback();
 
 });
 </script>
@@ -79,9 +101,12 @@ onBeforeMount(async () => {
             </div>
         </div>
         <div class="page">
-            <div v-if="isLoggedIn">
+            <div v-if="isLoggedIn && !madeFeedback">
                 <h2>Add your own feedback here!</h2>
                 <FeedbackStateForm @refresh-feedback="getEffectiveness"/>
+            </div>
+            <div v-else-if="isLoggedIn">
+                <h2>Thank you for submitting feedback!</h2>
             </div>
             <div v-else>
                 <h2>Log in to submit your own feedback</h2>
