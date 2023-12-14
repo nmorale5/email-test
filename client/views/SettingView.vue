@@ -20,11 +20,8 @@ async function delete_() {
 <template>
   <main class="fall">
     <div class="circle green">
-      <h2>You are currently logged in as: {{ currentUsername }}</h2>
+      <h2>You are currently logged in as:<br/> {{ currentUsername }}</h2>
       <button class="pure-button pure-button-primary pad" @click="logout">Logout</button>
-    </div>
-    <div class ="small-circle blue">
-      <button class="pure-button-primary pure-button pad" @click="delete_">Delete User</button>
     </div>
   </main>
 </template>
