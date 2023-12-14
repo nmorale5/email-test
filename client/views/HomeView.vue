@@ -57,7 +57,7 @@ const goToLogin = () => {
         <CreatePetitionForm
           @formSubmitted="
             isFormOnScreen = false;
-            $router.go(0);
+            $router.go(0)
           "
         />
       </div>

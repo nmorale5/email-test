@@ -32,7 +32,7 @@ export default class BusinessConcept {
     if (filterKeyword === undefined || filterKeyword === "") {
       return businessList;
     }
-    return businessList.filter((b) => b.name.includes(filterKeyword));
+    return businessList.filter((b) => b.name.replace(/[^a-zA-Z0-9 ]/g, "").includes(filterKeyword.replace(/[^a-zA-Z0-9 ]/g, "")));
   }
 
   public async addBusiness(name: string, email: string) {
@@ -57,7 +57,7 @@ export default class BusinessConcept {
     }
     const business = await this.businesses.readOne({ token });
     if (business === null) {
-      throw new UnauthenticatedError("validation token is incorrect");
+      throw new UnauthenticatedError("Validation token is incorrect!");
     }
     const userArray = business.users;
     if (!userArray.includes(userId)) {

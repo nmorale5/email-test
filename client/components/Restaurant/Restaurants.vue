@@ -15,8 +15,8 @@ const filteredRestaurants = computed(() =>
   allRestaurantsSorted.value.filter((restaurant: any) =>
     restaurant.name
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9]/g, "")
-      .includes(restaurantSearch.value.toLowerCase().replace(/[^a-zA-Z0-9]/g, "")),
+      .replace(/[^a-zA-Z0-9 ]/g, "")
+      .includes(restaurantSearch.value.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, "")),
   ),
 );
 const isNewRestaurant = computed(() => filteredRestaurants.value.length === 0);
