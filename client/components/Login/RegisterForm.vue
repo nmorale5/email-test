@@ -39,10 +39,10 @@ async function register() {
       </div>
       <div class="pure-control-group pad center">
         <label for="aligned-password" class="pad-more">Password</label>
-        <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
+        <input class="input-token" type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
       </div>
-      <div class="pure-control-group pad center">
-        <label for="aligned-token" class="pad-more">Token (optional)</label>
+      <div class="pure-control-group pad center no-grow">
+        <label for="aligned-token" class="pad">Token<br />(optional)</label>
         <input type="password" v-model.trim="token" id="aligned-token" placeholder="Restaurant email token"/>
       </div>
       <div class="pure-controls pad-max center">
@@ -53,6 +53,10 @@ async function register() {
 </template>
 
 <style scoped>
+
+input {
+  height: 40px;
+}
 h3 {
   display: flex;
   justify-content: center;
@@ -69,6 +73,11 @@ form {
   padding: 5px;
 }
 
+.pad-some {
+  padding: 5px;
+  padding-right: 7px;
+}
+
 .pad-more {
   padding: 5px;
   padding-right: 9px;
@@ -81,5 +90,14 @@ form {
 .center {
   display: flex;
   justify-content: center;
+}
+
+.input-token {
+  white-space: nowrap;
+}
+
+.no-grow {
+  display: flex;
+  align-items: center;
 }
 </style>

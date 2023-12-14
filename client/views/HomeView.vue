@@ -35,13 +35,7 @@ const goToLogin = () => {
 <template>
   <main>
     <div class="shadow" v-if="isFormOnScreen"></div>
-    <section>
-      <!-- <button @click="sendRegisterEmail">Send Register Email</button> -->
-      <!-- <button @click="sendThresholdEmail">Send Threshold Email</button> -->
-      <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
-      <h1 v-else>Please login!</h1>
-    </section>
-    <h2>Big changes start just one petition at a time.</h2>
+    <h2><i>Big changes start just one petition at a time.</i></h2>
     <FeaturedPetition />
     <div v-if="!isLoggedIn" class="create-petition-button" v-on:click="goToLogin">
       <h1 class="create-petition-text">Log in to Start a Petition!</h1>
