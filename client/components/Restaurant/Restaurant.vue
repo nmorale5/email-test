@@ -137,7 +137,7 @@ onBeforeMount(async () => {
     
     <p v-if="unapprovedPetitions.length === 0"><em>None</em></p>
     
-    <div v-else v-for="petition in unapprovedPetitions" :key="petition._id">
+    <div v-else class="petition" v-for="petition in unapprovedPetitions" :key="petition._id">
       <PetitionComponent
         :petition="{
           _id: petition._id,
@@ -184,5 +184,9 @@ header {
 
 h1 {
   margin-bottom: 4px;
+}
+
+.petition {
+  margin-bottom: 16px;
 }
 </style>
