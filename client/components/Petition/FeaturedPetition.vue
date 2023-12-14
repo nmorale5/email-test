@@ -123,8 +123,8 @@ const linkRestaurantButtonToPage = () => {
 </script>
 
 <template>
-  <h1 class="center">Featured Petitions</h1>
-  <div class="row">
+  <h1 class="center giant">Featured Petitions</h1>
+  <div class="row pad-medium">
     <img src="../../assets/images/left-arrow.png" v-on:click="petitionIndex = (petitionIndex - 1 + NUM_FEATURED) % NUM_FEATURED" class="arrow-button" />
     <div class="pagination">
       <span v-for="(_, index) in NUM_FEATURED" :key="index" :class="{ current: index === petitionIndex }" @click="petitionIndex = index"></span>
@@ -185,6 +185,7 @@ const linkRestaurantButtonToPage = () => {
 </template>
 
 <style scoped>
+
 p {
   margin: 0em;
 }
@@ -234,6 +235,7 @@ p {
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-around;
+  padding: 10px;
 }
 
 .center {
@@ -352,5 +354,15 @@ span {
 
 span.current {
   background-color: var(--green); /* Current dot color */
+}
+
+.giant {
+  font-size: 48pt;
+  padding: 5px;
+  margin: 0px;
+}
+
+.pad-medium {
+  padding: 10px;
 }
 </style>

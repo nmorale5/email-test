@@ -18,13 +18,14 @@ async function delete_() {
 </script>
 
 <template>
-  <main>
+  <main class="fall">
     <div class="circle green">
-      <h1>Settings for {{ currentUsername }}</h1>
+      <h2>You are currently logged in as: {{ currentUsername }}</h2>
       <button class="pure-button pure-button-primary pad" @click="logout">Logout</button>
-      <button class="button-error pure-button pad" @click="delete_">Delete User</button>
     </div>
-    
+    <div class ="small-circle blue">
+      <button class="pure-button-primary pure-button pad" @click="delete_">Delete User</button>
+    </div>
   </main>
 </template>
 
@@ -33,6 +34,15 @@ main {
   display: flex;
   justify-content: center;
   padding-top: 5%;
+}
+
+h2 {
+  text-align: center;
+}
+
+.fall {
+  display: flex;
+  align-items: end;
 }
 
 .circle {
@@ -44,6 +54,19 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+
+.small-circle {
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+  background-color: var(--base-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20%;
 }
 
 .green {
