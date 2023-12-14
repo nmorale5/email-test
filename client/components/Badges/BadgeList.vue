@@ -23,7 +23,7 @@ const getBadgeIconFile = (badgeName: string) => {
 
 <style scoped>
 img {
-  width: 32px;
+  width: 64px;
   height: auto;
   border: 1px solid black;
   border-radius: 10%;
