@@ -5,7 +5,6 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, onUpdated, ref, watch } from "vue";
 import router from "../../router";
 import { fetchy } from "../../utils/fetchy";
-import FeedbackStateForm from "../Feedback State/FeedbackStateForm.vue";
 
 // const props = defineProps(["petition"]);
 const NUM_FEATURED = 5;
@@ -20,7 +19,6 @@ const signers = ref(0);
 const restaurantNameLoading = ref(true);
 const restaurantName = ref("");
 const response: any = ref({});
-const madeFeedback: any = ref({});
 
 watch(petitionIndex, () => setPetition());
 
@@ -81,24 +79,6 @@ const getResponse = async () => {
   response.value = tempResponse;
 };
 
-const getPersonalFeedback = async () => {
-  if (!isLoggedIn.value) {
-    return;
-  }
-
-  let tempFeedback;
-  try {
-    tempFeedback = await fetchy(`/api/feedback/userFeedback/${response.value._id}`, "GET");
-    if (tempFeedback) {
-      madeFeedback.value = tempFeedback;
-    } else {
-      madeFeedback.value = {};
-    }
-  } catch (e) {
-    return;
-  }
-};
-
 const refreshPetitionList = () => {
   emit("refreshPetitions");
 };
@@ -126,9 +106,6 @@ const setPetition = async () => {
   await updateSigned();
   await convertIDtoNames();
   await getResponse();
-  if (response.value._id) {
-    await getPersonalFeedback();
-  }
 };
 
 onUpdated(async () => {
@@ -173,7 +150,7 @@ const linkRestaurantButtonToPage = () => {
         <div v-if="response.type.valueOf() === 1">
           <p class="statement pad-text">-- Petition Accepted on {{ formatDate(response.dateCreated) }} --</p>
           <p class="pad-text">Response: {{ response.response }}</p>
-          <div v-if="madeFeedback._id" class="base">
+          <div class="base">
             <button id="view-feedback-button" class="pure-button pure-button-primary" @click="goToResponseFeedbackView">View Feedback</button>
             <p>
               <b class="pad-text">{{ petition.creator }}</b>
@@ -181,9 +158,6 @@ const linkRestaurantButtonToPage = () => {
             <article class="timestamp pad-text">
               <p>Created on: {{ formatDate(petition.dateCreated) }}</p>
             </article>
-          </div>
-          <div v-else>
-            <FeedbackStateForm :response="response" @refreshPetitions="refreshPetitionList" />
           </div>
         </div>
         <div v-else>

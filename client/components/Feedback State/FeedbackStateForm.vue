@@ -4,7 +4,7 @@ import { onBeforeMount, ref } from "vue";
 import { useToastStore } from "../../stores/toast";
 import { fetchy } from "../../utils/fetchy";
 
-const { isLoggedIn } = useUserStore();
+const { isLoggedIn, currentUsername} = useUserStore();
 const rating = ref(0);
 const effectiveness = ref(0);
 const stars = ref([1, 2, 3, 4, 5]);
@@ -74,7 +74,7 @@ onBeforeMount(async () => {
     </div>
     <div class="feedback">
       <div class="pad" id="feedback-label">Feedback:</div>
-      <textarea id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made"></textarea>
+      <textarea id="verbal-feedback" v-model="feedback" placeholder="Enter Feedback on the changes made" required></textarea>
     </div>
     <div>
       <button type="submit" class="pure-button pure-button-primary">Submit Feedback</button>

@@ -29,7 +29,7 @@ const sendThresholdEmail = async () => {
 
 <template>
   <main>
-    <div class="shadow" v-if="isFormOnScreen" @click="isFormOnScreen = false"></div>
+    <div class="shadow" v-if="isFormOnScreen"></div>
     <section>
       <!-- <button @click="sendRegisterEmail">Send Register Email</button> -->
       <!-- <button @click="sendThresholdEmail">Send Threshold Email</button> -->
@@ -38,7 +38,10 @@ const sendThresholdEmail = async () => {
     </section>
     <h2>Big changes start just one petition at a time.</h2>
     <FeaturedPetition />
-    <div class="create-petition-button" @click="isFormOnScreen = true">
+    <div v-if="!isLoggedIn" class="create-petition-button">
+      <h1 class="create-petition-text">Log in to Start a Petition!</h1>
+    </div>
+    <div v-else class="create-petition-button" @click="isFormOnScreen = true">
       <h1 class="create-petition-text">Create a Petition</h1>
     </div>
     <div v-if="isFormOnScreen" class="popup">
@@ -121,6 +124,10 @@ h2 {
   width: 30%;
   border-radius: 5px;
   color: white;
+}
+
+.create-petition-button:hover {
+  background-color: var(--blue-dark);
 }
 
 .create-petition-text {
