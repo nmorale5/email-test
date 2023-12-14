@@ -3,6 +3,7 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import FeedbackStateForm from "../components/Feedback State/FeedbackStateForm.vue";
 import PetitionFeedbackListComponent from "../components/Feedback State/PetitionFeedbackListComponent.vue";
+import Tooltip from "../components/Setting/Tooltip.vue";
 import { useUserStore } from "../stores/user";
 import { fetchy } from "../utils/fetchy";
 
@@ -109,6 +110,10 @@ onBeforeMount(async () => {
             <div v-if="isLoggedIn && !madeFeedback">
                 <h2>Add your own feedback here!</h2>
                 <FeedbackStateForm @refresh-feedback="updateFeedback" :response="response"/>
+                <Tooltip
+                    displaytext="How ratings work"
+                    hovertext="Restaurants need a minimum number of 4-5 star ratings over the feedback period in order to receive a badge. All ratings are averaged to compute the overall Effectiveness"
+                />
             </div>
             <div v-else-if="isLoggedIn">
                 <h2>Thank you for submitting feedback!</h2>
@@ -119,7 +124,7 @@ onBeforeMount(async () => {
         </div>
     </div>
     <div class="feedback">
-        <h2>Effectiveness: {{ (averageEffectiveness >= 0)? averageEffectiveness.toFixed(1): "-" }}</h2>
+        <h2>Effectiveness: {{ (averageEffectiveness >= 0)? averageEffectiveness.toFixed(1): "0" }}</h2>
         <PetitionFeedbackListComponent :response="response"/>
     </div>
 </template>
