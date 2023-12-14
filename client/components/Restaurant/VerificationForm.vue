@@ -12,21 +12,21 @@ const { currentUserId , isLoggedIn } = storeToRefs(useUserStore());
 const addUserToRestaurant = async () => {
   try {
     const businessId = await fetchy("/api/business/users", "PUT", { body: { userId: currentUserId.value, token: token.value } });
-    emit("verified");
-    await router.push({ name: "Restaurant", params: { id: businessId } });
-  } catch {
-    return;
+    // don't need to emit this if rerouting
+    //emit("verified");
+    void router.push({ name: "Restaurant", params: { id: businessId } });
+  } catch (e) {
   }
 };
 </script>
 
 <template>
   <div v-if="isLoggedIn">
-    <form class="pure-form">
+    <form class="pure-form" @submit.prevent="">
       <fieldset>
-        <h2>Add Yourself To Restaurant</h2>
+        <h2>Claim Restaurant as Owner</h2>
         <input id="token" v-model="token" placeholder="Token from inbox" required />
-        <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Join Restaurant</button>
+        <button type="submit" class="pure-button-primary pure-button" v-on:click="addUserToRestaurant">Claim Restaurant</button>
       </fieldset>
     </form>
   </div>

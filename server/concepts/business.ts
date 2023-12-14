@@ -57,7 +57,7 @@ export default class BusinessConcept {
     }
     const business = await this.businesses.readOne({ token });
     if (business === null) {
-      throw new UnauthenticatedError("validation token is incorrect");
+      throw new UnauthenticatedError("Validation token is incorrect!");
     }
     const userArray = business.users;
     if (!userArray.includes(userId)) {
